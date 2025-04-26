@@ -1005,7 +1005,7 @@ div.num{
         opacity:0;
     }
     header{
-        background-image: url("../img/druplicon.svg");
+        background-image: url("img/druplicon.svg");
         background-repeat: no-repeat;
         background-size: inherit;
     }
@@ -1798,7 +1798,7 @@ div.num{
 }
 
 .b-reviews{
-    background-image: url("../img/right-quote-sign.svg");
+    background-image: url("img/right-quote-sign.svg");
     background-repeat: no-repeat;
     background-position-x: left;
     background-position-y:top;
