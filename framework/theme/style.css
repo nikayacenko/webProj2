@@ -138,7 +138,7 @@ header{
     align-items: center;
     position: relative;
     color:white;
-    background-image: url("/theme/img/druplicon.svg");
+    background-image: url("theme/img/druplicon.svg");
     background-repeat: no-repeat;
     background-size: 90%;
     background-color: rgba(0, 0, 0, 0.897);
