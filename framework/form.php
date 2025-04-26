@@ -59,8 +59,8 @@
                     </li>
                 </ul>
                 <div class="logo-menu">
-                    <img id="logo" src="img/drupal-coder.svg" alt="" width="140" height="20">
-                    <label for="menu" id="menu1"><img src="img/burger2.png" width="25" height="20" alt=""></label>
+                    <img id="logo" src="theme/img/drupal-coder.svg" alt="" width="140" height="20">
+                    <label for="menu" id="menu1"><img src="theme/img/burger2.png" width="25" height="20" alt=""></label>
                 </div>
             </nav>
         </div>
@@ -74,7 +74,7 @@
                 <div class="first_trio">
                     <div class="advert1 col-xl-4">
                         <h1>#1</h1>
-                        <img src="img/cup.png" alt="" width="59" height="58">
+                        <img src="theme/img/cup.png" alt="" width="59" height="58">
                         <p> Drupal-разработчик по России по версии Рейтинга Рунета</p>
                     </div>
                     <div class="advert col-xl-4">
@@ -109,43 +109,43 @@
         <div class="cells row d-flex">
             <div class="first-quatro column d-flex">
                 <div class="cell col-md-3">
-                    <img src="img/competency-1.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-1.svg" alt="" width="81" height="81">
                     <p>Добавление информации на сайт, создание новых разделов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-2.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-2.svg" alt="" width="81" height="81">
                     <p>Разработка и оптимизация модулей сайта</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-3.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-3.svg" alt="" width="81" height="81">
                     <p>Интеграция с CRM, 1C, платежными системами, любыми веб-сервисами</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-4.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-4.svg" alt="" width="81" height="81">
                     <p>Любые доработки функционала и дизайна</p>
                 </div>
             </div>
             <div class="second-quatro column d-flex">
                 <div class="cell col-md-3">
-                    <img src="img/competency-5.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-5.svg" alt="" width="81" height="81">
                     <p>Аудит и мониторинг безопасности Drupal сайтов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-6.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-6.svg" alt="" width="81" height="81">
                     <p>Миграция, импорт контента и апргрейд Drupal</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-7.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-7.svg" alt="" width="81" height="81">
                     <p>Оптимизация и ускорение Drupal-сайтов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-8.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-8.svg" alt="" width="81" height="81">
                     <p>Веб-маркетинг, консультации и работы по SEO</p>
                 </div>
             </div>
         </div>
     </div>
-    <img class="black-bg" src="img/black_square_support.png" alt="">
+    <img class="black-bg" src="theme/img/black_square_support.png" alt="">
     
     <div class="second-space container-fluid px-md-0">
         <h1>Поддержка от Drupal-coder</h1>
