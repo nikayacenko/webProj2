@@ -18,7 +18,7 @@
 </head>
 <body>
     <header>
-        <video src="img/video.mp4" autoplay muted loop></video>
+        <video src="theme/img/video.mp4" autoplay muted loop></video>
         <div class="cap px-md-5">
             <nav class="navbar">
                 <input type="checkbox" name="menu" id="menu">
