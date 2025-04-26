@@ -4,21 +4,21 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="theme/js/slick.min.js"></script>
+    <script src="js/slick.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="theme/style.css">
-    <script src="accordeon-FAQ.js"></script>
-    <script src="theme/js/my.js"></script>
-    <script src="theme/js/second-slider.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/accordeon-FAQ.js"></script>
+    <script src="js/my.js"></script>
+    <script src="js/second-slider.js"></script>
     <title>Project</title>
 </head>
 <body>
     <header>
-        <video src="theme/img/video.mp4" autoplay muted loop></video>
+        <video src="img/video.mp4" autoplay muted loop></video>
         <div class="cap px-md-5">
             <nav class="navbar">
                 <input type="checkbox" name="menu" id="menu">
@@ -59,8 +59,8 @@
                     </li>
                 </ul>
                 <div class="logo-menu">
-                    <img id="logo" src="theme/img/drupal-coder.svg" alt="" width="140" height="20">
-                    <label for="menu" id="menu1"><img src="theme/img/burger2.png" width="25" height="20" alt=""></label>
+                    <img id="logo" src="img/drupal-coder.svg" alt="" width="140" height="20">
+                    <label for="menu" id="menu1"><img src="img/burger2.png" width="25" height="20" alt=""></label>
                 </div>
             </nav>
         </div>
@@ -74,7 +74,7 @@
                 <div class="first_trio">
                     <div class="advert1 col-xl-4">
                         <h1>#1</h1>
-                        <img src="theme/img/cup.png" alt="" width="59" height="58">
+                        <img src="img/cup.png" alt="" width="59" height="58">
                         <p> Drupal-разработчик по России по версии Рейтинга Рунета</p>
                     </div>
                     <div class="advert col-xl-4">
@@ -109,37 +109,37 @@
         <div class="cells row d-flex">
             <div class="first-quatro column d-flex">
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-1.svg" alt="" width="81" height="81">
+                    <img src="img/competency-1.svg" alt="" width="81" height="81">
                     <p>Добавление информации на сайт, создание новых разделов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-2.svg" alt="" width="81" height="81">
+                    <img src="img/competency-2.svg" alt="" width="81" height="81">
                     <p>Разработка и оптимизация модулей сайта</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-3.svg" alt="" width="81" height="81">
+                    <img src="img/competency-3.svg" alt="" width="81" height="81">
                     <p>Интеграция с CRM, 1C, платежными системами, любыми веб-сервисами</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-4.svg" alt="" width="81" height="81">
+                    <img src="img/competency-4.svg" alt="" width="81" height="81">
                     <p>Любые доработки функционала и дизайна</p>
                 </div>
             </div>
             <div class="second-quatro column d-flex">
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-5.svg" alt="" width="81" height="81">
+                    <img src="img/competency-5.svg" alt="" width="81" height="81">
                     <p>Аудит и мониторинг безопасности Drupal сайтов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-6.svg" alt="" width="81" height="81">
+                    <img src="img/competency-6.svg" alt="" width="81" height="81">
                     <p>Миграция, импорт контента и апргрейд Drupal</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-7.svg" alt="" width="81" height="81">
+                    <img src="img/competency-7.svg" alt="" width="81" height="81">
                     <p>Оптимизация и ускорение Drupal-сайтов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="theme/img/competency-8.svg" alt="" width="81" height="81">
+                    <img src="img/competency-8.svg" alt="" width="81" height="81">
                     <p>Веб-маркетинг, консультации и работы по SEO</p>
                 </div>
             </div>
