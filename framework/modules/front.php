@@ -190,7 +190,201 @@ function front_get($request, $db) {
 // Обработчик запросов методом POST.
 function front_post($request) {
   // Пример возврата редиректа.
-  return redirect('new-location');
+  if (!validateCsrfToken()) {
+    http_response_code(403); 
+   
+  }
+$fav_languages = ($_POST['languages']) ?? [];
+// Проверяем ошибки.
+$errors = FALSE;
+if (empty(strip_tags($_POST['fio']))) {
+  setcookie('fio_error', '1');
+  $errors = TRUE;
+}
+
+if(!empty(strip_tags($_POST['fio'])) && strip_tags(strlen($_POST['fio']))>150) {//XSS
+  setcookie('fio_error', '2');
+  $errors = TRUE;
+}
+
+if(!empty(strip_tags($_POST['fio'])) && !preg_match('/^[а-яА-Яa-zA-Z ]+$/u', strip_tags($_POST['fio']))) {
+  setcookie('fio_error', '3');
+  $errors = TRUE;
+}
+
+// Сохраняем ранее введенное в форму значение на год.
+setcookie('fio_value', htmlspecialchars($_POST['fio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+// $_POST['field-tel']=trim($_POST['field-tel']);
+$_POST['field-tel']=strip_tags(trim($_POST['field-tel']));//XSS
+if(!preg_match('/^[0-9+]+$/', $_POST['field-tel'])) {
+  setcookie('field-tel_error', '1');
+  $errors = TRUE;
+}
+setcookie('field-tel_value', htmlspecialchars($_POST['field-tel'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+if(!isset($_POST['radio-group-1']) || empty($_POST['radio-group-1'])) {
+  setcookie('radio-group-1_error', '1');
+  $errors = TRUE;
+}
+setcookie('radio-group-1_value', htmlspecialchars($_POST['radio-group-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+$email=strip_tags($_POST['field-email']);
+if(!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u', $email)) {
+  setcookie('field-email_error', '1');
+  $errors = TRUE;
+}
+if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  adminlog($db) || !password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+{
+  if (emailExists($email, $db)) {
+          $id = null;
+     try {
+         $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
+         $dp->execute([$email]);
+         $id = strip_tags($dp->fetchColumn());
+     } catch (PDOException $e) {
+         error_log('Database error: ' . $e->getMessage());//Information Disclosure
+         exit();
+     }
+     if ((int)$id !== (int)strip_tags($_SESSION['uid'])) {
+         setcookie('field-email_error', '2');
+         $errors = TRUE;
+     }
+  }
+}
+else {
+  if (emailExists($email, $db)) {
+     $id = null;
+     try {
+         $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
+         $dp->execute([$email]);
+         $id = $dp->fetchColumn();
+     } catch (PDOException $e) {
+        error_log('Database error: ' . $e->getMessage());//Information Disclosure
+         exit();
+     }
+     if ((int)$id !== (int)strip_tags($_POST['uid'])) {
+         setcookie('field-email_error', '2');
+         $errors = TRUE;
+     }
+  }
+}
+
+setcookie('field-email_value', htmlspecialchars($_POST['field-email'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+if(empty($fav_languages)) {
+  setcookie('languages_error', '1');
+  $errors = TRUE;
+} else {
+  foreach ($fav_languages as $lang) {
+    if (!in_array($lang, $allowed_lang)) {
+        setcookie('languages_error', '2');
+        $errors = TRUE;
+    }
+  }
+}
+$langs_value =strip_tags(implode(",", $fav_languages));
+setcookie('languages_value', htmlspecialchars($langs_value, ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+if (empty($_POST['field-date'])) {
+  setcookie('field-date_error', '1');
+  $errors = TRUE;
+}
+setcookie('field-date_value', htmlspecialchars($_POST['field-date'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);//XSS
+
+if(!isset($_POST['check-1']) || empty($_POST['check-1'])) {
+  setcookie('check-1_error', '1');
+  $errors = TRUE;
+}
+setcookie('check-1_value', htmlspecialchars($_POST['check-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+if (empty($_POST['bio'])) {
+  setcookie('bio_error', '1');
+  $errors = TRUE;
+}
+
+if (!empty($_POST['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:() ]+$/u', $_POST['bio'])) {
+  setcookie('bio_error', '2');
+  $errors = TRUE;
+}
+setcookie('bio_value', htmlspecialchars($_POST['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+
+if ($errors) {
+  
+  header('Location: index.php');
+  exit();
+}
+else {
+  setcookie('fio_error', '', 100000);
+  setcookie('field-tel_error', '', 100000);
+  setcookie('field-email_error', '', 100000);
+  setcookie('field-date_error', '', 100000);
+  setcookie('radio-group-1_error', '', 100000);
+  setcookie('check-1_error', '', 100000);
+  setcookie('languages_error', '', 100000);
+  setcookie('bio_error', '', 100000);
+}
+
+// Проверяем меняются ли ранее сохраненные данные или отправляются новые.
+
+if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+{
+  if(!empty($_POST['uid']))
+  {
+    try{
+    $update_id = intval($_POST['uid']);//XSS
+    $doplog=findLoginByUid($update_id, $db);
+    updateDB($doplog, $db);
+    header('Location: adm_page.php');
+    exit();
+    }
+    catch(PDOException $e){
+      header('Location:adm_page.php');
+      exit();
+    }
+  }
+  else{
+    print('Вы не выбрали пользователя для изменения');
+    exit();
+  }
+}
+else{
+if (isset($_COOKIE[session_name()]) && session_start() && !empty($_SESSION['login'])) {
+  try {
+        updateDB($_SESSION['login'], $db);
+  }
+  catch(PDOException $e){
+      print('Error : ' . $e->getMessage());
+      exit();
+  }
+}
+else {
+  $login = generate_pass(7);
+  while(check_login($login, $db)>0)
+  {
+    $login = generate_pass(7);
+  }
+  $pass = generate_pass();
+  // Сохраняем в Cookies.
+  $hash_pass=password_hash($pass, PASSWORD_DEFAULT);
+  setcookie('login', $login);
+  setcookie('pass', $pass);
+  try {
+        insertDB($db, $login, $hash_pass);
+  }
+  catch(PDOException $e){
+      print('Error : ' . $e->getMessage());
+      exit();
+  }
+}
+}
+
+// Сохраняем куку с признаком успешного сохранения.
+setcookie('save', '1');
+
+// Делаем перенаправление.
+  return redirect('/');
 }
 
 //массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
