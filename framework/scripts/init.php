@@ -5,6 +5,7 @@
  * (с) Сергей Синица 2007-2020.
  * (с) "КубГУ", 2013.
  */
+global $db;
 
 // Диспатчер. Делает запрос $request в соответствии со структурой $urlconf.
 function init($request = array(), $urlconf = array()) {
@@ -63,7 +64,7 @@ function init($request = array(), $urlconf = array()) {
     }
 
     // Собираем параметры в массив.
-    $params = array('request' => $request);
+    $params = array('request' => $request, 'db' => $db);
     array_shift($matches);
     foreach ($matches as $key => $match) {
       $params[$key] = $match[0];
