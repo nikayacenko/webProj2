@@ -620,24 +620,102 @@
                         </div>
                     </div>
                     <div class="b-form col-md-4 order-2 px-3 pb-3 pt-1 pt-md-3 mx-auto">
-                        <form id="myform" class="formcarryForm" action="https://formcarry.com/s/oXeb09X0vCH" enctype="multipart/form-data" method="POST">
+                        <form id="myform" class="formcarryForm" action="" method="POST">
+                            <?php
+                            if (!empty($messages)) {
+                            print('<div id="messages">');
+                            // Выводим все сообщения.
+                            foreach ($messages as $message) {
+                                print($message);
+                            }
+                            print('</div>');
+                            }
+                        ?>
+                            <input type="hidden" name="uid" value='<?php print $values['uid'];?>' />
                             <label class="my-2">
-                                <input class="input-field" name="field-fio" value="Ваше имя">
+                                ФИО:<br />
+                                <input name="fio" <?php if ($errors['fio']) {print 'class="error"';} ?> value="<?php print $values['fio']; ?>" />
                             </label><br />
                             <label>
-                                <input class="input-field" name="field-number" type="tel" value="Ваш телефон">
+                                Номер телефона:<br />
+                                <input name="field-tel"  <?php if ($errors['field-tel']) {print 'class="error"';} ?> value="<?php print $values['field-tel']; ?>"
+                                type="tel" />
                             </label> <br>
                             <label>
-                                <input class="input-field" name="field-email" type="email" value="Ваш e-mail">
+                                email:<br />
+                                <input name="field-email"
+                                <?php if ($errors['field-email']) {print 'class="error"';} ?> value="<?php print $values['field-email']; ?>"
+                                />
                             </label><br />
                             <label>
-                                <textarea class="input-field" name="field-message">Ваше сообщение</textarea>
+                                Дата рождения:<br />
+                                <input name="field-date"
+                                <?php if ($errors['field-date']) {print 'class="error"';} ?> value="<?php print $values['field-date']; ?>"
+                                type="date" />
                             </label><br />
-                            <label class="form-checkbox">
-                                <input type="checkbox" id="formcheck" name="check" />
-                                Отправляя заявку, я даю согласие на <a href="">обработку своих персональных данных</a></label><br />
-                            <input class="input-field" name="send" type="submit" value="Отправить" id="inp"> 
-                        </form>
+                            <div <?php if ($errors['radio-group-1']) {print 'class="error_gen"';} ?>>
+                                Пол:<br />
+                                <label><input type="radio"  <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
+                <?php if ($values['radio-group-1']=='Женский') {print 'checked="checked"';} ?>
+                                name="radio-group-1" value="Женский" />
+                                Женский</label>
+                                <label><input type="radio"  <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
+                <?php if ($values['radio-group-1']=='Мужской') {print 'checked="checked"';} ?>
+                                name="radio-group-1" value="Мужской" />
+                                Мужской</label>
+                                </div>
+                                <?php 
+                $user_languages = explode(",",  $values['languages']);
+                ?>
+                                <label>
+                                    Любимый язык программирования:
+                                    <br />
+                                    <select name="languages[]"
+                                    multiple="multiple" <?php if ($errors['languages']) {print 'class="error"';} ?>>
+                                    <option value="Pascal" <?php if(in_array('Pascal', $user_languages)) {print 'selected="selected"';}?>>Pascal</option>
+                                    <option value="C" <?php if(in_array('C', $user_languages)) {print 'selected="selected"';}?>>C
+                                    <option value="C++" <?php if(in_array('C++', $user_languages)) {print 'selected="selected"';}?>>C++
+                                    <option value="JavaScript" <?php if(in_array('JavaScript', $user_languages)) {print 'selected="selected"';}?>>JavaScript
+                                    <option value="PHP" <?php if(in_array('PHP', $user_languages)) {print 'selected="selected"';}?>>PHP
+                                    <option value="Python" <?php if(in_array('Python', $user_languages)) {print 'selected="selected"';}?>>Python
+                                    <option value="Java" <?php if(in_array('Java', $user_languages)) {print 'selected="selected"';}?>>Java
+                                    <option value="Haskel" <?php if(in_array('Haskel', $user_languages)) {print 'selected="selected"';}?>>Haskel
+                                    <option value="Clojure" <?php if(in_array('Clojure', $user_languages)) {print 'selected="selected"';}?>>Clojure
+                                    <option value="Prolog" <?php if(in_array('Prolog', $user_languages)) {print 'selected="selected"';}?>>Prolog
+                                    <option value="Scala" <?php if(in_array('Scala', $user_languages)) {print 'selected="selected"';}?>>Scala
+                                    </select>
+                                </label><br />
+                                <label>
+                                    Биография:<br />
+                                    <textarea name="bio"<?php if ($errors['bio']) {print 'class="error"';} ?>><?php print $values['bio']; ?></textarea>  
+                                </label><br />  
+                                С контрактом ознакомлен:<br />
+                    <label сlass="form-checkbox"> <input type="checkbox" name="check-1" <?php if ($errors['check-1']) {print 'class="error"';} ?>  checked="<?php if (!$errors['check-1']) {print 'checked';} ?>">
+                    </label><br />
+                    <div class="kn pb-sm-3">
+                        <input type="submit" value="Сохранить" />
+                    </div>
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
+                    <?php 
+                    if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
+                        print('<a href="login.php">Вход</a>');
+                    }
+                 ?>
+
+                </form>
+                <?php 
+                    require_once 'functions.php';
+                    require_once 'db.php';
+                    if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+                    {
+                        print('<a class="admhref" href="adm_page.php">Страница администратора</a></br>');
+                    }
+                    if(isset($_COOKIE[session_name()]) && !empty($_SESSION['login'])){
+                        print('<form class="logout_form" action="login.php" method="POST">
+                        <input type="submit" name="logout" value="Выйти"/> 
+                    </form>');
+                    }
+                 ?>
                     </div>
                 </div>
                 <div class="b-bottom row justify-content-center col-12 py-3 mx-0">
