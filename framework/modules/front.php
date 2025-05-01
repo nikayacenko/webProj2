@@ -27,11 +27,13 @@ function front_get($request, $db) {
       if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  adminlog($db) || !password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
       {
         if (!empty($_COOKIE['pass'])) {
-          $messages[] = sprintf('Вы можете <a href="<?php echo url("login"); ?>">Login</a>войти</a> с логином <strong>%s</strong>
-            и паролем <strong>%s</strong> для изменения данных.',
+          $messages[] = sprintf(
+            'Вы можете <a href="%s">Login</a> войти с логином <strong>%s</strong> и паролем <strong>%s</strong> для изменения данных.',
+            htmlspecialchars(url('login'), ENT_QUOTES, 'UTF-8'),
             htmlspecialchars($_COOKIE['login'], ENT_QUOTES, 'UTF-8'),
-            htmlspecialchars($_COOKIE['pass'], ENT_QUOTES, 'UTF-8'));//XSS
-        }
+            htmlspecialchars($_COOKIE['pass'], ENT_QUOTES, 'UTF-8')
+        );
+        
       }
     }
   
