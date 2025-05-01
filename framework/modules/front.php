@@ -34,6 +34,7 @@ function front_get($request, $db) {
             htmlspecialchars($_COOKIE['pass'], ENT_QUOTES, 'UTF-8')
         );
         
+        }
       }
     }
   
