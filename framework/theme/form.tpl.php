@@ -698,7 +698,7 @@
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <?php 
                     if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
-                        print("<a href='<?php echo url('login'); ?>'>Login</a>");
+                        print('<a href="' . url('login') . '">Login</a>');
                     }
                  ?>
 
