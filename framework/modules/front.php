@@ -294,7 +294,7 @@ else {
 }
 
 setcookie('field-email_value', htmlspecialchars($_POST['field-email'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
-
+$allowed_lang=getLangs($db);
 if(empty($fav_languages)) {
   setcookie('languages_error', '1');
   $errors = TRUE;
