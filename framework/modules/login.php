@@ -2,20 +2,20 @@
 require_once './scripts/db.php';
 
 function login_get($request, $db) {
-  // Проверка, авторизован ли пользователь
-  if (isset($_COOKIE[session_name()]) && session_start() && !empty($_SESSION['login'])) {
-      redirect();
-      exit();
+    // Проверка, авторизован ли пользователь
+    if (isset($_COOKIE[session_name()]) && session_start() && !empty($_SESSION['login'])) {
+        return redirect('./'); // Перенаправляем на главную, если авторизован
+    }
+  
+    // Генерация CSRF token
+    $csrf_token = htmlspecialchars(generateCsrfToken());
+    $data = [
+      'csrf_token' => $csrf_token,
+    ];
+    // Формируем HTML-код формы входа
+      return theme('login', $data);
   }
-
-  // Генерация CSRF token
-  $csrf_token = htmlspecialchars(generateCsrfToken());
-  $data = [
-    'csrf_token' => $csrf_token,
-  ];
-  // Формируем HTML-код формы вход;
-    return theme('login', $csrf_token);
-}
+  
 
 
 function login_post($request, $db) {
