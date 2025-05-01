@@ -27,7 +27,7 @@ function front_get($request, $db) {
       if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  adminlog($db) || !password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
       {
         if (!empty($_COOKIE['pass'])) {
-          $messages[] = sprintf('Вы можете <a href="login.php">войти</a> с логином <strong>%s</strong>
+          $messages[] = sprintf('Вы можете <a href="<?php echo url("login"); ?>">Login</a>войти</a> с логином <strong>%s</strong>
             и паролем <strong>%s</strong> для изменения данных.',
             htmlspecialchars($_COOKIE['login'], ENT_QUOTES, 'UTF-8'),
             htmlspecialchars($_COOKIE['pass'], ENT_QUOTES, 'UTF-8'));//XSS
