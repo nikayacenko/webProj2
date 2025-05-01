@@ -113,7 +113,7 @@ function url($addr = '', $params = array()) {
   global $conf;
   // Если вызвали без параметров, до делаем ссылку на текущую страницу.
   if ($addr == '' && isset($_GET['q'])) {
-    $addr = "/webProj2/framework/"+strip_tags($_GET['q']);
+    $addr = strip_tags($_GET['q']);
   }
   // В зависимоти от настроек проекта генерируем чистые ссылки или ссылки с параметром.
   $clean = conf('clean_urls');
