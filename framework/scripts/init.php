@@ -162,7 +162,6 @@ function not_found() {
 function theme($t, $c = array()) {
   // Путь к файлу шаблона.
   $template = conf('theme') . '/' . str_replace('/', '_', $t) . '.tpl.php';
-
   // Если нет файла шаблона, то просто печатаем данные слитно.
   if (!file_exists($template)) {
     return implode('', $c);
