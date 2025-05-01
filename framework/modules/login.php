@@ -10,7 +10,9 @@ function login_get($request, $db) {
 
   // Генерация CSRF token
   $csrf_token = htmlspecialchars(generateCsrfToken());
-
+  $data = [
+    'csrf_token' => $csrf_token,
+  ];
   // Формируем HTML-код формы вход;
     return theme('login', $csrf_token);
 }
