@@ -2,7 +2,7 @@
   <div class="log">
     <form action="<?php echo url('login'); ?>" method="post">
       <label>
-        Логин:<br />
+        Логин:  <?php echo url('login'); ?><br />
         <input name="login" />
       </label><br />
       <label>

@@ -51,7 +51,7 @@ function login_post($request, $db) {
         }
   
         // Делаем перенаправление на главную страницу
-        redirect();
+        return redirect();
         exit();
       } else {
         return 'Неверный логин или пароль'; // Возвращаем сообщение об ошибке
