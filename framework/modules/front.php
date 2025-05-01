@@ -6,7 +6,7 @@
 // Эти обработчики предназначены для разных HTTP-методов: GET и POST.
 
 // Обработчик запросов методом GET.
-require_once '../scripts/db.php';
+require_once './scripts/db.php';
 function front_get($request) {
   
   $messages = array();
