@@ -29,8 +29,10 @@ $conf = array(
 // Определения ресурсов для диспатчера.
 $urlconf = array(
   '' => array('module' => 'front'),
-  '/^admin$/' => array('module' => 'admin', 'auth' => 'auth_basic'),
-  '/^admin\/(\d+)$/' => array('module' => 'admin', 'auth' => 'auth_basic'),
+  '/^login$/' => array('module' => 'login'), // Добавляем маршрут для login.php
+  '/^adm_page$/' => array('module' => 'adm_page'),
+  // '/^admin$/' => array('module' => 'admin', 'auth' => 'auth_basic'),
+  // '/^admin\/(\d+)$/' => array('module' => 'admin', 'auth' => 'auth_basic'),
 /*  '/^order\/(\d+)$/' => array('module' => 'order', 'auth' => 'auth_db_basic'),
   '/^order\/(\d+)\/add$/' => array('module' => 'order_add', 'auth' => 'auth_db_basic'),
   '/^order\/(\d+)\/add\/(\d+)$/' => array('module' => 'order_add', 'auth' => 'auth_db_basic'),
