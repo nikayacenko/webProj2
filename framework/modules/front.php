@@ -7,7 +7,7 @@
 global $db;
 // Обработчик запросов методом GET.
 require_once './scripts/db.php';
-function front_get($request) {
+function front_get($request, $db) {
   
   $messages = array();
   $errors = array();
