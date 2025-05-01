@@ -407,7 +407,7 @@ else {
 setcookie('save', '1');
 
 // Делаем перенаправление.
-  return redirect('/');
+  return redirect();
 }
 
 //массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
