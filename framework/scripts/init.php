@@ -12,7 +12,6 @@ function init($request = array(), $urlconf = array()) {
   // Массив HTTP-ответа.
   // var_dump($request['url']);
   // var_dump($urlconf);
-  var_dump("");
   $response = array();
 
   // Шаблон страницы по умолчанию.
