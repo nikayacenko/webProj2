@@ -187,8 +187,31 @@ function front_get($request, $db) {
   return theme('form', $data);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Обработчик запросов методом POST.
-function front_post($request) {
+function front_post($request, $db) {
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
     http_response_code(403); 
