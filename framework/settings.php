@@ -20,10 +20,9 @@ $conf = array(
   'date_format' => 'Y.m.d',
   'date_format_2' => 'Y.m.d H:i',
   'date_format_3' => 'd.m.Y',
-  'basedir' => '/',
+  'basedir' => '/webProj2/framework/',
   'login' => 'admin',
   'password' => '123',
-  'admin_mail' => 'sin@kubsu.ru',
 );
 
 // Определения ресурсов для диспатчера.
