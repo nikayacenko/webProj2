@@ -4,7 +4,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script src="js/slick.min.js"></script>
+    <script src="theme/js/slick.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <meta charset="UTF-8">
@@ -331,7 +331,7 @@
                 <p> Влияние скорости загрузки страниц сайта на отказы и конверсии. Кейс ускорения...</p>
             </div>
             <div class="second-case col-md-8">
-                <a href=""><img src="theme/img/secondCase.png" alt=""></a>
+                <a href=""><img src="theme/img/secondCase.webp" alt=""></a>
                 <a href=""><h2 >Использование отчетов Ecommerce в Яндекс.Метрике</h2></a>
             </div>
             <div class="third-case col-md-4">
@@ -635,7 +635,7 @@
                             </label><br />
                             <label class="form-checkbox">
                                 <input type="checkbox" id="formcheck" name="check" />
-                                Отправляя заявку, я даю согласие на <a href="index.html">обработку своих персональных данных</a></label><br />
+                                Отправляя заявку, я даю согласие на <a href="">обработку своих персональных данных</a></label><br />
                             <input class="input-field" name="send" type="submit" value="Отправить" id="inp"> 
                         </form>
                     </div>
@@ -644,10 +644,10 @@
                     <footer class="col-md-10 col-xs-12 order-3 order-md-3 px-0 py-2">
                         <div class="footer-body">
                             <ul class="sns-wrapper row d-flex px-3">
-                                <li class="sns"><a title="Facebook" href="index.html"><img alt="logo-fb" src="theme/img/logo-facebook.png"></a></li>
-                                <li class="sns"><a title="Вконтакте" href="index.html"><img alt="logo-vk" src="theme/img/logo-vk.png"></a></li>
-                                <li class="sns"><a title="Telegram" href="index.html"><img alt="logo-tg" src="theme/img/logo-telegram.png"></a></li>
-                                <li class="sns"><a title="YouTube" href="index.html"><img alt="logo-yt" src="theme/img/logo-youtube.png"></a></li>
+                                <li class="sns"><a title="Facebook" href=""><img alt="logo-fb" src="theme/img/logo-facebook.png"></a></li>
+                                <li class="sns"><a title="Вконтакте" href="l"><img alt="logo-vk" src="theme/img/logo-vk.png"></a></li>
+                                <li class="sns"><a title="Telegram" href=""><img alt="logo-tg" src="theme/img/logo-telegram.png"></a></li>
+                                <li class="sns"><a title="YouTube" href=""><img alt="logo-yt" src="theme/img/logo-youtube.png"></a></li>
                             </ul>
                             <p>Проект ООО "Инитлаб", Краснодар, Россия.</p>
                             <p>Drupal является зарегистрированной торговой маркой Dries Buytaert</p>
