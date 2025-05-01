@@ -1776,14 +1776,14 @@ div.num{
 }
 @font-face {
     font-family: "Montserrat";
-    src: url("theme/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
+    src: url("/theme/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
     font-weight: bold;
     font-style: normal;
     font-display: swap;
 }
 @font-face {
     font-family: "Ubuntu";
-    src: url("theme/fonts/Ubuntu-Light.ttf") format("truetype");
+    src: url("/theme/fonts/Ubuntu-Light.ttf") format("truetype");
     font-weight: bold;
     font-style: normal;
     font-display: swap;
@@ -1791,7 +1791,7 @@ div.num{
 
 @font-face {
     font-family: "Montserrat_b";
-    src: url("theme/fonts/Montserrat-VariableFont_wght_bold.ttf") format("truetype");
+    src: url("/theme/fonts/Montserrat-VariableFont_wght_bold.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -1965,7 +1965,7 @@ div.num{
 }
 @font-face {
     font-family: "M";
-    src: url("theme/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
+    src: url("/theme/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
     font-style: normal;
     font-display: swap;
 }
