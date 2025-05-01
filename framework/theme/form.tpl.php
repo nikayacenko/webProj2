@@ -697,10 +697,10 @@
                     </div>
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <?php 
-                    if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
-                        print('<a href="/webProj2/framework' . url('login') . '">Login</a>');
-                    }
-                 ?>
+                        if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
+                            print('<a href="' . url('login') . '">Login</a>');
+                        }
+                    ?>
 
                 </form>
                 <?php 
