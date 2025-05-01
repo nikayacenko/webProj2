@@ -12,7 +12,7 @@ define('INCLUDE_PATH', './scripts' . PATH_SEPARATOR . './modules');
 // Храним настройки в массиве чтоб легче было смотреть (print_r),
 // хранить (serialize), оверрайдить и не плодить глобалов.
 $conf = array(
-  'sitename' => 'Demo Framework',
+  'sitename' => 'PROJECT',
   'theme' => './theme',
   'charset' => 'UTF-8',
   'clean_urls' => TRUE,

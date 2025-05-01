@@ -19,7 +19,7 @@ $request = array(
   'get' => !empty($_GET) ? $_GET : array(),
   'post' => !empty($_POST) ? $_POST : array(),
   'put' => !empty($_POST) && !empty($_POST['method']) && $_POST['method'] == 'put' ? $_POST : array(),
-  'delete' => !empty($_POST) && !empty($_POST['method']) && $_POST['method'] == 'put' ? $_POST : array(),
+  'delete' => !empty($_POST) && !empty($_POST['method']) && $_POST['method'] == 'delete' ? $_POST : array(),
   'Content-Type' => 'text/html',
 );
 
