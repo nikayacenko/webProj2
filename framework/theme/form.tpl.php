@@ -622,10 +622,10 @@
                     <div class="b-form col-md-4 order-2 px-3 pb-3 pt-1 pt-md-3 mx-auto">
                         <form id="myform" class="formcarryForm" action="" method="POST">
                             <?php
-                            if (!empty($messages)) {
+                            if (!empty($data['messages'])) {
                             print('<div id="messages">');
                             // Выводим все сообщения.
-                            foreach ($messages as $message) {
+                            foreach ($data['messages'] as $message) {
                                 print($message);
                             }
                             print('</div>');
@@ -634,44 +634,44 @@
                             <input type="hidden" name="uid" value='<?php print $values['uid'];?>' />
                             <label class="my-2">
                                 ФИО:<br />
-                                <input name="fio" <?php if ($errors['fio']) {print 'class="error"';} ?> value="<?php print $values['fio']; ?>" />
+                                <input name="fio" <?php if ($data['errors']['fio']) {print 'class="error"';} ?> value="<?php print $data['values']['fio']; ?>" />
                             </label><br />
                             <label>
                                 Номер телефона:<br />
-                                <input name="field-tel"  <?php if ($errors['field-tel']) {print 'class="error"';} ?> value="<?php print $values['field-tel']; ?>"
+                                <input name="field-tel"  <?php if ($data['errors']['field-tel']) {print 'class="error"';} ?> value="<?php print $data['values']['field-tel']; ?>"
                                 type="tel" />
                             </label> <br>
                             <label>
                                 email:<br />
                                 <input name="field-email"
-                                <?php if ($errors['field-email']) {print 'class="error"';} ?> value="<?php print $values['field-email']; ?>"
+                                <?php if ($data['errors']['field-email']) {print 'class="error"';} ?> value="<?php print $data['values']['field-email']; ?>"
                                 />
                             </label><br />
                             <label>
                                 Дата рождения:<br />
                                 <input name="field-date"
-                                <?php if ($errors['field-date']) {print 'class="error"';} ?> value="<?php print $values['field-date']; ?>"
+                                <?php if ($data['errors']['field-date']) {print 'class="error"';} ?> value="<?php print $data['values']['field-date']; ?>"
                                 type="date" />
                             </label><br />
-                            <div <?php if ($errors['radio-group-1']) {print 'class="error_gen"';} ?>>
+                            <div <?php if ($data['errors']['radio-group-1']) {print 'class="error_gen"';} ?>>
                                 Пол:<br />
-                                <label><input type="radio"  <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
-                <?php if ($values['radio-group-1']=='Женский') {print 'checked="checked"';} ?>
+                                <label><input type="radio"  <?php if ($data['errors']['radio-group-1']) {print 'class="error"';} ?>
+                <?php if ($data['values']['radio-group-1']=='Женский') {print 'checked="checked"';} ?>
                                 name="radio-group-1" value="Женский" />
                                 Женский</label>
-                                <label><input type="radio"  <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
-                <?php if ($values['radio-group-1']=='Мужской') {print 'checked="checked"';} ?>
+                                <label><input type="radio"  <?php if ($data['errors']['radio-group-1']) {print 'class="error"';} ?>
+                <?php if ($data['values']['radio-group-1']=='Мужской') {print 'checked="checked"';} ?>
                                 name="radio-group-1" value="Мужской" />
                                 Мужской</label>
                                 </div>
                                 <?php 
-                $user_languages = explode(",",  $values['languages']);
+                $user_languages = explode(",",  $data['values']['languages']);
                 ?>
                                 <label>
                                     Любимый язык программирования:
                                     <br />
                                     <select name="languages[]"
-                                    multiple="multiple" <?php if ($errors['languages']) {print 'class="error"';} ?>>
+                                    multiple="multiple" <?php if ($data['errors']['languages']) {print 'class="error"';} ?>>
                                     <option value="Pascal" <?php if(in_array('Pascal', $user_languages)) {print 'selected="selected"';}?>>Pascal</option>
                                     <option value="C" <?php if(in_array('C', $user_languages)) {print 'selected="selected"';}?>>C
                                     <option value="C++" <?php if(in_array('C++', $user_languages)) {print 'selected="selected"';}?>>C++
@@ -687,10 +687,10 @@
                                 </label><br />
                                 <label>
                                     Биография:<br />
-                                    <textarea name="bio"<?php if ($errors['bio']) {print 'class="error"';} ?>><?php print $values['bio']; ?></textarea>  
+                                    <textarea name="bio"<?php if ($data['errors']['bio']) {print 'class="error"';} ?>><?php print $data['values']['bio']; ?></textarea>  
                                 </label><br />  
                                 С контрактом ознакомлен:<br />
-                    <label сlass="form-checkbox"> <input type="checkbox" name="check-1" <?php if ($errors['check-1']) {print 'class="error"';} ?>  checked="<?php if (!$errors['check-1']) {print 'checked';} ?>">
+                    <label сlass="form-checkbox"> <input type="checkbox" name="check-1" <?php if ($data['errors']['check-1']) {print 'class="error"';} ?>  checked="<?php if (!$data['errors']['check-1']) {print 'checked';} ?>">
                     </label><br />
                     <div class="kn pb-sm-3">
                         <input type="submit" value="Сохранить" />
