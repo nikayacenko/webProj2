@@ -10,21 +10,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <script src="js/accordeon-FAQ.js"></script>
-    <script src="js/my.js"></script>
-    <script src="js/second-slider.js"></script>
+    <link rel="stylesheet" href="theme/style.css">
+    <script src="theme/js/accordeon-FAQ.js"></script>
+    <script src="theme/js/my.js"></script>
+    <script src="theme/js/second-slider.js"></script>
     <title>Project</title>
 </head>
 <body>
     <header>
-        <video src="img/video.mp4" autoplay muted loop></video>
+        <video src="theme/img/video.mp4" autoplay muted loop></video>
         <div class="cap px-md-5">
             <nav class="navbar">
                 <input type="checkbox" name="menu" id="menu">
                 <ul class="m">
                     <li>
-                        <a class="drupal-support-menu" href="menu/drupalsupport.html" id="msup" >ПОДДЕРЖКА DRUPAL</a>
+                        <a class="drupal-support-menu" href="" id="msup" >ПОДДЕРЖКА DRUPAL</a>
                     </li>
                     <li id="admin">
                         <a id="admin1" href="">АДМИНИСТРИРОВАНИЕ &blacktriangledown;</a>
@@ -59,8 +59,8 @@
                     </li>
                 </ul>
                 <div class="logo-menu">
-                    <img id="logo" src="img/drupal-coder.svg" alt="" width="140" height="20">
-                    <label for="menu" id="menu1"><img src="img/burger2.png" width="25" height="20" alt=""></label>
+                    <img id="logo" src="theme/img/drupal-coder.svg" alt="" width="140" height="20">
+                    <label for="menu" id="menu1"><img src="theme/img/burger2.png" width="25" height="20" alt=""></label>
                 </div>
             </nav>
         </div>
@@ -74,7 +74,7 @@
                 <div class="first_trio">
                     <div class="advert1 col-xl-4">
                         <h1>#1</h1>
-                        <img src="img/cup.png" alt="" width="59" height="58">
+                        <img src="theme/img/cup.png" alt="" width="59" height="58">
                         <p> Drupal-разработчик по России по версии Рейтинга Рунета</p>
                     </div>
                     <div class="advert col-xl-4">
@@ -109,37 +109,37 @@
         <div class="cells row d-flex">
             <div class="first-quatro column d-flex">
                 <div class="cell col-md-3">
-                    <img src="img/competency-1.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-1.svg" alt="" width="81" height="81">
                     <p>Добавление информации на сайт, создание новых разделов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-2.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-2.svg" alt="" width="81" height="81">
                     <p>Разработка и оптимизация модулей сайта</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-3.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-3.svg" alt="" width="81" height="81">
                     <p>Интеграция с CRM, 1C, платежными системами, любыми веб-сервисами</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-4.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-4.svg" alt="" width="81" height="81">
                     <p>Любые доработки функционала и дизайна</p>
                 </div>
             </div>
             <div class="second-quatro column d-flex">
                 <div class="cell col-md-3">
-                    <img src="img/competency-5.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-5.svg" alt="" width="81" height="81">
                     <p>Аудит и мониторинг безопасности Drupal сайтов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-6.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-6.svg" alt="" width="81" height="81">
                     <p>Миграция, импорт контента и апргрейд Drupal</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-7.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-7.svg" alt="" width="81" height="81">
                     <p>Оптимизация и ускорение Drupal-сайтов</p>
                 </div>
                 <div class="cell col-md-3">
-                    <img src="img/competency-8.svg" alt="" width="81" height="81">
+                    <img src="theme/img/competency-8.svg" alt="" width="81" height="81">
                     <p>Веб-маркетинг, консультации и работы по SEO</p>
                 </div>
             </div>
@@ -155,25 +155,25 @@
                     <p class="num">01.</p>
                     <h2>Постановка задачи по Email</h2>
                     <p>Удобная и привычная модель постановки задач, при которой задачи фиксируются и никогда не теряются.</p>
-                    <img src="img/support1.svg" alt="">
+                    <img src="theme/img/support1.svg" alt="">
                 </div>
                 <div class="cell2">
                     <p class="num">02.</p>
                     <h2>Система Helpdesk-отчетность, прозрачность</h2>
                     <p>Возможность посмотреть все заявки в работе и отработанные часы в личном кабинете через браузер.</p>
-                    <img src="img/support2.svg" alt="">
+                    <img src="theme/img/support2.svg" alt="">
                 </div>
                 <div class="cell2">
                     <p class="num">03.</p>
                     <h2>Расширенная техническая поддержка</h2>
                     <p>Возможность организации расширенной техподдержки с 6:00 до 22:00 без выходных</p>
-                    <img src="img/support3.svg" alt="">
+                    <img src="theme/img/support3.svg" alt="">
                 </div>
                 <div class="cell2">
                     <p class="num">04.</p>
                     <h2>Персональный менеджер проекта</h2>
                     <p>Ваш менеджер проекта всегда в курсе текущего состояния проекта и в любой момент готов ответить на любые вопросы.</p>
-                    <img src="img/support4.svg" alt="">
+                    <img src="theme/img/support4.svg" alt="">
                 </div>
             </div>
             <div class="second-quatro">
@@ -181,32 +181,32 @@
                     <p class="num">05.</p>
                     <h2>Удобные способы оплаты</h2>
                     <p>Безналичный расчет по договору или электронные деньги: WebMoney, Яндекс.Деньги, PayPal.</p>
-                    <img src="img/support5.svg" alt="">
+                    <img src="theme/img/support5.svg" alt="">
                 </div>
                 <div class="cell2">
                     <p class="num">06.</p>
                     <h2>Работаем с SLA и NDA</h2>
                     <p>Работа в рамках соглашений о конфеденциальности и об уровне качества работ.</p>
-                    <img src="img/support6.svg" alt="">
+                    <img src="theme/img/support6.svg" alt="">
                 </div>
                 <div class="cell2">
                     <p class="num">07.</p>
                     <h2>Штатные специалисты</h2>
                     <p>Надежные штатные специалисты, никаких фрилансеров.</p>
-                    <img src="img/support7.svg" alt="">
+                    <img src="theme/img/support7.svg" alt="">
                 </div>
                 <div class="cell2">
                     <p class="num">08.</p>
                     <h2>Удобные каналы связи</h2>
                     <p>Консультации по телефону, скайпу, в месенджерах</p>
-                    <img src="img/support8.svg" alt="">
+                    <img src="theme/img/support8.svg" alt="">
                 </div>
             </div>
         </div>
     </div>
     <div class="third-space container-fluid px-sm-0">
-        <img  src="img/laptop.png" alt="">
-        <img class="ghost" src="img/drupal-logo-2.svg" alt="">
+        <img  src="theme/img/laptop.png" alt="">
+        <img class="ghost" src="theme/img/drupal-logo-2.svg" alt="">
         <div class="text">
             <h1>Экспертиза в Drupal, опыт 14 лет!</h1>
             <div class="cells">
@@ -227,41 +227,41 @@
         <div class="tarifs-advert">
             <div class="tarif-adv" id="t1">
                 <h1>Стартовый</h1>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Консультации и работы по SEO</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Услуги дизайнера</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Неиспользованные оплаченные часы переносятся на следующий месяц</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Предоплата от 6 000 рублей в месяц</p>
                 <button type="button">СВЯЖИТЕСЬ С НАМИ!</button>
             </div>
             <div class="tarif-adv" id="t2">
                 <h1>Бизнес</h1>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Консультации и работы по SEO</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Услуги дизайнера</p>
-                <img src="img/Vector.png" alt=""> 
+                <img src="theme/img/Vector.png" alt=""> 
                 <p>Высокое время реакции - до 2 рабочих дней</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Неиспользованные оплаченные часы не переносятся</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Предоплата от 30 000 рублей в месяц</p>
                 <button type="button">СВЯЖИТЕСЬ С НАМИ!</button>
             </div>
             <div class="tarif-adv" id="t3">
                 <h1>VIP</h1>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Консультации и работы по SEO</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Услуги дизайнера</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p>Максимальное время реакции - в день обращения</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Неиспользованные оплаченные часы не переносятся</p>
-                <img src="img/Vector.png" alt="">
+                <img src="theme/img/Vector.png" alt="">
                 <p> Предоплата от 270 000 рублей в месяц</p>
                 <button type="button">СВЯЖИТЕСЬ С НАМИ!</button>
             </div>
@@ -273,17 +273,17 @@
         <h1 id="fifth-space-text">Наши профессиональные разработчики выполняют быстро любые задачи</h1>
         <div class="fifth-advert row d-flex">
             <div class="fifth-adv col-md-4">
-            <img src="img/competency-20.svg" alt="">
+            <img src="theme/img/competency-20.svg" alt="">
             <h1>от 1ч</h1>
             <p>Настройка события GA в интернет-магазине</p>
             </div>
             <div class="fifth-adv col-md-4">
-            <img src="img/competency-21.svg" alt="">
+            <img src="theme/img/competency-21.svg" alt="">
             <h1>от 20ч</h1>
             <p>Разработка мобильной версии сайта</p>
             </div>
             <div class="fifth-adv col-md-4">
-            <img src="img/competency-22.svg" alt="">
+            <img src="theme/img/competency-22.svg" alt="">
             <h1>от 8ч</h1>
             <p>Интеграция модуля оплаты</p>
             </div>
@@ -293,27 +293,27 @@
         <h1 id="teams-text">Команда</h1>
         <div class="team row d-flex">
             <div class="team-members">
-                <img src="img/IMG_2472_0.jpg" alt="">
+                <img src="theme/img/IMG_2472_0.jpg" alt="">
                 <h2>Сергей Синица</h2>
                 <p>Руковдитель отдела веб-разработки, канд. техн. наук, заместитель директора</p>
             </div>
             <div class="team-members">
-                <img src="img/IMG_2539_0.jpg" alt="">
+                <img src="theme/img/IMG_2539_0.jpg" alt="">
                 <h2>Роман Агабеков</h2>
                 <p>Руководитель отдела DevOPS, директор</p>
             </div>
             <div class="team-members">
-                <img src="img/IMG_2474_1.jpg" alt="">
+                <img src="theme/img/IMG_2474_1.jpg" alt="">
                 <h2>Алексей Синица</h2>
                 <p>Руководитель отдела поддержки сайтов</p>
             </div>
             <div class="team-members">
-                <img src="img/IMG_2522_0.jpg" alt="">
+                <img src="theme/img/IMG_2522_0.jpg" alt="">
                 <h2>Дарья Бочкарёва</h2>
                 <p>Руководитель отдела продвижения, контекстной рекламы и контент-поддержки сайтов</p>
             </div>
             <div class="team-members">
-                <img src="img/IMG_9971_16.jpg" alt="">
+                <img src="theme/img/IMG_9971_16.jpg" alt="">
                 <h2>Ирина Торкунова</h2>
                 <p>Менеджер по работе с клиентами</p>
             </div>
@@ -324,28 +324,28 @@
         <h1>Последние кейсы</h1>
         <div class="cases row d-flex">
             <div class="first-case col-md-4">
-                <a href=""><img src="img/firstCase.png" alt=""></a>
+                <a href=""><img src="theme/img/firstCase.png" alt=""></a>
                 
                 <a href=""><h2>Настройка кэширования данных. Апгрейд сервера. Ускорение работы сайта в 30 раз!</h2></a>
                 <p class="date">04.05.2020</p>
                 <p> Влияние скорости загрузки страниц сайта на отказы и конверсии. Кейс ускорения...</p>
             </div>
             <div class="second-case col-md-8">
-                <a href=""><img src="img/secondCase.png" alt=""></a>
+                <a href=""><img src="theme/img/secondCase.png" alt=""></a>
                 <a href=""><h2 >Использование отчетов Ecommerce в Яндекс.Метрике</h2></a>
             </div>
             <div class="third-case col-md-4">
-                <a href=""><img src="img/thirdCase.png" alt=""></a>
+                <a href=""><img src="theme/img/thirdCase.png" alt=""></a>
                 <a href=""><h2>Повышение конверсии страницы с формой заявки с применением АВ-тестирования</h2></a>
                 <p class="date">24.01.2020</p>
             </div>
             <div class="forth-case col-md-4">
-                <a href=""><img src="img/ForthCase.jpg" alt=""></a>
+                <a href=""><img src="theme/img/ForthCase.jpg" alt=""></a>
                 <a href=""><h2>Drupal 7: ускорение времени генерации страниц инернет-магазина на 32%</h2></a>
                 <p class="date">23.09.2019</p>
             </div>
             <div class="fifth-case col-md-4">
-                <a href=""><img src="img/lastCase.png" alt=""></a>
+                <a href=""><img src="theme/img/lastCase.png" alt=""></a>
                 <a href=""><h2>Повышение конверсии страницы с формой заявки с применением АВ-тестирования</h2></a>
                 <p class="date">24.01.2020</p>
                 <p>Опубликован <a id="last-href-case" href="">релиз модуля</a></p>
@@ -360,7 +360,7 @@
                 <div class="sliderO single-item col-12 col-xl-8">
 
                     <div class="slide p-2 col-12 col-xl-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-1" src="img/logo_0.png">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-1" src="theme/img/logo_0.png">
                         <div class="slide-body pt-3 pr-md-5 pl-md-5">
                             Долгие поиски единственного и неповторимого мастера на многострадальный сайт www.cielparfum.com, 
                             который был собран крайне некомпетентным программистом и раз в месяц стабильно грозил погибнуть,
@@ -382,7 +382,7 @@
                     </div>
 
                     <div class="slide p-2 col-12 col-md-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-2" src="img/logo_2.png">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-2" src="theme/img/logo_2.png">
                         <div class="slide-body pr-md-5 pl-md-5 pt-3">
                             2222
                         </div>
@@ -393,7 +393,7 @@
                     </div>
 
                     <div class="slide p-2 col-12 col-md-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="img/logo_3.png">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="theme/img/logo_3.png">
                         <div class="slide-body pr-md-5 pl-md-5 pt-3">
                             text
                         </div>
@@ -403,7 +403,7 @@
                         </div>
                     </div>
                     <div class="slide p-2 col-12 col-md-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="img/logo_4.jpg">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="theme/img/logo_4.jpg">
                         <div class="slide-body pr-md-5 pl-md-5 pt-3">
                             text
                         </div>
@@ -413,7 +413,7 @@
                         </div>
                     </div>
                     <div class="slide p-2 col-12 col-md-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="img/logo_5.png">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="theme/img/logo_5.png">
                         <div class="slide-body pr-md-5 pl-md-5 pt-3">
                             text
                         </div>
@@ -423,7 +423,7 @@
                         </div>
                     </div>
                     <div class="slide p-2 col-12 col-md-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="img/farbors_ru.jpg">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="theme/img/farbors_ru.jpg">
                         <div class="slide-body pr-md-5 pl-md-5 pt-3">
                             text
                         </div>
@@ -433,7 +433,7 @@
                         </div>
                     </div>
                     <div class="slide p-2 col-12 col-md-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="img/cableman_ru.png">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="theme/img/cableman_ru.png">
                         <div class="slide-body pr-md-5 pl-md-5 pt-3">
                             text
                         </div>
@@ -443,7 +443,7 @@
                         </div>
                     </div>
                     <div class="slide p-2 col-12 col-md-8">
-                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="img/cableman_ru.png">
+                        <img class="p-md-5 pt-3 pb-3" alt="rev-logo-3" src="theme/img/cableman_ru.png">
                         <div class="slide-body pr-md-5 pl-md-5 pt-3">
                             text
                         </div>
@@ -476,32 +476,32 @@
                 <div class="slider">
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_3.png" alt="">
+                            <img src="theme/img/logo_3.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_2.png" alt="">
+                            <img src="theme/img/logo_2.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_1.png" alt="">
+                            <img src="theme/img/logo_1.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_0.png" alt="">
+                            <img src="theme/img/logo_0.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_5.png" alt="">
+                            <img src="theme/img/logo_5.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_3.png" alt="">
+                            <img src="theme/img/logo_3.png" alt="">
                         </div>
                     </div>
                 </div>
@@ -514,32 +514,32 @@
                 <div class="slider2">
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_1.png" alt="">
+                            <img src="theme/img/logo_1.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_5.png" alt="">
+                            <img src="theme/img/logo_5.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_2.png" alt="">
+                            <img src="theme/img/logo_2.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_3.png" alt="">
+                            <img src="theme/img/logo_3.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_0.png" alt="">
+                            <img src="theme/img/logo_0.png" alt="">
                         </div>
                     </div>
                     <div class="slider_item">
                         <div class="i1">
-                            <img src="img/logo_5.png" alt="">
+                            <img src="theme/img/logo_5.png" alt="">
                         </div>
                     </div>
                     
@@ -615,8 +615,8 @@
                         <h2>Отправить заявку на поддержку сайта</h2>
                         <p>Срочно нужна поддержка сайта? Ваша команда не успевает справиться самостоятельно или предыдущий подрядчик не справился с работой? Тогда вам точно к нам! Просто оставьте заявку и наш менеджер с вами свяжется!</p>
                         <div class="MandT">
-                            <span> <img src="img/phone.svg" alt="phone-sign" height="25" width="25"> 8 800 222-26-73 </span><br>
-                            <a> <img src="img/mail.svg" alt="mail-sign" height="25" width="25"> info@drupal-coder.ru </a>
+                            <span> <img src="theme/img/phone.svg" alt="phone-sign" height="25" width="25"> 8 800 222-26-73 </span><br>
+                            <a> <img src="theme/img/mail.svg" alt="mail-sign" height="25" width="25"> info@drupal-coder.ru </a>
                         </div>
                     </div>
                     <div class="b-form col-md-4 order-2 px-3 pb-3 pt-1 pt-md-3 mx-auto">
@@ -644,10 +644,10 @@
                     <footer class="col-md-10 col-xs-12 order-3 order-md-3 px-0 py-2">
                         <div class="footer-body">
                             <ul class="sns-wrapper row d-flex px-3">
-                                <li class="sns"><a title="Facebook" href="index.html"><img alt="logo-fb" src="img/logo-facebook.png"></a></li>
-                                <li class="sns"><a title="Вконтакте" href="index.html"><img alt="logo-vk" src="img/logo-vk.png"></a></li>
-                                <li class="sns"><a title="Telegram" href="index.html"><img alt="logo-tg" src="img/logo-telegram.png"></a></li>
-                                <li class="sns"><a title="YouTube" href="index.html"><img alt="logo-yt" src="img/logo-youtube.png"></a></li>
+                                <li class="sns"><a title="Facebook" href="index.html"><img alt="logo-fb" src="theme/img/logo-facebook.png"></a></li>
+                                <li class="sns"><a title="Вконтакте" href="index.html"><img alt="logo-vk" src="theme/img/logo-vk.png"></a></li>
+                                <li class="sns"><a title="Telegram" href="index.html"><img alt="logo-tg" src="theme/img/logo-telegram.png"></a></li>
+                                <li class="sns"><a title="YouTube" href="index.html"><img alt="logo-yt" src="theme/img/logo-youtube.png"></a></li>
                             </ul>
                             <p>Проект ООО "Инитлаб", Краснодар, Россия.</p>
                             <p>Drupal является зарегистрированной торговой маркой Dries Buytaert</p>
