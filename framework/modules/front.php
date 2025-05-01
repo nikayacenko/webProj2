@@ -4,7 +4,7 @@
 //Этот PHP код определяет два обработчика HTTP-запросов, 
 // предназначенные для модуля с именем "front". 
 // Эти обработчики предназначены для разных HTTP-методов: GET и POST.
-
+global $db;
 // Обработчик запросов методом GET.
 require_once './scripts/db.php';
 function front_get($request) {
