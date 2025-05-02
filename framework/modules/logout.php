@@ -8,7 +8,7 @@ global $db;
            session_unset();
            session_destroy();
            //setcookie(session_name(), '', time() - 3600, "/"); // Удаляем куки сессии
-           return redirect(url('login')); // Перенаправляем на главную
+           return redirect('login'); // Перенаправляем на главную
        }
    }
 ?>
