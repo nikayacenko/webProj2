@@ -3,7 +3,7 @@ require_once './scripts/db.php';
 global $db;
 function login_get($request, $db) {
     // Проверка, авторизован ли пользователь
-    if (isset($_COOKIE[session_name()]) && session_start() && !empty($_SESSION['login'])) {
+    if (!empty($_SESSION['login'])) {
         return redirect('./'); // Перенаправляем на главную, если авторизован
     }
     // Генерация CSRF token
