@@ -4,7 +4,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
     let but = document.getElementById("tarif");
     but.addEventListener("click", function () {
-        let element = document.getElementById("idforbutton");
+        let element = document.getElementById("myform");
         element.scrollIntoView({behavior: "smooth"});
         but.classList.remove("active");
     });
