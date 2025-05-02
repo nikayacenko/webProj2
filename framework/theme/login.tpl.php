@@ -10,7 +10,7 @@
         <input name="pass" type="password" />
       </label><br />
       <input type="submit" value="Войти" />
-      <input type="hidden" name="csrf_token" value="<?php echo $data['csrf_token']; ?>">
+      <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
     </form>
     <a href="<?php echo url('adm_page'); ?>">Вход для администратора</a>
   </div>
