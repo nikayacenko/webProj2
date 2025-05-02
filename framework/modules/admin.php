@@ -4,7 +4,6 @@
 require_once './scripts/db.php';
 global $db;
 function admin_get($request, $db) {
-  session_start();
   $query = "SELECT id, fio, tel, email, bdate, gender, biography FROM person"; 
 
   $stmt = $db->prepare($query); 
@@ -29,9 +28,16 @@ function admin_get($request, $db) {
       }
       $languages_by_person[$person_id][] = $language_name; 
   }
+  $stmt = $db->prepare("SELECT l.namelang, COUNT(pl.pers_id) AS cnt
+  FROM personlang pl
+  JOIN languages l ON pl.lang_id = l.id
+  GROUP BY l.namelang");
+  $stmt->execute();
+  $stat = $stmt->fetch(PDO::FETCH_ASSOC);
   $data = [
     'results' => $results,
     'languages_by_person'=>$languages_by_person,
+    'stat'=>$stat
   ];
   return theme('admin', $data);
 }
