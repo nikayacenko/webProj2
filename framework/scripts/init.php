@@ -171,23 +171,49 @@ function not_found() {
 }
 
 // Функция загрузки шаблона с использованием буферизации вывода.
+// function theme($t, $c = array()) {
+//   // Путь к файлу шаблона.
+//   $template = conf('theme') . '/' . str_replace('/', '_', $t) . '.tpl.php';
+//   // Если нет файла шаблона, то просто печатаем данные слитно.
+//   if (!file_exists($template)) {
+//     return implode('', $c);
+//   }
+
+//   // Начинаем буферизацию вывода.
+//   ob_start();
+//   extract($c);
+//   // Парсим и включаем файл шаблона, весь вывод попадает в буфер.
+//   include $template;
+//   // Достаем содержимое буфера.
+//   $contents = ob_get_contents();
+//   // Оканчиваем буферизацию очищая буфер.
+//   ob_end_clean();
+//   // Возвращаем контент.
+//   return $contents;
+// }
+
 function theme($t, $c = array()) {
-  // Путь к файлу шаблона.
+  // Путь к файлу шаблона
   $template = conf('theme') . '/' . str_replace('/', '_', $t) . '.tpl.php';
-  // Если нет файла шаблона, то просто печатаем данные слитно.
+
+  // Если файла шаблона нет, возвращаем $c как строку
   if (!file_exists($template)) {
-    return implode('', $c);
+      return is_array($c) ? implode('', $c) : (string) $c;
   }
 
-  // Начинаем буферизацию вывода.
+  // Включаем буфер
   ob_start();
-  extract($c);
-  // Парсим и включаем файл шаблона, весь вывод попадает в буфер.
+  
+  // Извлекаем переменные из $c, не перезаписывая существующие
+  extract($c, EXTR_SKIP);
+  
+  // Подключаем шаблон (с выводом ошибок)
+  error_reporting(E_ALL);
+  ini_set('display_errors', 1);
   include $template;
-  // Достаем содержимое буфера.
-  $contents = ob_get_contents();
-  // Оканчиваем буферизацию очищая буфер.
-  ob_end_clean();
-  // Возвращаем контент.
+  
+  // Получаем и очищаем буфер
+  $contents = ob_get_clean();
+  
   return $contents;
 }
