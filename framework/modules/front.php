@@ -338,8 +338,11 @@ setcookie('bio_value', htmlspecialchars($_POST['bio'], ENT_QUOTES, 'UTF-8'), tim
 
 if ($errors) {
   
-  header('Location: index.php');
-  exit();
+  if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+  {
+    return redirect('./', ['uid' => $_POST['uid']]);
+  }
+  return redirect('./');
 }
 else {
   setcookie('fio_error', '', 100000);
@@ -362,12 +365,11 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
     $update_id = intval($_POST['uid']);//XSS
     $doplog=findLoginByUid($update_id, $db);
     updateDB($doplog, $db);
-    header('Location: adm_page.php');
-    exit();
+    return redirect('admin');
+
     }
     catch(PDOException $e){
-      header('Location:adm_page.php');
-      exit();
+      return redirect('admin');
     }
   }
   else{
