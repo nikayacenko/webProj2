@@ -31,6 +31,7 @@ function admin_get($request, $db) {
   }
   $data = [
     'results' => $results,
+    'languages_by_person'=>$languages_by_person,
   ];
   return theme('admin', $data);
 }
