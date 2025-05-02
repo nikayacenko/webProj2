@@ -13,7 +13,7 @@ div.adv{
     text-align:center;
     display: block !important;
     color:white !important;
-    background-color: none !important;
+    background-color:#00000000 !important;
 }
 div.adv h1{
     font-family: Montserrat_b;
