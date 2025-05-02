@@ -20,7 +20,6 @@ function login_get($request, $db) {
 
 function login_post($request, $db) {
     // Проверяем, был ли отправлен запрос методом POST
-    if ($request['method'] == 'post') {
       // Валидация CSRF token
       if (!validateCsrfToken()) {
         http_response_code(403);
@@ -57,5 +56,4 @@ function login_post($request, $db) {
         return 'Неверный логин или пароль'; // Возвращаем сообщение об ошибке
       }
     }
-  }
   ?>
