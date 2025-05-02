@@ -11,6 +11,7 @@ ini_set('include_path', INCLUDE_PATH);
 
 include('./scripts/db.php');
 include('./scripts/init.php');
+session_start();
 $request = array(
   'url' => isset($_GET['q']) ? $_GET['q'] : '',
   'method' => isset($_POST['method']) && in_array($_POST['method'], array('get', 'post', 'put', 'delete')) ? $_POST['method'] : $_SERVER['REQUEST_METHOD'],
