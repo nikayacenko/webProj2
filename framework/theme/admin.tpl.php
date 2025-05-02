@@ -48,12 +48,7 @@
         <?php
         try {
             echo "<table class='stat'><thead> <tr class='nametb px-sm-2 pt-sm-2 pb-sm-2'><td>LANGUAGE</td><td>COUNT</td></tr></thead> ";
-            $stmt = $db->prepare("SELECT l.namelang, COUNT(pl.pers_id) AS cnt
-            FROM personlang pl
-            JOIN languages l ON pl.lang_id = l.id
-            GROUP BY l.namelang");
-            $stmt->execute();
-            while($row = $stmt->fetch(PDO::FETCH_OBJ)){
+            foreach{
                 echo "<tr><td>" . htmlspecialchars($row->namelang, ENT_QUOTES, 'UTF-8'). "</td><td>" . htmlspecialchars($row->cnt, ENT_QUOTES, 'UTF-8') . "</td></tr>";
             }
             echo "</table>";
