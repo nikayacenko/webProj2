@@ -14,6 +14,8 @@
     <script src="theme/js/accordeon-FAQ.js"></script>
     <script src="theme/js/my.js"></script>
     <script src="theme/js/second-slider.js"></script>
+    <link rel="icon" href="theme/img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="theme/img/favicon.ico"  type="image/x-icon">
     <title>Project</title>
 </head>
 <body>
