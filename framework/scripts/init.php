@@ -134,15 +134,18 @@ function url($addr = '', $params = array()) {
 
 
 // Возвращает редирект 302 с заголовком Location.
-function redirect($l = NULL) {
+function redirect($l = NULL, $statusCode = 302) {
   if (is_null($l)) {
-    $location = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $location = $_SERVER['REQUEST_URI']; // Относительный URL
   }
   else {
-    $location = 'http://' . $_SERVER['HTTP_HOST'] . conf('basedir') . url($l);
+    $location = conf('basedir') . $l; // Относительный URL
   }
-  return array('headers' => array('Location' => $location));
+  //Относительные URL более предпочтительны
+    return array('headers' => array('Location' => $location),
+                 'statusCode' => $statusCode);
 }
+
 
 // Возвращает 403.
 function access_denied() {
