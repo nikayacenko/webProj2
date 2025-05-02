@@ -134,17 +134,24 @@ function url($addr = '', $params = array()) {
 
 
 // Возвращает редирект 302 с заголовком Location.
-function redirect($l = NULL, $statusCode = 302) {
+function redirect($l = NULL, $params = array(), $statusCode = 302) {
   if (is_null($l)) {
     $location = $_SERVER['REQUEST_URI']; // Относительный URL
   }
   else {
     $location = conf('basedir') . $l; // Относительный URL
   }
+
+  // Добавляем параметры к URL
+  if (!empty($params)) {
+    $location .= '?' . http_build_query($params);
+  }
+
   //Относительные URL более предпочтительны
-    return array('headers' => array('Location' => $location),
-                 'statusCode' => $statusCode);
+  return array('headers' => array('Location' => $location),
+               'statusCode' => $statusCode);
 }
+
 
 
 // Возвращает 403.
