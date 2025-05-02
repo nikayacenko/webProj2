@@ -4,6 +4,14 @@
 require_once './scripts/db.php';
 global $db;
 function admin_get($request, $db) {
+  $adminlogin=adminlog($db);
+  if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  $adminlogin || !password_check($adminlogin, $_SERVER['PHP_AUTH_PW'], $db)) 
+  {
+      header('HTTP/1.1 401 Unanthorized');
+      header('WWW-Authenticate: Basic realm="My site"');
+      print('<h1>401 Требуется авторизация</h1>');
+      exit();
+  }
   $query = "SELECT id, fio, tel, email, bdate, gender, biography FROM person"; 
 
   $stmt = $db->prepare($query); 
