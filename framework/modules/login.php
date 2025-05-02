@@ -21,7 +21,7 @@ function login_get($request, $db) {
 function login_post($request, $db) {
     // Проверяем, был ли отправлен запрос методом POST
       // Валидация CSRF token
-      var_dump("kjkjhjk");
+    
       if (!validateCsrfToken()) {
         http_response_code(403);
         die('error');
