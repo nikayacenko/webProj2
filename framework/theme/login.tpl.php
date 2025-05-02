@@ -12,6 +12,6 @@
       <input type="submit" value="Войти" />
       <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
     </form>
-    <a href="<?php echo url('adm_page'); ?>">Вход для администратора</a>
+    <a href="<?php echo url('admin'); ?>">Вход для администратора</a>
   </div>
 </div>
