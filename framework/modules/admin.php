@@ -51,10 +51,42 @@ function admin_get($request, $db) {
 }
 
 // Обработчик запросов методом POST.
-function admin_post($request, $url_param_1) {
-  // Санитизуем параметр в URL и удаляем строку в БД.
-  $id = intval($url_param_1);
+function admin_post($request, $db) {
+  $delete_id = intval($_POST['delete_id']); // Преобразуем в целое число
+
+  if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  $adminlogin && password_check($adminlogin, $_SERVER['PHP_AUTH_PW'], $db))
+  {
+
+  if ($delete_id === false) {
+      echo "<p style='color: red;'>Недопустимый ID для удаления.</p>";
+      exit;
+  }
+  $delete_query = "DELETE FROM person WHERE id = :id";
+  $delete_querylang="DELETE FROM personlang WHERE pers_id=:id";
+  $delete_querylogin="DELETE FROM person_LOGIN WHERE id=:id";
+  $addition_query="SELECT login FROM person_LOGIN WHERE id=:id";
+  $delete_LOGIN="DELETE FROM LOGIN WHERE login=:login";
+  try {
+      $delete_stmt = $db->prepare($addition_query);
+      $delete_stmt->bindParam(':id', $delete_id, PDO::PARAM_INT);
+      $delete_stmt->execute();
+      $doplog=$delete_stmt->fetchColumn();
+      $delete_stmt = $db->prepare($delete_querylogin);
+      $delete_stmt->bindParam(':id', $delete_id, PDO::PARAM_INT); 
+      $delete_stmt->execute();
+      $delete_stmt = $db->prepare($delete_LOGIN);
+      $delete_stmt->bindParam(':login', $doplog, PDO::PARAM_STR); 
+      $delete_stmt->execute();
+      $delete_stmt = $db->prepare($delete_querylang);
+      $delete_stmt->bindParam(':id', $delete_id, PDO::PARAM_INT); 
+      $delete_stmt->execute();
+      $delete_stmt = $db->prepare($delete_query);
+      $delete_stmt->bindParam(':id', $delete_id, PDO::PARAM_INT);
+      $delete_stmt->execute();
   
-  // Пример возврата редиректа после обработки формы для реализации принципа Post-redirect-Get.
-  return redirect('admin');
+      return redirect('admin');
+      } catch (PDOException $e) {
+          error_log('Database error: ' . $e->getMessage());
+      }
+  }
 }
