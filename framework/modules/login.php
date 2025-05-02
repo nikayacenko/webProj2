@@ -30,9 +30,7 @@ function login_post($request, $db) {
       $password = $request['post']['pass'];
   
       // Начинаем сессию, если она еще не была начата
-      if (!isset($_COOKIE[session_name()])) {
-        session_start();
-      }
+      if (session_status() == PHP_SESSION_NONE) { session_start(); }
   
       // Проверяем логин и пароль
       if (isValid($login, $db) && password_check($login, $password, $db)) {
