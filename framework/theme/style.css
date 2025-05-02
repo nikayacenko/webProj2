@@ -11,6 +11,7 @@ html{
 }
 div.adv{
     text-align:center;
+    display: block !important;
 }
 div.adv h1{
     font-family: Montserrat_b;

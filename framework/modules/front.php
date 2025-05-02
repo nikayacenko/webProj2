@@ -9,7 +9,6 @@ global $db;
 require_once './scripts/db.php';
 function front_get($request, $db) {
   
-    echo "TEST";
     $allowed_lang=getLangs($db);
     // Массив для временного хранения сообщений пользователю.
     $messages = array();
