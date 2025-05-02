@@ -167,7 +167,7 @@ function front_get($request, $db) {
       {
         if(!empty($_GET['uid']))
         {
-          $update_id = intval($_GET['uid']);//XSS
+          $update_id = intval($request['get']['uid']);//XSS
           $doplog=findLoginByUid($update_id, $db);
           $values=insertData($doplog, $db);
           $values['uid']=htmlspecialchars($update_id, ENT_QUOTES, 'UTF-8');
@@ -220,42 +220,42 @@ function front_post($request, $db) {
     http_response_code(403); 
    
   }
-$fav_languages = ($_POST['languages']) ?? [];
+$fav_languages = ($request['post']['languages']) ?? [];
 // Проверяем ошибки.
 $errors = FALSE;
-if (empty(strip_tags($_POST['fio']))) {
+if (empty(strip_tags($request['post']['fio']))) {
   setcookie('fio_error', '1');
   $errors = TRUE;
 }
 
-if(!empty(strip_tags($_POST['fio'])) && strip_tags(strlen($_POST['fio']))>150) {//XSS
+if(!empty(strip_tags($request['post']['fio'])) && strip_tags(strlen($request['post']['fio']))>150) {//XSS
   setcookie('fio_error', '2');
   $errors = TRUE;
 }
 
-if(!empty(strip_tags($_POST['fio'])) && !preg_match('/^[а-яА-Яa-zA-Z ]+$/u', strip_tags($_POST['fio']))) {
+if(!empty(strip_tags($request['post']['fio'])) && !preg_match('/^[а-яА-Яa-zA-Z ]+$/u', strip_tags($request['post']['fio']))) {
   setcookie('fio_error', '3');
   $errors = TRUE;
 }
 
 // Сохраняем ранее введенное в форму значение на год.
-setcookie('fio_value', htmlspecialchars($_POST['fio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+setcookie('fio_value', htmlspecialchars($request['post']['fio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
 // $_POST['field-tel']=trim($_POST['field-tel']);
-$_POST['field-tel']=strip_tags(trim($_POST['field-tel']));//XSS
-if(!preg_match('/^[0-9+]+$/', $_POST['field-tel'])) {
+$request['post']['field-tel']=strip_tags(trim($request['post']['field-tel']));//XSS
+if(!preg_match('/^[0-9+]+$/', $request['post']['field-tel'])) {
   setcookie('field-tel_error', '1');
   $errors = TRUE;
 }
-setcookie('field-tel_value', htmlspecialchars($_POST['field-tel'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+setcookie('field-tel_value', htmlspecialchars($request['post']['field-tel'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-if(!isset($_POST['radio-group-1']) || empty($_POST['radio-group-1'])) {
+if(!isset($request['post']['radio-group-1']) || empty($request['post']['radio-group-1'])) {
   setcookie('radio-group-1_error', '1');
   $errors = TRUE;
 }
-setcookie('radio-group-1_value', htmlspecialchars($_POST['radio-group-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+setcookie('radio-group-1_value', htmlspecialchars($request['post']['radio-group-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-$email=strip_tags($_POST['field-email']);
+$email=strip_tags($request['post']['field-email']);
 if(!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u', $email)) {
   setcookie('field-email_error', '1');
   $errors = TRUE;
@@ -289,14 +289,14 @@ else {
         error_log('Database error: ' . $e->getMessage());//Information Disclosure
          exit();
      }
-     if ((int)$id !== (int)strip_tags($_POST['uid'])) {
+     if ((int)$id !== (int)strip_tags($request['post']['uid'])) {
          setcookie('field-email_error', '2');
          $errors = TRUE;
      }
   }
 }
 
-setcookie('field-email_value', htmlspecialchars($_POST['field-email'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+setcookie('field-email_value', htmlspecialchars($request['post']['field-email'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 $allowed_lang=getLangs($db);
 if(empty($fav_languages)) {
   setcookie('languages_error', '1');
@@ -312,35 +312,35 @@ if(empty($fav_languages)) {
 $langs_value =strip_tags(implode(",", $fav_languages));
 setcookie('languages_value', htmlspecialchars($langs_value, ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-if (empty($_POST['field-date'])) {
+if (empty($request['post']['field-date'])) {
   setcookie('field-date_error', '1');
   $errors = TRUE;
 }
-setcookie('field-date_value', htmlspecialchars($_POST['field-date'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);//XSS
+setcookie('field-date_value', htmlspecialchars($request['post']['field-date'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);//XSS
 
-if(!isset($_POST['check-1']) || empty($_POST['check-1'])) {
+if(!isset($request['post']['check-1']) || empty($request['post']['check-1'])) {
   setcookie('check-1_error', '1');
   $errors = TRUE;
 }
-setcookie('check-1_value', htmlspecialchars($_POST['check-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+setcookie('check-1_value', htmlspecialchars($request['post']['check-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-if (empty($_POST['bio'])) {
+if (empty($request['post']['bio'])) {
   setcookie('bio_error', '1');
   $errors = TRUE;
 }
 
-if (!empty($_POST['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:() ]+$/u', $_POST['bio'])) {
+if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:() ]+$/u', $request['post']['bio'])) {
   setcookie('bio_error', '2');
   $errors = TRUE;
 }
-setcookie('bio_value', htmlspecialchars($_POST['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
 
 if ($errors) {
   
   if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
   {
-    return redirect('./', ['uid' => $_POST['uid']]);
+    return redirect('./', ['uid' => $request['post']['uid']]);
   }
   return redirect('./');
 }
@@ -359,10 +359,10 @@ else {
 
 if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
 {
-  if(!empty($_POST['uid']))
+  if(!empty($request['post']['uid']))
   {
     try{
-    $update_id = intval($_POST['uid']);//XSS
+    $update_id = intval($request['post']['uid']);//XSS
     $doplog=findLoginByUid($update_id, $db);
     updateDB($doplog, $db);
     return redirect('admin');
