@@ -3,7 +3,7 @@ require_once './scripts/db.php';
 global $db;
    function logout_post($request, $db) {
     var_dump($request);
-       if ($request['method'] == 'post' && isset($request['post']['logout'])) {
+       if (isset($request['post']['logout'])) {
         var_dump("yyy");
            session_unset();
            session_destroy();
