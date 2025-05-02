@@ -1,6 +1,8 @@
 <?php
 
 // Обработчик запросов методом GET.
+require_once './scripts/db.php';
+global $db;
 function admin_get($request, $db) {
   session_start();
   $query = "SELECT id, fio, tel, email, bdate, gender, biography FROM person"; 
@@ -30,7 +32,7 @@ function admin_get($request, $db) {
   $data = [
     'results' => $results,
   ];
-  return theme('admin', $data)
+  return theme('admin', $data);
 }
 
 // Обработчик запросов методом POST.
