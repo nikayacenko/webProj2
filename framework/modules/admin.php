@@ -52,7 +52,7 @@ function admin_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function admin_post($request, $db) {
-  $delete_id = intval($_POST['delete_id']); // Преобразуем в целое число
+  $delete_id = intval($request['post']['delete_id']); // Преобразуем в целое число
   $adminlogin=adminlog($db);
   if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  $adminlogin && password_check($adminlogin, $_SERVER['PHP_AUTH_PW'], $db))
   {
