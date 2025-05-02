@@ -711,7 +711,7 @@
                     global $db;
                     if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
                     {
-                        print('<a class="admhref" href="' . url('adm_page') . '">Страница администратора</a><br />');
+                        print('<a class="admhref" href="' . url('admin') . '">Страница администратора</a><br />');
                     }
                     if (isset($_COOKIE[session_name()]) && !empty($_SESSION['login'])) {
                         print('<form class="logout_form" action="' . url('logout') . '" method="POST">
