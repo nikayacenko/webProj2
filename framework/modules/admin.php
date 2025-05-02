@@ -33,7 +33,7 @@ function admin_get($request, $db) {
   JOIN languages l ON pl.lang_id = l.id
   GROUP BY l.namelang");
   $stmt->execute();
-  $stat = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stat = $stmt->fetchAll(PDO::FETCH_ASSOC);
   $data = [
     'results' => $results,
     'languages_by_person'=>$languages_by_person,
