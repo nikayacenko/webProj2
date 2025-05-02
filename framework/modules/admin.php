@@ -1,14 +1,36 @@
 <?php
 
 // Обработчик запросов методом GET.
-function admin_get($request) {
-  // Достаем данные из БД, форматируем, санитизуем, складываем в массив, передаем в шаблон для вывода в HTML.
-  $params = [
-    0 => ['Колонка 1', 'Колонка 2'],
-    1 => ['Колонка 1', 'Колонка 2'],
-    2 => ['Колонка 1', 'Колонка 2']];
-  // Пример возврата html из шаблона с передачей параметров.
-  return theme('admin', ['admin' => $params]);
+function admin_get($request, $db) {
+  session_start();
+  $query = "SELECT id, fio, tel, email, bdate, gender, biography FROM person"; 
+
+  $stmt = $db->prepare($query); 
+  $stmt->execute();
+  $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  $query_languages = "SELECT
+                      pl.pers_id,
+                      l.namelang
+                  FROM
+                      personlang pl
+                  JOIN
+                      languages l ON pl.lang_id = l.id";
+  $stmt_languages = $db->prepare($query_languages);
+  $stmt_languages->execute();
+  $person_languages = $stmt_languages->fetchAll(PDO::FETCH_ASSOC);
+  $languages_by_person = [];
+  foreach ($person_languages as $row) {
+      $person_id = $row['pers_id'];
+      $language_name = $row['namelang'];
+      if (!isset($languages_by_person[$person_id])) {
+          $languages_by_person[$person_id] = [];
+      }
+      $languages_by_person[$person_id][] = $language_name; 
+  }
+  $data = [
+    'results' => $results,
+  ];
+  return theme('admin', $data)
 }
 
 // Обработчик запросов методом POST.
