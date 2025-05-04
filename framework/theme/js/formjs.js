@@ -18,15 +18,15 @@ document.getElementById('myform').addEventListener('submit', async (e) => {
         const data = await response.json();
 
         // 1. Обновляем сообщения
-        // let messagesDiv = document.getElementById('messages');
-        // if (!messagesDiv) {
-        //     messagesDiv = document.createElement('div');
-        //     messagesDiv.id = 'messages';
-        //     form.prepend(messagesDiv);
-        // }
-        // messagesDiv.innerHTML = data.messages?.join('<br>') || '';
+        let messagesDiv = document.getElementById('messages');
+        if (!messagesDiv) {
+            messagesDiv = document.createElement('div');
+            messagesDiv.id = 'messages';
+            form.prepend(messagesDiv);
+        }
+        messagesDiv.innerHTML = data.messages?.join('<br>') || '';
 
-        // // 2. Подсвечиваем ошибки
+        // 2. Подсвечиваем ошибки
         // if (data.errors) {
         //     Object.keys(data.errors).forEach(field => {
         //         const input = form.querySelector([name="${CSS.escape(field)}"]);
@@ -34,13 +34,13 @@ document.getElementById('myform').addEventListener('submit', async (e) => {
         //     });
         // }
 
-        // 3. Восстанавливаем значения (если нужно)
-        if (data.values) {
-            Object.keys(data.values).forEach(field => {
-                const input = form.querySelector([name="${CSS.escape(field)}"]);
-                if (input) input.value = data.values[field];
-            });
-        }
+        // // 3. Восстанавливаем значения (если нужно)
+        // if (data.values) {
+        //     Object.keys(data.values).forEach(field => {
+        //         const input = form.querySelector([name="${CSS.escape(field)}"]);
+        //         if (input) input.value = data.values[field];
+        //     });
+        // }
 
         // 4. Успешная отправка
         if (data.success) {
