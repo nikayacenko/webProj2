@@ -216,9 +216,10 @@ function front_get($request, $db) {
 function front_post($request, $db) {
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
-    http_response_code(403); 
-   
-  }
+    http_response_code(403);
+    echo "CSRF token validation failed."; // Опционально, сообщение об ошибке
+    exit; // Обязательно останавливаем выполнение скрипта
+}
   $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
   $messages = [];
