@@ -215,16 +215,7 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
-  $logFile = DIR . '/../logs/form_submissions.log';
-  $logMessage = function($message, $context = []) use ($logFile) {
-      $entry = sprintf(
-          "[%s] %s %s\n",
-          date('Y-m-d H:i:s'),
-          $message,
-          json_encode($context, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
-      );
-      file_put_contents($logFile, $entry, FILE_APPEND);
-  };
+  
   $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
   if ($isAjax) {
     header('Content-Type: application/json');
@@ -234,23 +225,8 @@ function front_post($request, $db) {
         http_response_code(403);
         echo "CSRF token validation failed."; // Опционально, сообщение об ошибке
         exit; // Обязательно останавливаем выполнение скрипта
-  }
-
-  try {
-    // Логируем начало обработки
-    $logMessage('Начало обработки формы', [
-        'POST данные' => $request['post'],
-        'AJAX' => $isAjax
-      ]);
-
-      // CSRF защита
-      if (!validateCsrfToken()) {
-        $logMessage('Ошибка CSRF', [
-            'session_token' => $_SESSION['csrf_token'] ?? null,
-            'post_token' => $request['post']['csrf_token'] ?? null
-        ]);
-        throw new RuntimeException('CSRF validation failed');
     }
+
   $messages = [];
 
 $fav_languages = ($request['post']['languages']) ?? [];
@@ -472,36 +448,9 @@ else {
 
 // Сохраняем куку с признаком успешного сохранения.
 setcookie('save', '1');
-if ($isAjax) {
-  header('Content-Type: application/json');
-  echo json_encode(['success' => true]);
-  exit;
-}
+
 // Делаем перенаправление.
   return redirect();
-} catch (Exception $e) {
-  // Логируем критические ошибки
-  $logMessage('Критическая ошибка', [
-      'error' => $e->getMessage(),
-      'file' => $e->getFile(),
-      'line' => $e->getLine(),
-      'trace' => $e->getTraceAsString()
-  ]);
-
-  if ($isAjax) {
-      header('Content-Type: application/json');
-      echo json_encode([
-          'success' => false,
-          'error' => 'Системная ошибка'
-      ]);
-      exit;
-  }
-
-  // Для обычных запросов можно показать страницу ошибки
-  header('HTTP/1.1 500 Internal Server Error');
-  return "Произошла ошибка, пожалуйста попробуйте позже";
-}
-
 }
 
 //массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
