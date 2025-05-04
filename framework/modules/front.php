@@ -216,12 +216,12 @@ function front_get($request, $db) {
 //   return $_SESSION['csrf_token'];
 // }
 
-function validateCsrfToken() {
-  if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-      return false;
-  }
-  return true;
-}
+// function validateCsrfToken() {
+//   if (!isset($_POST['csrf_token']) || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+//       return false;
+//   }
+//   return true;
+// }
 
 function sanitizeString($string) {
 return htmlspecialchars(strip_tags($string), ENT_QUOTES, 'UTF-8');
