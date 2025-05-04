@@ -4,6 +4,7 @@ document.getElementById('myform').addEventListener('submit', async (e) => {
     const formData = new FormData(form);
 
     try {
+        const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]').value;
         const response = await fetch('', {
             method: 'POST',
             headers: {
