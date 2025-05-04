@@ -219,6 +219,10 @@ function front_post($request, $db) {
     http_response_code(403); 
    
   }
+  $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+  $messages = [];
+
 $fav_languages = ($request['post']['languages']) ?? [];
 // Проверяем ошибки.
 $errors = FALSE;
@@ -334,6 +338,36 @@ if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:(
 }
 setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
+if ($isAjax) {
+  header('Content-Type: application/json');
+  echo json_encode([
+      'success' => !$errors,
+      'messages' => $messages,
+      'errors' => [
+          'fio' => $_COOKIE['fio_error'] ?? null,
+          'field-tel' => $_COOKIE['field-tel_error'] ?? null,
+          'radio-group-1'=> $_COOKIE['radio-group-1_error'] ?? null,
+          'field-email'=> $_COOKIE['field-email_error'] ?? null,
+          'languages'=> $_COOKIE['languages_error'] ?? null,
+          'field-date'=> $_COOKIE['field-date_error'] ?? null,
+          'check-1'=> $_COOKIE['check-1_error'] ?? null,
+          'bio'=> $_COOKIE['bio_error'] ?? null,
+          // ... остальные ошибки
+      ],
+      'values' => [
+          'fio' => $_COOKIE['fio_value'] ?? '',
+          'field-tel' => $_COOKIE['field-tel_value'] ?? '',
+          'radio-group-1' => $_COOKIE['radio-group-1_value'] ?? '',
+          'field-email' => $_COOKIE['field-email_value'] ?? '',
+          'languages' => $_COOKIE['languages_value'] ?? '',
+          'field-date' => $_COOKIE['field-date_value'] ?? '',
+          'check-1' => $_COOKIE['check-1_value'] ?? '',
+          'bio' => $_COOKIE['bio_value'] ?? '',
+          // ... остальные поля
+      ]
+  ]);
+  exit();
+}
 
 if ($errors) {
   

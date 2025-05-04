@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="theme/style.css">
     <script src="theme/js/accordeon-FAQ.js"></script>
     <script src="theme/js/my.js"></script>
+    <script src="theme/js/formjs.js"></script>
     <script src="theme/js/second-slider.js"></script>
     <link rel="icon" href="theme/img/favicon.ico" type="image/x-icon">
     <link rel="shortcut icon" href="theme/img/favicon.ico"  type="image/x-icon">
