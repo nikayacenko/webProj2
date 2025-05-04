@@ -7,7 +7,9 @@ document.getElementById('myform').addEventListener('submit', async (e) => {
         const response = await fetch('', {
             method: 'POST',
             headers: {
-                'X-Requested-With': 'XMLHttpRequest' // Помечаем как AJAX
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+                'X-CSRF-Token': csrfToken || '' // Добавляем токен, если есть
             },
             body: formData,
             credentials: 'include' // Важно! Отправляем куки
