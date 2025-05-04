@@ -215,15 +215,16 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
-  error_log("=== POST запрос получен ===");
-error_log("POST данные: " . print_r($_POST, true));
-error_log("Headers: " . print_r(getallheaders(), true));
-
-if ($isAjax) {
-    error_log("Это AJAX-запрос");
-} else {
-    error_log("Это обычный POST");
-}
+  $logFile = DIR . '/../logs/form_submissions.log';
+  $logMessage = function($message, $context = []) use ($logFile) {
+      $entry = sprintf(
+          "[%s] %s %s\n",
+          date('Y-m-d H:i:s'),
+          $message,
+          json_encode($context, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+      );
+      file_put_contents($logFile, $entry, FILE_APPEND);
+  };
   $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
   if ($isAjax) {
     header('Content-Type: application/json');
@@ -233,8 +234,23 @@ if ($isAjax) {
         http_response_code(403);
         echo "CSRF token validation failed."; // Опционально, сообщение об ошибке
         exit; // Обязательно останавливаем выполнение скрипта
-    }
+  }
 
+  try {
+    // Логируем начало обработки
+    $logMessage('Начало обработки формы', [
+        'POST данные' => $request['post'],
+        'AJAX' => $isAjax
+      ]);
+
+      // CSRF защита
+      if (!validateCsrfToken()) {
+        $logMessage('Ошибка CSRF', [
+            'session_token' => $_SESSION['csrf_token'] ?? null,
+            'post_token' => $request['post']['csrf_token'] ?? null
+        ]);
+        throw new RuntimeException('CSRF validation failed');
+    }
   $messages = [];
 
 $fav_languages = ($request['post']['languages']) ?? [];
@@ -456,9 +472,36 @@ else {
 
 // Сохраняем куку с признаком успешного сохранения.
 setcookie('save', '1');
-
+if ($isAjax) {
+  header('Content-Type: application/json');
+  echo json_encode(['success' => true]);
+  exit;
+}
 // Делаем перенаправление.
   return redirect();
+} catch (Exception $e) {
+  // Логируем критические ошибки
+  $logMessage('Критическая ошибка', [
+      'error' => $e->getMessage(),
+      'file' => $e->getFile(),
+      'line' => $e->getLine(),
+      'trace' => $e->getTraceAsString()
+  ]);
+
+  if ($isAjax) {
+      header('Content-Type: application/json');
+      echo json_encode([
+          'success' => false,
+          'error' => 'Системная ошибка'
+      ]);
+      exit;
+  }
+
+  // Для обычных запросов можно показать страницу ошибки
+  header('HTTP/1.1 500 Internal Server Error');
+  return "Произошла ошибка, пожалуйста попробуйте позже";
+}
+
 }
 
 //массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
@@ -470,3 +513,123 @@ setcookie('save', '1');
 // •  Параметры, переданные методом POST.
 // •  Параметры, переданные методами PUT и DELETE (эмулированными через POST).
 // •  Тип контента по умолчанию.
+
+
+function front_post($request, $db) {
+  // Настройка логирования
+  $logFile = DIR . '/../logs/form_submissions.log';
+  $logMessage = function($message, $context = []) use ($logFile) {
+      $entry = sprintf(
+          "[%s] %s %s\n",
+          date('Y-m-d H:i:s'),
+          $message,
+          json_encode($context, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+      );
+      file_put_contents($logFile, $entry, FILE_APPEND);
+  };
+
+  // Проверка AJAX
+  $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+           strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+  try {
+      // Логируем начало обработки
+      $logMessage('Начало обработки формы', [
+          'POST данные' => $request['post'],
+          'AJAX' => $isAjax
+      ]);
+
+      // CSRF защита
+      if (!validateCsrfToken()) {
+          $logMessage('Ошибка CSRF', [
+              'session_token' => $_SESSION['csrf_token'] ?? null,
+              'post_token' => $request['post']['csrf_token'] ?? null
+          ]);
+          throw new RuntimeException('CSRF validation failed');
+      }
+
+      // Валидация данных
+      $errors = [];
+      if (empty($request['post']['fio'])) {
+          $errors['fio'] = 'Заполните имя';
+          setcookie('fio_error', '1');
+      }
+
+      // Логируем ошибки валидации
+      if (!empty($errors)) {
+          $logMessage('Ошибки валидации', $errors);
+      }
+
+      // Если есть ошибки - возвращаем ответ
+      if (!empty($errors)) {
+          if ($isAjax) {
+              header('Content-Type: application/json');
+              echo json_encode([
+                  'success' => false,
+                  'errors' => $errors
+              ]);
+              exit;
+          }
+          return redirect('./');
+      }
+
+      // Сохранение в БД
+      try {
+          $logMessage('Попытка сохранения в БД', [
+              'данные' => $request['post']
+          ]);
+
+          // Ваш код сохранения
+          if (!empty($_SERVER['PHP_AUTH_USER']) && /* ... */) {
+              // Админский сценарий
+              updateDB($doplog, $db);
+              $logMessage('Админское обновление', ['uid' => $request['post']['uid']]);
+          } else {
+              // Пользовательский сценарий
+              insertDB($db, $login, $hash_pass);
+              $logMessage('Новая запись', ['login' => $login]);
+          }
+
+          // Успешный сценарий
+          setcookie('save', '1');
+          $logMessage('Успешное сохранение');
+
+          if ($isAjax) {
+              header('Content-Type: application/json');
+              echo json_encode(['success' => true]);
+              exit;
+          }
+
+          return redirect();
+
+      } catch (PDOException $e) {
+          $logMessage('Ошибка БД', [
+              'error' => $e->getMessage(),
+              'trace' => $e->getTraceAsString()
+          ]);
+          throw $e;
+      }
+
+  } catch (Exception $e) {
+      // Логируем критические ошибки
+      $logMessage('Критическая ошибка', [
+          'error' => $e->getMessage(),
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'trace' => $e->getTraceAsString()
+      ]);
+
+      if ($isAjax) {
+          header('Content-Type: application/json');
+          echo json_encode([
+              'success' => false,
+              'error' => 'Системная ошибка'
+          ]);
+          exit;
+      }
+
+      // Для обычных запросов можно показать страницу ошибки
+      header('HTTP/1.1 500 Internal Server Error');
+      return "Произошла ошибка, пожалуйста попробуйте позже";
+  }
+}
