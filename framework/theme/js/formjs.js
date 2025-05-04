@@ -9,7 +9,7 @@ document.getElementById('myform').addEventListener('submit', async (e) => {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json',
-                'X-CSRF-Token': csrfToken || '' // Добавляем токен, если есть
+                'X-CSRF-Token': csrfToken // Добавляем токен, если есть
             },
             body: formData,
             credentials: 'include' // Важно! Отправляем куки
