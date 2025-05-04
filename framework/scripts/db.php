@@ -296,27 +296,41 @@ function generateCsrfToken() {
   return $token;
 }
 
+// function validateCsrfToken() {
+//   if (empty($_POST['csrf_token'])) {
+//     return false; 
+//   }
+
+//   if (empty($_SESSION['csrf_token'])) {
+//     return false; 
+//   }
+
+//   if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+//     return false; 
+//   }
+
+//   $token_age = time() - $_SESSION['csrf_token_time'];
+//   if ($token_age > 3600) {
+//     return false; 
+//   }
+
+//   unset($_SESSION['csrf_token']); 
+//   unset($_SESSION['csrf_token_time']);
+
+//   return true;
+// }
+
 function validateCsrfToken() {
-  if (empty($_POST['csrf_token'])) {
-    return false; 
+  if (empty($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')) {
+      if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+          strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+          header('Content-Type: application/json');
+          http_response_code(403);
+          echo json_encode(['error' => 'Invalid CSRF token']);
+          exit;
+      }
+      return false;
   }
-
-  if (empty($_SESSION['csrf_token'])) {
-    return false; 
-  }
-
-  if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-    return false; 
-  }
-
-  $token_age = time() - $_SESSION['csrf_token_time'];
-  if ($token_age > 3600) {
-    return false; 
-  }
-
-  unset($_SESSION['csrf_token']); 
-  unset($_SESSION['csrf_token_time']);
-
   return true;
 }
 
