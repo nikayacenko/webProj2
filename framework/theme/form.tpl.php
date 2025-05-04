@@ -739,5 +739,6 @@
             </div>
         </div>
     </div>
+    <script src="theme/js/formjs.js"></script>
 </body>
 </html>
