@@ -25,20 +25,20 @@ document.getElementById('myform').addEventListener('submit', async (e) => {
         messagesDiv.innerHTML = data.messages?.join('<br>') || '';
 
         // 2. Подсвечиваем ошибки
-        if (data.errors) {
-            Object.keys(data.errors).forEach(field => {
-                const input = form.querySelector([name="${field}"]);
-                if (input) input.classList.toggle('error', !!data.errors[field]);
-            });
-        }
+        // if (data.errors) {
+        //     Object.keys(data.errors).forEach(field => {
+        //         const input = form.querySelector([name="${field}"]);
+        //         if (input) input.classList.toggle('error', !!data.errors[field]);
+        //     });
+        // }
 
-        // 3. Восстанавливаем значения (если нужно)
-        if (data.values) {
-            Object.keys(data.values).forEach(field => {
-                const input = form.querySelector([name="${field}"]);
-                if (input) input.value = data.values[field];
-            });
-        }
+        // // 3. Восстанавливаем значения (если нужно)
+        // if (data.values) {
+        //     Object.keys(data.values).forEach(field => {
+        //         const input = form.querySelector([name="${field}"]);
+        //         if (input) input.value = data.values[field];
+        //     });
+        // }
 
         // 4. Успешная отправка
         if (data.success) {
