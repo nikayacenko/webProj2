@@ -214,6 +214,15 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
+  error_log("=== POST запрос получен ===");
+error_log("POST данные: " . print_r($_POST, true));
+error_log("Headers: " . print_r(getallheaders(), true));
+
+if ($isAjax) {
+    error_log("Это AJAX-запрос");
+} else {
+    error_log("Это обычный POST");
+}
   $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
   if ($isAjax) {
     header('Content-Type: application/json');
