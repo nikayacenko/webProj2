@@ -214,7 +214,8 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
-
+  $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
     http_response_code(403); 
@@ -336,6 +337,11 @@ if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:(
 setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
 
+if ($isAjax) {
+  header('Content-Type: application/json');
+  echo json_encode(['success' => true]);
+  exit;
+}
 // Обработка AJAX-запроса
 // if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 //   header('Content-Type: application/json');
