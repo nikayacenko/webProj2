@@ -113,17 +113,16 @@ window.addEventListener("DOMContentLoaded", function () {
                     'X-Requested-With': 'XMLHttpRequest' // Добавляем заголовок для AJAX
                 }
             })
-            .then(async response => {
+            .then(response => {
+                // Проверяем Content-Type ответа
                 const contentType = response.headers.get('content-type');
-                
-                if (contentType.includes('application/json')) {
+                if (contentType && contentType.includes('application/json')) {
                     return response.json();
+                } else {
+                    return response.text().then(text => {
+                        throw new Error('Ожидался JSON, но получили: ' + text.substring(0, 100));
+                    });
                 }
-                
-                // Если получили HTML - парсим его для диагностики
-                const html = await response.text();
-                const errorMatch = html.match(/<div class="error">(.*?)<\/div>/i);
-                throw new Error(errorMatch ? errorMatch[1] : 'Неожиданный ответ сервера');
             })
             .then(data => {
                 if (data.success) {
