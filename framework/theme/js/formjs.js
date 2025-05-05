@@ -109,28 +109,40 @@ window.addEventListener("DOMContentLoaded", function () {
                 method: "POST",
                 body: formData,
                 headers: {
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest' // Добавляем заголовок для AJAX
                 }
             })
             .then(response => {
-                if (response.ok) {
+                // Проверяем Content-Type ответа
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
                     return response.json();
                 } else {
-                    throw new Error('Ошибка сети');
+                    return response.text().then(text => {
+                        throw new Error('Ожидался JSON, но получили: ' + text.substring(0, 100));
+                    });
                 }
             })
             .then(data => {
-                if (data.status === "success") {
-                    alert("Форма отправлена!");
+                if (data.success) {
+                    alert('Форма успешно отправлена!');
                     form.reset();
-                    // Очищаем localStorage после успешной отправки
-                    localStorage.removeItem("FIO");
-                    localStorage.removeItem("field-email");
-                    // localStorage.removeItem("field-message");
-                    // localStorage.removeItem("field-company");
-                    // localStorage.removeItem("field-number");
+                    // Очистка localStorage после успешной отправки
+                    fieldsToRestore.forEach(fieldName => {
+                        localStorage.removeItem(fieldName);
+                    });
                 } else {
-                    alert("Ошибка: " + (data.message || "Неизвестная ошибка"));
+                    alert('Ошибка: ' + (data.message || 'Неизвестная ошибка сервера'));
+                    // Можно добавить обработку ошибок валидации
+                    if (data.errors) {
+                        Object.entries(data.errors).forEach(([field, error]) => {
+                            const elements = document.getElementsByName(field);
+                            if (elements.length > 0) {
+                                elements[0].classList.add('error');
+                            }
+                        });
+                    }
                 }
             })
             .catch(error => {
