@@ -51,45 +51,13 @@
 //     }
 // });
 
-
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('myform');
-    form.addEventListener('submit', function(event) {
-        event.preventDefault(); // Предотвращаем обычную отправку формы
-
-        const formData = new FormData(form); // Собираем данные формы
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest' // Устанавливаем заголовок для Ajax запроса
-            }
-        })
-        .then(response => response.json()) // Преобразуем ответ в JSON
-        .then(data => {
-            if (data.errors) {
-                // Обрабатываем ошибки
-                console.log("Ошибки валидации", data.errors);
-                //Пример: Вывод ошибок возле соответствующих полей
-                for (const field in data.errors) {
-                    const errorElement = document.createElement('span');
-                    errorElement.className = 'error';
-                    errorElement.textContent = data.errors[field];
-                    const inputField = document.getElementById(field);
-                    inputField.parentNode.appendChild(errorElement);
-                }
-            } else if (data.success) {
-                // Обрабатываем успешную отправку
-                console.log("Успех:", data.message);
-                //Перенаправляем на страницу успеха
-                window.location.href = './';
-            } else{
-                console.log("Что-то пошло не так");
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
+    const myButton = document.getElementById('saveButton');
+    if (myButton) {
+        myButton.type = 'button'; // Заменяем тип кнопки
+        myButton.addEventListener('click', function(event) {
+            // Ваш код для обработки формы через JS
         });
-    });
+    }
 });
+
