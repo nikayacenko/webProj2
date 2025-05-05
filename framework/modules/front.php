@@ -445,7 +445,7 @@ else {
 setcookie('save', '1');
 
 // Делаем перенаправление.
-if()
+
   return redirect();
 }
 
