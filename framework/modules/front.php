@@ -329,7 +329,7 @@ function front_post($request, $db) {
   $cookies_to_set[$check_1_key . '_value'] = htmlspecialchars($check_1, ENT_QUOTES, 'UTF-8');
 
   // Установка cookies
-  $cookie_lifetime = time() + 365 × 24 × 60 * 60;
+  $cookie_lifetime = time() + 365 * 24 * 60 * 60;
   foreach ($cookies_to_set as $cookie_name => $cookie_value) {
     setcookie($cookie_name, $cookie_value, $cookie_lifetime, '/');
   }
