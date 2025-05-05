@@ -61,95 +61,141 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 window.addEventListener("DOMContentLoaded", function () {
-    // Получаем элементы формы
     const form = document.getElementById("myform");
 
-    // Восстанавливаем значения из LocalStorage при загрузке страницы
-    window.onload = function () {
-        const storedName = localStorage.getItem("fio");
-        const storedEmail = localStorage.getItem("field-email");
-        // const storedMessage = localStorage.getItem("field-message");
-        // const storedOrg = localStorage.getItem("field-company");
-        // const storedNumber = localStorage.getItem("field-number");
-        
-        if (storedName) document.getElementsByName("fio")[0].value = storedName;
-        if (storedEmail) document.getElementsByName("field-email")[0].value = storedEmail;
-        //if (storedMessage) document.getElementsByName("field-message")[0].value = storedMessage;
-       // if (storedOrg) document.getElementsByName("field-company")[0].value = storedOrg;
-        //if (storedNumber) document.getElementsByName("field-number")[0].value = storedNumber;
-    };
+    // Восстановление значений из LocalStorage
+    const fieldsToRestore = ['fio', 'field-tel', 'field-email', 'field-date', 
+                           'radio-group-1', 'languages[]', 'bio', 'check-1'];
+    
+    fieldsToRestore.forEach(fieldName => {
+        const storedValue = localStorage.getItem(fieldName);
+        if (storedValue) {
+            const elements = document.getElementsByName(fieldName);
+            if (elements.length > 0) {
+                if (elements[0].type === 'checkbox') {
+                    elements[0].checked = storedValue === 'true';
+                } else if (elements[0].type === 'radio') {
+                    elements.forEach(radio => {
+                        radio.checked = radio.value === storedValue;
+                    });
+                } else if (elements[0].tagName === 'SELECT' && elements[0].multiple) {
+                    const values = JSON.parse(storedValue);
+                    Array.from(elements[0].options).forEach(option => {
+                        option.selected = values.includes(option.value);
+                    });
+                } else {
+                    elements[0].value = storedValue;
+                }
+            }
+        }
+    });
 
-    // Сохраняем значения в LocalStorage при каждом вводе
+    // Сохранение значений в LocalStorage
     form.addEventListener("input", function (event) {
-        localStorage.setItem(event.target.name, event.target.value);
+        const target = event.target;
+        if (target.name) {
+            if (target.type === 'checkbox') {
+                localStorage.setItem(target.name, target.checked);
+            } else if (target.type === 'radio' && target.checked) {
+                localStorage.setItem(target.name, target.value);
+            } else if (target.tagName === 'SELECT' && target.multiple) {
+                const selected = Array.from(target.selectedOptions).map(opt => opt.value);
+                localStorage.setItem(target.name, JSON.stringify(selected));
+            } else {
+                localStorage.setItem(target.name, target.value);
+            }
+        }
     });
 
     // Обработка отправки формы
-    form.addEventListener("click", function (e) {
+    form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        let email = document.getElementsByName("field-email")[0];
-        let name = document.getElementsByName("fio")[0];
-        //let number = document.getElementsByName("field-number")[0];
-        const checkbox = document.getElementsByName("check-1")[0];
-        let formcheck = true;
+        // Валидация обязательных полей
+        const requiredFields = ['fio', 'field-tel', 'field-email', 'check-1'];
+        let isValid = true;
+        
+        requiredFields.forEach(fieldName => {
+            const element = document.getElementsByName(fieldName)[0];
+            if (!element) return;
+            
+            if (element.type === 'checkbox' && !element.checked) {
+                isValid = false;
+                element.classList.add('error');
+            } else if ((element.type === 'text' || element.type === 'email' || element.type === 'tel') && !element.value.trim()) {
+                isValid = false;
+                element.classList.add('error');
+            }
+        });
 
-        // Валидация полей
-        if (!name.value) formcheck = false;
-        if (!email.value) formcheck = false;
-        //if (!number.value) formcheck = false;
-        if (!checkbox.checked) formcheck = false;
-
-        if (formcheck) {
-            // Создаем объект FormData для отправки
-            const formData = new FormData(form);
-
-            // Отправляем данные через Fetch API
-            fetch(form.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest' // Добавляем заголовок для AJAX
-                }
-            })
-            .then(response => {
-                // Проверяем Content-Type ответа
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    return response.text().then(text => {
-                        throw new Error('Ожидался JSON, но получили: ' + text.substring(0, 100));
-                    });
-                }
-            })
-            .then(data => {
-                if (data.success) {
-                    alert('Форма успешно отправлена!');
-                    form.reset();
-                    // Очистка localStorage после успешной отправки
-                    fieldsToRestore.forEach(fieldName => {
-                        localStorage.removeItem(fieldName);
-                    });
-                } else {
-                    alert('Ошибка: ' + (data.message || 'Неизвестная ошибка сервера'));
-                    // Можно добавить обработку ошибок валидации
-                    if (data.errors) {
-                        Object.entries(data.errors).forEach(([field, error]) => {
-                            const elements = document.getElementsByName(field);
-                            if (elements.length > 0) {
-                                elements[0].classList.add('error');
-                            }
-                        });
-                    }
-                }
-            })
-            .catch(error => {
-                alert("Ошибка при отправке: " + error.message);
-            });
-        } else {
-            alert("Заполните все обязательные поля формы");
+        if (!isValid) {
+            alert('Заполните все обязательные поля!');
+            return;
         }
+
+        // Подготовка данных формы
+        const formData = new FormData(form);
+        
+        // Для множественного select нужно добавить значения правильно
+        const languagesSelect = document.querySelector('select[name="languages[]"]');
+        if (languagesSelect) {
+            formData.delete('languages[]'); // Удаляем старые значения
+            Array.from(languagesSelect.selectedOptions).forEach(option => {
+                formData.append('languages[]', option.value);
+            });
+        }
+
+        // Отправка данных
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest' // Добавляем заголовок для AJAX
+            }
+        })
+        .then(response => {
+            // Проверяем Content-Type ответа
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            } else {
+                return response.text().then(text => {
+                    throw new Error('Ожидался JSON, но получили: ' + text.substring(0, 100));
+                });
+            }
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Форма успешно отправлена!');
+                form.reset();
+                // Очистка localStorage после успешной отправки
+                fieldsToRestore.forEach(fieldName => {
+                    localStorage.removeItem(fieldName);
+                });
+            } else {
+                alert('Ошибка: ' + (data.message || 'Неизвестная ошибка сервера'));
+                // Можно добавить обработку ошибок валидации
+                if (data.errors) {
+                    Object.entries(data.errors).forEach(([field, error]) => {
+                        const elements = document.getElementsByName(field);
+                        if (elements.length > 0) {
+                            elements[0].classList.add('error');
+                        }
+                    });
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.');
+        });
+    });
+
+    // Удаление класса error при фокусе на поле
+    form.querySelectorAll('input, select, textarea').forEach(element => {
+        element.addEventListener('focus', function() {
+            this.classList.remove('error');
+        });
     });
 });
