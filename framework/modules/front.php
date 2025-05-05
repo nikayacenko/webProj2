@@ -212,136 +212,378 @@ function front_get($request, $db) {
 
 
 
-// Обработчик запросов методом POST.
-function front_post($request, $db) {
-  $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-  // Пример возврата редиректа.
-  if (!validateCsrfToken()) {
-    http_response_code(403); 
+// // Обработчик запросов методом POST.
+// function front_post($request, $db) {
+//   $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+//   strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+//   // Пример возврата редиректа.
+//   if (!validateCsrfToken()) {
+//     http_response_code(403); 
    
-  }
+//   }
+// $fav_languages = ($request['post']['languages']) ?? [];
+// // Проверяем ошибки.
+// $errors = FALSE;
+// if (empty(strip_tags($request['post']['fio']))) {
+//   setcookie('fio_error', '1');
+//   $errors = TRUE;
+// }
+
+// if(!empty(strip_tags($request['post']['fio'])) && strip_tags(strlen($request['post']['fio']))>150) {//XSS
+//   setcookie('fio_error', '2');
+//   $errors = TRUE;
+// }
+
+// if(!empty(strip_tags($request['post']['fio'])) && !preg_match('/^[а-яА-Яa-zA-Z ]+$/u', strip_tags($request['post']['fio']))) {
+//   setcookie('fio_error', '3');
+//   $errors = TRUE;
+// }
+
+// // Сохраняем ранее введенное в форму значение на год.
+// setcookie('fio_value', htmlspecialchars($request['post']['fio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+// // $_POST['field-tel']=trim($_POST['field-tel']);
+// $request['post']['field-tel']=strip_tags(trim($request['post']['field-tel']));//XSS
+// if(!preg_match('/^[0-9+]+$/', $request['post']['field-tel'])) {
+//   setcookie('field-tel_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('field-tel_value', htmlspecialchars($request['post']['field-tel'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+// if(!isset($request['post']['radio-group-1']) || empty($request['post']['radio-group-1'])) {
+//   setcookie('radio-group-1_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('radio-group-1_value', htmlspecialchars($request['post']['radio-group-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+// $email=strip_tags($request['post']['field-email']);
+// if(!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u', $email)) {
+//   setcookie('field-email_error', '1');
+//   $errors = TRUE;
+// }
+// if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  adminlog($db) || !password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+// {
+//   if (emailExists($email, $db)) {
+//           $id = null;
+//      try {
+//          $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
+//          $dp->execute([$email]);
+//          $id = strip_tags($dp->fetchColumn());
+//      } catch (PDOException $e) {
+//          error_log('Database error: ' . $e->getMessage());//Information Disclosure
+//          exit();
+//      }
+//      if ((int)$id !== (int)strip_tags($_SESSION['uid'])) {
+//          setcookie('field-email_error', '2');
+//          $errors = TRUE;
+//      }
+//   }
+// }
+// else {
+//   if (emailExists($email, $db)) {
+//      $id = null;
+//      try {
+//          $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
+//          $dp->execute([$email]);
+//          $id = $dp->fetchColumn();
+//      } catch (PDOException $e) {
+//         error_log('Database error: ' . $e->getMessage());//Information Disclosure
+//          exit();
+//      }
+//      if ((int)$id !== (int)strip_tags($request['post']['uid'])) {
+//          setcookie('field-email_error', '2');
+//          $errors = TRUE;
+//      }
+//   }
+// }
+
+// setcookie('field-email_value', htmlspecialchars($request['post']['field-email'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+// $allowed_lang=getLangs($db);
+// if(empty($fav_languages)) {
+//   setcookie('languages_error', '1');
+//   $errors = TRUE;
+// } else {
+//   foreach ($fav_languages as $lang) {
+//     if (!in_array($lang, $allowed_lang)) {
+//         setcookie('languages_error', '2');
+//         $errors = TRUE;
+//     }
+//   }
+// }
+// $langs_value =strip_tags(implode(",", $fav_languages));
+// setcookie('languages_value', htmlspecialchars($langs_value, ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+// if (empty($request['post']['field-date'])) {
+//   setcookie('field-date_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('field-date_value', htmlspecialchars($request['post']['field-date'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);//XSS
+
+// if(!isset($request['post']['check-1']) || empty($request['post']['check-1'])) {
+//   setcookie('check-1_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('check-1_value', htmlspecialchars($request['post']['check-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+// if (empty($request['post']['bio'])) {
+//   setcookie('bio_error', '1');
+//   $errors = TRUE;
+// }
+
+// if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:() ]+$/u', $request['post']['bio'])) {
+//   setcookie('bio_error', '2');
+//   $errors = TRUE;
+// }
+// setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+
+
+// // if ($isAjax) {
+// //   header('Content-Type: application/json');
+// //   echo json_encode(['success' => true]);
+// //   exit;
+// // }
+// // Обработка AJAX-запроса
+// // if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+// //   header('Content-Type: application/json');
+  
+// //   if (!empty($errors)) {
+// //       echo json_encode([
+// //           'success' => false,
+// //           'message' => 'Validation errors',
+// //           'errors' => $errors,
+// //           'values' => $values
+// //       ]);
+// //       exit;
+// //   }
+// // } else {
+// //   // Стандартная обработка с куками
+// //   foreach ($errors as $field => $error) {
+// //       setcookie($field . '_error', $error, time() + 365 * 24 * 60 * 60);
+// //   }
+// //   foreach ($values as $field => $value) {
+// //       setcookie($field . '_value', $value, time() + 365 * 24 * 60 * 60);
+// //   }
+
+// //   if (!empty($errors)) {
+// //       if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && 
+// //           $_SERVER['PHP_AUTH_USER'] == adminlog($db) && 
+// //           password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db)) {
+// //           return redirect('./', ['uid' => $request['post']['uid']]);
+// //       }
+// //       return redirect('./');
+// //   }
+// // }
+
+// if ($errors) {
+  
+//   if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+//   {
+//     return redirect('./', ['uid' => $request['post']['uid']]);
+//   }
+//   return redirect('./');
+// }
+// else {
+//   setcookie('fio_error', '', 100000);
+//   setcookie('field-tel_error', '', 100000);
+//   setcookie('field-email_error', '', 100000);
+//   setcookie('field-date_error', '', 100000);
+//   setcookie('radio-group-1_error', '', 100000);
+//   setcookie('check-1_error', '', 100000);
+//   setcookie('languages_error', '', 100000);
+//   setcookie('bio_error', '', 100000);
+// }
+
+// // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
+
+// if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+// {
+//   if(!empty($request['post']['uid']))
+//   {
+//     try{
+//     $update_id = intval($request['post']['uid']);//XSS
+//     $doplog=findLoginByUid($update_id, $db);
+//     updateDB($doplog, $db);
+//     return redirect('admin');
+
+//     }
+//     catch(PDOException $e){
+//       return redirect('admin');
+//     }
+//   }
+//   else{
+//     print('Вы не выбрали пользователя для изменения');
+//     exit();
+//   }
+// }
+// else{
+// if (isset($_COOKIE[session_name()]) && session_start() && !empty($_SESSION['login'])) {
+//   try {
+//         updateDB($_SESSION['login'], $db);
+//   }
+//   catch(PDOException $e){
+//       print('Error : ' . $e->getMessage());
+//       exit();
+//   }
+// }
+// else {
+//   $login = generate_pass(7);
+//   while(check_login($login, $db)>0)
+//   {
+//     $login = generate_pass(7);
+//   }
+//   $pass = generate_pass();
+//   // Сохраняем в Cookies.
+//   $hash_pass=password_hash($pass, PASSWORD_DEFAULT);
+//   setcookie('login', $login);
+//   setcookie('pass', $pass);
+//   try {
+//         insertDB($db, $login, $hash_pass);
+//   }
+//   catch(PDOException $e){
+//       print('Error : ' . $e->getMessage());
+//       exit();
+//   }
+// }
+// }
+
+// // Сохраняем куку с признаком успешного сохранения.
+// setcookie('save', '1');
+
+// // Делаем перенаправление.
+
+//   return redirect();
+// }
+
+//массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
+// что позволяет фреймворку правильно его обработать и сформировать соответствующий HTTP-ответ. 
+// Эта информация включает:
+// •  URL запроса.
+// •  HTTP-метод.
+// •  Параметры, переданные методом GET.
+// •  Параметры, переданные методом POST.
+// •  Параметры, переданные методами PUT и DELETE (эмулированными через POST).
+// •  Тип контента по умолчанию.
+
+// Обработчик запросов методом POST.
+function handleFormSubmission() {
+  if (!validateCsrfToken()) {
+    http_response_code(403);
+    return ['status' => 'error', 'message' => 'Ошибка CSRF токена'];
+}
 $fav_languages = ($request['post']['languages']) ?? [];
 // Проверяем ошибки.
-$errors = FALSE;
-if (empty(strip_tags($request['post']['fio']))) {
-  setcookie('fio_error', '1');
-  $errors = TRUE;
+$postData = $_POST;
+$errors = [];
+$values = [];
+if (empty(strip_tags($postData['fio']))) {
+  $errors['fio'] = 'Поле ФИО обязательно для заполнения';
+} elseif (strlen(strip_tags($postData['fio'])) > 150) {
+  $errors['fio'] = 'ФИО не должно превышать 150 символов';
+} elseif (!preg_match('/^[а-яА-Яa-zA-Z ]+$/u', strip_tags($postData['fio']))) {
+  $errors['fio'] = 'ФИО должно содержать только буквы и пробелы';
 }
-
-if(!empty(strip_tags($request['post']['fio'])) && strip_tags(strlen($request['post']['fio']))>150) {//XSS
-  setcookie('fio_error', '2');
-  $errors = TRUE;
-}
-
-if(!empty(strip_tags($request['post']['fio'])) && !preg_match('/^[а-яА-Яa-zA-Z ]+$/u', strip_tags($request['post']['fio']))) {
-  setcookie('fio_error', '3');
-  $errors = TRUE;
-}
-
-// Сохраняем ранее введенное в форму значение на год.
-setcookie('fio_value', htmlspecialchars($request['post']['fio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+$values['fio'] = htmlspecialchars($postData['fio'], ENT_QUOTES, 'UTF-8');
 
 // $_POST['field-tel']=trim($_POST['field-tel']);
-$request['post']['field-tel']=strip_tags(trim($request['post']['field-tel']));//XSS
-if(!preg_match('/^[0-9+]+$/', $request['post']['field-tel'])) {
-  setcookie('field-tel_error', '1');
-  $errors = TRUE;
-}
-setcookie('field-tel_value', htmlspecialchars($request['post']['field-tel'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+// $request['post']['field-tel']=strip_tags(trim($request['post']['field-tel']));//XSS
+// if(!preg_match('/^[0-9+]+$/', $request['post']['field-tel'])) {
+//   setcookie('field-tel_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('field-tel_value', htmlspecialchars($request['post']['field-tel'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-if(!isset($request['post']['radio-group-1']) || empty($request['post']['radio-group-1'])) {
-  setcookie('radio-group-1_error', '1');
-  $errors = TRUE;
-}
-setcookie('radio-group-1_value', htmlspecialchars($request['post']['radio-group-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+// if(!isset($request['post']['radio-group-1']) || empty($request['post']['radio-group-1'])) {
+//   setcookie('radio-group-1_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('radio-group-1_value', htmlspecialchars($request['post']['radio-group-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-$email=strip_tags($request['post']['field-email']);
-if(!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u', $email)) {
-  setcookie('field-email_error', '1');
-  $errors = TRUE;
-}
-if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  adminlog($db) || !password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
-{
-  if (emailExists($email, $db)) {
-          $id = null;
-     try {
-         $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
-         $dp->execute([$email]);
-         $id = strip_tags($dp->fetchColumn());
-     } catch (PDOException $e) {
-         error_log('Database error: ' . $e->getMessage());//Information Disclosure
-         exit();
-     }
-     if ((int)$id !== (int)strip_tags($_SESSION['uid'])) {
-         setcookie('field-email_error', '2');
-         $errors = TRUE;
-     }
-  }
-}
-else {
-  if (emailExists($email, $db)) {
-     $id = null;
-     try {
-         $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
-         $dp->execute([$email]);
-         $id = $dp->fetchColumn();
-     } catch (PDOException $e) {
-        error_log('Database error: ' . $e->getMessage());//Information Disclosure
-         exit();
-     }
-     if ((int)$id !== (int)strip_tags($request['post']['uid'])) {
-         setcookie('field-email_error', '2');
-         $errors = TRUE;
-     }
-  }
-}
+// $email=strip_tags($request['post']['field-email']);
+// if(!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/u', $email)) {
+//   setcookie('field-email_error', '1');
+//   $errors = TRUE;
+// }
+// if (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  adminlog($db) || !password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+// {
+//   if (emailExists($email, $db)) {
+//           $id = null;
+//      try {
+//          $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
+//          $dp->execute([$email]);
+//          $id = strip_tags($dp->fetchColumn());
+//      } catch (PDOException $e) {
+//          error_log('Database error: ' . $e->getMessage());//Information Disclosure
+//          exit();
+//      }
+//      if ((int)$id !== (int)strip_tags($_SESSION['uid'])) {
+//          setcookie('field-email_error', '2');
+//          $errors = TRUE;
+//      }
+//   }
+// }
+// else {
+//   if (emailExists($email, $db)) {
+//      $id = null;
+//      try {
+//          $dp = $db->prepare("SELECT id FROM person WHERE email = ?");
+//          $dp->execute([$email]);
+//          $id = $dp->fetchColumn();
+//      } catch (PDOException $e) {
+//         error_log('Database error: ' . $e->getMessage());//Information Disclosure
+//          exit();
+//      }
+//      if ((int)$id !== (int)strip_tags($request['post']['uid'])) {
+//          setcookie('field-email_error', '2');
+//          $errors = TRUE;
+//      }
+//   }
+// }
 
-setcookie('field-email_value', htmlspecialchars($request['post']['field-email'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
-$allowed_lang=getLangs($db);
-if(empty($fav_languages)) {
-  setcookie('languages_error', '1');
-  $errors = TRUE;
-} else {
-  foreach ($fav_languages as $lang) {
-    if (!in_array($lang, $allowed_lang)) {
-        setcookie('languages_error', '2');
-        $errors = TRUE;
-    }
-  }
-}
-$langs_value =strip_tags(implode(",", $fav_languages));
-setcookie('languages_value', htmlspecialchars($langs_value, ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+// setcookie('field-email_value', htmlspecialchars($request['post']['field-email'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+// $allowed_lang=getLangs($db);
+// if(empty($fav_languages)) {
+//   setcookie('languages_error', '1');
+//   $errors = TRUE;
+// } else {
+//   foreach ($fav_languages as $lang) {
+//     if (!in_array($lang, $allowed_lang)) {
+//         setcookie('languages_error', '2');
+//         $errors = TRUE;
+//     }
+//   }
+// }
+// $langs_value =strip_tags(implode(",", $fav_languages));
+// setcookie('languages_value', htmlspecialchars($langs_value, ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-if (empty($request['post']['field-date'])) {
-  setcookie('field-date_error', '1');
-  $errors = TRUE;
-}
-setcookie('field-date_value', htmlspecialchars($request['post']['field-date'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);//XSS
+// if (empty($request['post']['field-date'])) {
+//   setcookie('field-date_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('field-date_value', htmlspecialchars($request['post']['field-date'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);//XSS
 
-if(!isset($request['post']['check-1']) || empty($request['post']['check-1'])) {
-  setcookie('check-1_error', '1');
-  $errors = TRUE;
-}
-setcookie('check-1_value', htmlspecialchars($request['post']['check-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+// if(!isset($request['post']['check-1']) || empty($request['post']['check-1'])) {
+//   setcookie('check-1_error', '1');
+//   $errors = TRUE;
+// }
+// setcookie('check-1_value', htmlspecialchars($request['post']['check-1'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
-if (empty($request['post']['bio'])) {
-  setcookie('bio_error', '1');
-  $errors = TRUE;
-}
+// if (empty($request['post']['bio'])) {
+//   setcookie('bio_error', '1');
+//   $errors = TRUE;
+// }
 
-if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:() ]+$/u', $request['post']['bio'])) {
-  setcookie('bio_error', '2');
-  $errors = TRUE;
-}
-setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
+// if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:() ]+$/u', $request['post']['bio'])) {
+//   setcookie('bio_error', '2');
+//   $errors = TRUE;
+// }
+// setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
 
-if ($isAjax) {
-  header('Content-Type: application/json');
-  echo json_encode(['success' => true]);
-  exit;
-}
+// if ($isAjax) {
+//   header('Content-Type: application/json');
+//   echo json_encode(['success' => true]);
+//   exit;
+// }
 // Обработка AJAX-запроса
 // if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 //   header('Content-Type: application/json');
@@ -373,28 +615,31 @@ if ($isAjax) {
 //       return redirect('./');
 //   }
 // }
+if (!empty($errors)) {
+  return ['status' => 'error', 'errors' => $errors, 'values' => $values];
+}
 
-if ($errors) {
+// if ($errors) {
   
-  if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
-  {
-    return redirect('./', ['uid' => $request['post']['uid']]);
-  }
-  return redirect('./');
-}
-else {
-  setcookie('fio_error', '', 100000);
-  setcookie('field-tel_error', '', 100000);
-  setcookie('field-email_error', '', 100000);
-  setcookie('field-date_error', '', 100000);
-  setcookie('radio-group-1_error', '', 100000);
-  setcookie('check-1_error', '', 100000);
-  setcookie('languages_error', '', 100000);
-  setcookie('bio_error', '', 100000);
-}
+//   if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+//   {
+//     return redirect('./', ['uid' => $request['post']['uid']]);
+//   }
+//   return redirect('./');
+// }
+// else {
+//   setcookie('fio_error', '', 100000);
+//   setcookie('field-tel_error', '', 100000);
+//   setcookie('field-email_error', '', 100000);
+//   setcookie('field-date_error', '', 100000);
+//   setcookie('radio-group-1_error', '', 100000);
+//   setcookie('check-1_error', '', 100000);
+//   setcookie('languages_error', '', 100000);
+//   setcookie('bio_error', '', 100000);
+// }
 
 // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
-
+try{
 if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
 {
   if(!empty($request['post']['uid']))
@@ -445,21 +690,36 @@ else {
   }
 }
 }
-
-// Сохраняем куку с признаком успешного сохранения.
-setcookie('save', '1');
-
-// Делаем перенаправление.
-
-  return redirect();
+return ['status' => 'success', 'message' => 'Форма успешно отправлена'];
+}catch (Exception $e) {
+  return ['status' => 'error', 'message' => 'Ошибка при сохранении данных: ' . $e->getMessage()];
+}
 }
 
-//массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
-// что позволяет фреймворку правильно его обработать и сформировать соответствующий HTTP-ответ. 
-// Эта информация включает:
-// •  URL запроса.
-// •  HTTP-метод.
-// •  Параметры, переданные методом GET.
-// •  Параметры, переданные методом POST.
-// •  Параметры, переданные методами PUT и DELETE (эмулированными через POST).
-// •  Тип контента по умолчанию.
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+  header('Content-Type: application/json');
+  echo json_encode(handleFormSubmission());
+  exit;
+}
+
+// Обычная обработка формы (если JavaScript отключен)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $result = handleFormSubmission();
+  
+  if ($result['status'] === 'success') {
+      // Устанавливаем куки об успешном сохранении
+      setcookie('save', '1', time() + 60, '/');
+      
+      // Перенаправляем с сообщением об успехе
+      $_SESSION['message'] = 'Форма успешно отправлена';
+      header('Location: ' . $_SERVER['PHP_SELF']);
+      exit;
+  } else {
+      // Сохраняем ошибки и значения в сессии для отображения
+      $_SESSION['errors'] = $result['errors'] ?? [];
+      $_SESSION['values'] = $result['values'] ?? [];
+      header('Location: ' . $_SERVER['PHP_SELF']);
+      exit;
+  }
+}
+
