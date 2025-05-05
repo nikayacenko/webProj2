@@ -1,5 +1,5 @@
 <?php
-
+header('Content-Type: application/json');
 
 //Этот PHP код определяет два обработчика HTTP-запросов, 
 // предназначенные для модуля с именем "front". 
