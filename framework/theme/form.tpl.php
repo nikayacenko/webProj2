@@ -699,15 +699,15 @@
                         <input type="submit" value="Сохранить" id="saveButton" />
                     </div>
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
-                    <?php 
-                        if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
-                            print('<a href="' . url('login') . '">Login</a>');
-                        }
-                    ?>
 
                 </form>
+                
                 <?php 
-    
+                                         
+                    if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
+                        print('<a href="' . url('login') . '">Login</a>');
+                    }
+                                    
                     require_once './scripts/db.php';
                     global $db;
                     if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
