@@ -337,6 +337,11 @@ if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:(
 setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
 
+if ($isAjax) {
+  header('Content-Type: application/json');
+  echo json_encode(['success' => true]);
+  exit;
+}
 // Обработка AJAX-запроса
 // if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
 //   header('Content-Type: application/json');
@@ -368,14 +373,8 @@ setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UT
 //       return redirect('./');
 //   }
 // }
-try{
-if ($errors) {
 
-  if ($isAjax) {
-    header('Content-Type: application/json');
-    echo json_encode(['errors' => $errors]);
-    exit;
-}
+if ($errors) {
   
   if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
   {
@@ -392,11 +391,6 @@ else {
   setcookie('check-1_error', '', 100000);
   setcookie('languages_error', '', 100000);
   setcookie('bio_error', '', 100000);
-}
-if ($isAjax) {
-  header('Content-Type: application/json');
-  echo json_encode(['success' => true]);
-  exit;
 }
 
 // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
@@ -458,15 +452,6 @@ setcookie('save', '1');
 // Делаем перенаправление.
 
   return redirect();
-}catch (Exception $e) {
-  if ($isAjax) {
-      http_response_code(500);
-      header('Content-Type: application/json');
-      echo json_encode(['error' => $e->getMessage()]);
-      exit;
-  }
-  throw $e;
-}
 }
 
 //массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
