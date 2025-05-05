@@ -212,7 +212,6 @@ function front_get($request, $db) {
 
 
 
-<?php
 
 function front_post($request, $db) {
   //Валидация CSRF token.
