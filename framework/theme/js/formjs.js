@@ -69,27 +69,17 @@ window.addEventListener("DOMContentLoaded", function () {
 
     // Восстанавливаем значения из LocalStorage при загрузке страницы
     window.onload = function () {
-        const storedName = localStorage.getItem("FIO");
+        const storedName = localStorage.getItem("fio");
         const storedEmail = localStorage.getItem("field-email");
-        const storedMessage = localStorage.getItem("field-message");
-        const storedOrg = localStorage.getItem("field-company");
-        const storedNumber = localStorage.getItem("field-number");
-
-        if (storedName) {
-            document.getElementsByName("field-number")[0].value = storedNumber;
-        }
-        if (storedName) {
-            document.getElementsByName("field-company")[0].value = storedOrg;
-        }
-        if (storedName) {
-            document.getElementsByName("fio")[0].value = storedName;
-        }
-        if (storedEmail) {
-            document.getElementsByName("field-email")[0].value = storedEmail;
-        }
-        if (storedMessage) {
-            document.getElementsByName("field-message")[0].value = storedMessage;
-        }
+        // const storedMessage = localStorage.getItem("field-message");
+        // const storedOrg = localStorage.getItem("field-company");
+        // const storedNumber = localStorage.getItem("field-number");
+        
+        if (storedName) document.getElementsByName("fio")[0].value = storedName;
+        if (storedEmail) document.getElementsByName("field-email")[0].value = storedEmail;
+        //if (storedMessage) document.getElementsByName("field-message")[0].value = storedMessage;
+       // if (storedOrg) document.getElementsByName("field-company")[0].value = storedOrg;
+        //if (storedNumber) document.getElementsByName("field-number")[0].value = storedNumber;
     };
 
     // Сохраняем значения в LocalStorage при каждом вводе
@@ -97,63 +87,60 @@ window.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem(event.target.name, event.target.value);
     });
 
-    //Обработчик отправки формы
+    // Обработка отправки формы
     form.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        //Валидация на стороне клиента
-
-        let email = document.getElementsByName("field-email")[0].value;
-        let name = document.getElementsByName("fio")[0].value;
-        let number = document.getElementsByName("field-number")[0].value;
-        const checkbox = document.getElementsByName("check-1")[0].checked;
-
+        let email = document.getElementsByName("field-email")[0];
+        let name = document.getElementsByName("fio")[0];
+        //let number = document.getElementsByName("field-number")[0];
+        const checkbox = document.getElementsByName("check-1")[0];
         let formcheck = true;
 
-        if (!name) {
-            formcheck = false;
-        }
-        if (!email) {
-            formcheck = false;
-        }
-        if (!number) {
-            formcheck = false;
-        }
-        if (!checkbox) {
-            formcheck = false;
-        }
+        // Валидация полей
+        if (!name.value) formcheck = false;
+        if (!email.value) formcheck = false;
+        //if (!number.value) formcheck = false;
+        if (!checkbox.checked) formcheck = false;
 
-        if (!formcheck) {
-            console.error("Заполните все обязательные поля!"); //Замените на вывод на странице
-            return; //Прерываем отправку
-        }
+        if (formcheck) {
+            // Создаем объект FormData для отправки
+            const formData = new FormData(form);
 
-        //Отправка формы через Fetch
-        const formData = new FormData(form);
-        fetch(form.action, {
-            method: "POST",
-            body: formData,
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-            },
-        })
-            .then((response) => response.json()) //Парсим JSON ответ
-            .then((data) => {
-                //Обработка ответа от сервера
-                if (data.success) {
-                    //Действия в случае успешной отправки
-                    console.log("Успешно отправлено!", data.message);
-                    //Очищаем localStorage (по желанию)
-                    localStorage.clear();
-
-                    //Дополнительная логика (например, показ сообщения об успехе)
-                } else {
-                    //Обработка ошибок
-                    console.error("Ошибка!", data.errors); //Замените на вывод на странице
+            // Отправляем данные через Fetch API
+            fetch(form.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
                 }
             })
-            .catch((error) => {
-                console.error("Ошибка сети:", error);
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Ошибка сети');
+                }
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Форма отправлена!");
+                    form.reset();
+                    // Очищаем localStorage после успешной отправки
+                    localStorage.removeItem("FIO");
+                    localStorage.removeItem("field-email");
+                    // localStorage.removeItem("field-message");
+                    // localStorage.removeItem("field-company");
+                    // localStorage.removeItem("field-number");
+                } else {
+                    alert("Ошибка: " + (data.message || "Неизвестная ошибка"));
+                }
+            })
+            .catch(error => {
+                alert("Ошибка при отправке: " + error.message);
             });
+        } else {
+            alert("Заполните все обязательные поля формы");
+        }
     });
 });
