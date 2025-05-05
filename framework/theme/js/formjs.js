@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Обрабатываем успешную отправку
                 console.log("Успех:", data.message);
                 //Перенаправляем на страницу успеха
-                window.location.href = url('./');
+                window.location.href = './';
             } else{
                 console.log("Что-то пошло не так");
             }
