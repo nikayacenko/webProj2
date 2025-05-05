@@ -357,7 +357,7 @@ function front_post($request, $db) {
     echo json_encode(['success' => true, 'message' => 'Данные успешно сохранены.']);
     exit;
   } else {
-    return redirect('./success');
+    return redirect('./');
   }
 }
 
