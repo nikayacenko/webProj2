@@ -1,6 +1,6 @@
 <?php
     header('Content-Type: application/json');
-error_reporting(0);
+// error_reporting(0);
 
 //Этот PHP код определяет два обработчика HTTP-запросов, 
 // предназначенные для модуля с именем "front". 
