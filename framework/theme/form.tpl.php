@@ -696,7 +696,7 @@
                     <label сlass="form-checkbox"> <input type="checkbox" name="check-1" <?php if ($errors['check-1']) {print 'class="error"';} ?>  checked="<?php if (!$errors['check-1']) {print 'checked';} ?>">
                     </label><br />
                     <div class="kn pb-sm-3">
-                        <input type="submit" value="Сохранить" />
+                        <input type="submit" value="Сохранить" id="saveButton" />
                     </div>
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars(generateCsrfToken()); ?>">
                     <?php 
