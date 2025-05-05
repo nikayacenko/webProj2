@@ -623,7 +623,7 @@
                         </div>
                     </div>
                     <div class="b-form col-md-4 order-2 px-3 pb-3 pt-1 pt-md-3 mx-auto">
-                        <form id="myform" action="<?php echo url('./'); ?>"method="POST">
+                        <form id="myform" action="" method="POST">
                             <?php
                             if (!empty($messages)) {
                             print('<div id="messages">');
