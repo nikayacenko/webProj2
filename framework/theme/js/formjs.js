@@ -155,35 +155,38 @@ window.addEventListener("DOMContentLoaded", function () {
             }
         })
         .then(response => {
-            // Проверяем Content-Type ответа
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                return response.json();
-            } else {
-                return response.text().then(text => {
-                    throw new Error('Ожидался JSON, но получили: ' + text.substring(0, 100));
-                });
+            // Сначала проверяем статус ответа
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
+            // Пытаемся распарсить как JSON, если не получится - вернем текст
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    // Если это не JSON, проверяем содержимое
+                    if (text.includes('form') || text.includes('<html') || text.includes('<style')) {
+                        // Это HTML-страница, вероятно редирект
+                        return { redirect: true };
+                    }
+                    return { success: false, message: text };
+                }
+            });
         })
         .then(data => {
-            if (data.success) {
+            if (data.redirect) {
+                // Сервер вернул HTML, нужно перезагрузить страницу
+                window.location.reload();
+            } else if (data.success) {
                 alert('Форма успешно отправлена!');
                 form.reset();
-                // Очистка localStorage после успешной отправки
-                fieldsToRestore.forEach(fieldName => {
-                    localStorage.removeItem(fieldName);
-                });
-            } else {
-                alert('Ошибка: ' + (data.message || 'Неизвестная ошибка сервера'));
-                // Можно добавить обработку ошибок валидации
-                if (data.errors) {
-                    Object.entries(data.errors).forEach(([field, error]) => {
-                        const elements = document.getElementsByName(field);
-                        if (elements.length > 0) {
-                            elements[0].classList.add('error');
-                        }
-                    });
+                // Если нужно перенаправить
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
                 }
+            } else {
+                alert(data.message || 'Произошла ошибка при отправке формы');
             }
         })
         .catch(error => {

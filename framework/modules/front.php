@@ -336,36 +336,36 @@ setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UT
 
 
 // Обработка AJAX-запроса
-if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-  header('Content-Type: application/json');
+// if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+//   header('Content-Type: application/json');
   
-  if (!empty($errors)) {
-      echo json_encode([
-          'success' => false,
-          'message' => 'Validation errors',
-          'errors' => $errors,
-          'values' => $values
-      ]);
-      exit;
-  }
-} else {
-  // Стандартная обработка с куками
-  foreach ($errors as $field => $error) {
-      setcookie($field . '_error', $error, time() + 365 * 24 * 60 * 60);
-  }
-  foreach ($values as $field => $value) {
-      setcookie($field . '_value', $value, time() + 365 * 24 * 60 * 60);
-  }
+//   if (!empty($errors)) {
+//       echo json_encode([
+//           'success' => false,
+//           'message' => 'Validation errors',
+//           'errors' => $errors,
+//           'values' => $values
+//       ]);
+//       exit;
+//   }
+// } else {
+//   // Стандартная обработка с куками
+//   foreach ($errors as $field => $error) {
+//       setcookie($field . '_error', $error, time() + 365 * 24 * 60 * 60);
+//   }
+//   foreach ($values as $field => $value) {
+//       setcookie($field . '_value', $value, time() + 365 * 24 * 60 * 60);
+//   }
 
-  if (!empty($errors)) {
-      if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && 
-          $_SERVER['PHP_AUTH_USER'] == adminlog($db) && 
-          password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db)) {
-          return redirect('./', ['uid' => $request['post']['uid']]);
-      }
-      return redirect('./');
-  }
-}
+//   if (!empty($errors)) {
+//       if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && 
+//           $_SERVER['PHP_AUTH_USER'] == adminlog($db) && 
+//           password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db)) {
+//           return redirect('./', ['uid' => $request['post']['uid']]);
+//       }
+//       return redirect('./');
+//   }
+// }
 
 if ($errors) {
   
