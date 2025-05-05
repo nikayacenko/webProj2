@@ -108,7 +108,7 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 
     // Обработка отправки формы
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("click", function (e) {
         e.preventDefault();
 
         // Валидация обязательных полей
