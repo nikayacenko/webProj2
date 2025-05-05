@@ -55,9 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const myButton = document.getElementById('saveButton');
     if (myButton) {
         myButton.type = 'button'; // Заменяем тип кнопки
-        myButton.addEventListener('click', function(event) {
-            // Ваш код для обработки формы через JS
-        });
     }
 });
 
@@ -88,7 +85,7 @@ window.addEventListener("DOMContentLoaded", function () {
     });
 
     // Обработка отправки формы
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("click", function (e) {
         e.preventDefault();
 
         let email = document.getElementsByName("field-email")[0];
