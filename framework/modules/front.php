@@ -463,7 +463,20 @@ function front_get($request, $db) {
 // •  Параметры, переданные методом POST.
 // •  Параметры, переданные методами PUT и DELETE (эмулированными через POST).
 // •  Тип контента по умолчанию.
-
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+  header('Content-Type: application/json');
+  
+  try {
+      $response = handleFormSubmission();
+      echo json_encode($response);
+  } catch (Exception $e) {
+      echo json_encode([
+          'status' => 'error',
+          'message' => 'Произошла ошибка: ' . $e->getMessage()
+      ]);
+  }
+  exit;
+}
 // Обработчик запросов методом POST.
 function handleFormSubmission() {
   if (!validateCsrfToken()) {
