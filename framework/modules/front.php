@@ -214,8 +214,7 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
-  $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-             $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
     http_response_code(403); 
