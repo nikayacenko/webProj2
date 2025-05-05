@@ -96,10 +96,10 @@ window.addEventListener("DOMContentLoaded", function () {
         if (storedEmail) {
             document.getElementsByName("field-email")[0].value = storedEmail;
         }
-        if (storedMessage) {
-            document.getElementsByName("field-message")[0].value =
-            storedMessage;
-        }
+        // if (storedMessage) {
+        //     document.getElementsByName("field-message")[0].value =
+        //     storedMessage;
+        // }
     };
 
     //Сохраняем значения в LocalStorage при каждом вводе
