@@ -169,31 +169,22 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response) {
-                if (response.redirect) {
-                    // Очистка кук после успешной отправки
-                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
-                        deleteCookie(name);
-                    });
+                if (response.success) {
+                    // Очистка ВСЕХ кук
+                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 
+                     'check-1', 'languages', 'bio', 'save', 'login', 'pass'].forEach(deleteCookie);
                     
-                    // Очистка ошибок
-                    ['fio_error', 'field-tel_error', 'field-email_error', 'field-date_error', 
-                     'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(name => {
-                        deleteCookie(name);
-                    });
-
-                    if (response.message) {
+                    if (response.login && response.pass) {
+                        showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
+                    } else if (response.message) {
                         showSuccessMessage(response.message);
                     }
                     
                     if (response.redirect) {
-                        setTimeout(() => {
-                            window.location.href = response.redirect;
-                        }, 2000);
-                    } else {
-                        form.reset();
+                        window.location.href = response.redirect;
                     }
                 } else {
-                    showError(response.message || 'Произошла ошибка при сохранении');
+                    showError(response.message || 'Ошибка сервера');
                 }
             },
             error: function(xhr) {
