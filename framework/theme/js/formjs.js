@@ -88,7 +88,47 @@ function setCookie(name, value, options = {}) {
 function deleteCookie(name) {
     setCookie(name, '', { maxAge: -1 });
 }
-
+function updateCsrfToken(newToken) {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (meta) {
+        meta.content = newToken;
+    }
+    // Также обновляем в скрытом поле формы, если есть
+    const input = form.querySelector('[name="csrf_token"]');
+    if (input) {
+        input.value = newToken;
+    }
+}
+function clearFormCookies() {
+    const cookies = [
+        'fio', 'field-tel', 'field-email', 'field-date',
+        'radio-group-1', 'check-1', 'languages', 'bio',
+        'fio_error', 'field-tel_error', 'field-email_error',
+        'field-date_error', 'radio-group-1_error', 'check-1_error',
+        'languages_error', 'bio_error', 'save'
+    ];
+    cookies.forEach(deleteCookie);
+}
+function handleCsrfError() {
+    showError('Сессия устарела. Обновите страницу и попробуйте снова.');
+    // Можно добавить автоматическое обновление страницы
+    setTimeout(() => location.reload(), 3000);
+}
+function showAuthModal(login, password) {
+    const modal = `
+        <div class="auth-modal">
+            <h3>Учетная запись создана</h3>
+            <div class="auth-data">
+                <p><strong>Логин:</strong> <span>${login}</span></p>
+                <p><strong>Пароль:</strong> <span>${password}</span></p>
+            </div>
+            <button class="copy-btn" data-clipboard-text="${login}\n${password}">
+                Скопировать данные
+            </button>
+        </div>
+    `;
+    // Реализация модального окна зависит от вашей UI-библиотеки
+}
 window.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("myform");
 
@@ -186,66 +226,40 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response) {
-                // 1. Всегда очищаем куки ошибок при успешном ответе
-                ['fio_error', 'field-tel_error', 'field-email_error', 'field-date_error', 
-                 'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(deleteCookie);
-            
-                // 2. Обработка успешного создания пользователя
+                // Обновляем CSRF токен если он пришел
+                if (response.csrf_refresh) {
+                    updateCsrfToken(response.csrf_refresh);
+                }
+                
+                // Обработка создания нового пользователя
                 if (response.login && response.pass) {
-                    // Форматируем сообщение с логином/паролем
-                    const message = `
-                        <h4>Учетная запись создана!</h4>
-                        <p><strong>Логин:</strong> ${response.login}</p>
-                        <p><strong>Пароль:</strong> ${response.pass}</p>
-                        <p class="text-warning">Сохраните эти данные!</p>
-                    `;
-                    
-                    // Показываем сообщение на 15 секунд
-                    showSuccessMessage(message, 15000);
-                    
-                    // Очищаем форму и куки
-                    form.reset();
-                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 
-                     'check-1', 'languages', 'bio', 'save'].forEach(deleteCookie);
-                    
-                    // Дополнительные действия при успехе
-                    if (typeof onUserCreated === 'function') {
-                        onUserCreated(response.login, response.pass);
-                    }
-                    
+                    showAuthModal(response.login, response.pass);
+                    clearFormCookies();
                     return;
                 }
-            
-                // 3. Обработка обычного успешного сохранения
-                if (response.success) {
-                    // Показываем сообщение из ответа или стандартное
-                    showSuccessMessage(response.message || 'Данные успешно сохранены');
+                
+                // Стандартная обработка успеха
+                if (response.success === true) {
+                    showSuccessMessage(response.message || 'Данные сохранены');
+                    clearFormCookies();
                     
-                    // Очищаем куки полей формы
-                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 
-                     'check-1', 'languages', 'bio'].forEach(deleteCookie);
-                    
-                    // Если есть редирект - выполняем его
                     if (response.redirect) {
-                        setTimeout(() => {
-                            window.location.href = response.redirect;
-                        }, 2000);
-                        return;
+                        setTimeout(() => window.location.href = response.redirect, 1500);
+                    } else {
+                        form.reset();
                     }
-                    
-                    // Очищаем форму только если нет редиректа
-                    form.reset();
                     return;
                 }
-            
-                // 4. Обработка ответа с ошибкой (success: false)
-                if (response.message) {
-                    showError(response.message);
-                } else {
-                    // Логируем непредвиденный ответ для отладки
-                    console.error('Неожиданный формат ответа:', response);
-                    showError('Произошла непредвиденная ошибка');
+                
+                // Обработка устаревшего CSRF
+                if (response.csrf_error) {
+                    handleCsrfError();
+                    return;
                 }
+                
+                // Неожиданный формат ответа
+                console.error('Unexpected response format:', response);
+                showError('Некорректный ответ сервера');
             },
             error: function(xhr) {
                 // Обработка ошибок валидации из PHP
@@ -257,9 +271,11 @@ window.addEventListener("DOMContentLoaded", function() {
                             highlightError(element, getErrorMessage(field, errors[field]));
                         }
                     });
-                } else (xhr.status === 403)
+                } else if (xhr.status === 403) {
                     showError('Ошибка CSRF токена. Обновите страницу и попробуйте снова.');
-                
+                } else {
+                    showError('Произошла ошибка сервера. Пожалуйста, попробуйте позже.');
+                }
             }
         });
     });

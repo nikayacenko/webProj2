@@ -214,6 +214,8 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
+  header('Content-Type: application/json'); // Всегда JSON для AJAX
+
   ob_start();
     // Проверяем AJAX-запрос
   $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
@@ -481,6 +483,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
                 'login' => $login,
                 'pass' => $pass,
                 'save' => true
+                'csrf_refresh' => generateNewCsrfToken() // Генерация нового токена
               ]);
               exit;
           } else {
@@ -491,10 +494,11 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           }
       } catch(PDOException $e) {
           if ($isAjax) {
-            header('Content-Type: application/json');
+            http_response_code(500);
               echo json_encode([
                   'success' => false,
                   'message' => 'Ошибка при создании пользователя: ' . $e->getMessage()
+                  'error' => $e->getMessage() // Только для разработки
               ]);
               exit;
           } else {
