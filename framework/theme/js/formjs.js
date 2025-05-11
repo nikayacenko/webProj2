@@ -257,9 +257,9 @@ window.addEventListener("DOMContentLoaded", function() {
                             highlightError(element, getErrorMessage(field, errors[field]));
                         }
                     });
-                } else (xhr.status === 403) {
+                } else (xhr.status === 403)
                     showError('Ошибка CSRF токена. Обновите страницу и попробуйте снова.');
-                }
+                
             }
         });
     });
