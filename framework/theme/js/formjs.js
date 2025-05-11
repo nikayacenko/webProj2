@@ -88,47 +88,7 @@ function setCookie(name, value, options = {}) {
 function deleteCookie(name) {
     setCookie(name, '', { maxAge: -1 });
 }
-function updateCsrfToken(newToken) {
-    const meta = document.querySelector('meta[name="csrf-token"]');
-    if (meta) {
-        meta.content = newToken;
-    }
-    // Также обновляем в скрытом поле формы, если есть
-    const input = form.querySelector('[name="csrf_token"]');
-    if (input) {
-        input.value = newToken;
-    }
-}
-function clearFormCookies() {
-    const cookies = [
-        'fio', 'field-tel', 'field-email', 'field-date',
-        'radio-group-1', 'check-1', 'languages', 'bio',
-        'fio_error', 'field-tel_error', 'field-email_error',
-        'field-date_error', 'radio-group-1_error', 'check-1_error',
-        'languages_error', 'bio_error', 'save'
-    ];
-    cookies.forEach(deleteCookie);
-}
-function handleCsrfError() {
-    showError('Сессия устарела. Обновите страницу и попробуйте снова.');
-    // Можно добавить автоматическое обновление страницы
-    setTimeout(() => location.reload(), 3000);
-}
-function showAuthModal(login, password) {
-    const modal = `
-        <div class="auth-modal">
-            <h3>Учетная запись создана</h3>
-            <div class="auth-data">
-                <p><strong>Логин:</strong> <span>${login}</span></p>
-                <p><strong>Пароль:</strong> <span>${password}</span></p>
-            </div>
-            <button class="copy-btn" data-clipboard-text="${login}\n${password}">
-                Скопировать данные
-            </button>
-        </div>
-    `;
-    // Реализация модального окна зависит от вашей UI-библиотеки
-}
+
 window.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("myform");
 
@@ -145,23 +105,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 } else {
                     elements[0].value = value;
                 }
-            }
-        });
-        if (getCookie('save')) {
-            showSuccessMessage('Данные успешно сохранены');
-            deleteCookie('save');
-        }
-        
-        // Восстановление ошибок
-        ['fio_error', 'field-tel_error', 'field-email_error', 'check-1_error'].forEach(errorName => {
-            const errorCode = getCookie(errorName);
-            if (errorCode) {
-                const field = errorName.replace('_error', '');
-                const element = document.querySelector(`[name="${field}"]`);
-                if (element) {
-                    highlightError(element, getErrorMessage(field, errorCode));
-                }
-                deleteCookie(errorName);
             }
         });
     };
@@ -226,45 +169,31 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response) {
-                try {
-                    // Обновляем CSRF токен если он пришел
-                    if (response.csrf_refresh) {
-                        updateCsrfToken(response.csrf_refresh);
+                if (response.redirect) {
+                    // Очистка кук после успешной отправки
+                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
+                        deleteCookie(name);
+                    });
+                    
+                    // Очистка ошибок
+                    ['fio_error', 'field-tel_error', 'field-email_error', 'field-date_error', 
+                     'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(name => {
+                        deleteCookie(name);
+                    });
+
+                    if (response.message) {
+                        showSuccessMessage(response.message);
                     }
                     
-                    // Обработка ошибок (даже при success: true)
-                    if (response.error) {
-                        showError(response.error);
-                        return;
+                    if (response.redirect) {
+                        setTimeout(() => {
+                            window.location.href = response.redirect;
+                        }, 2000);
+                    } else {
+                        form.reset();
                     }
-                    
-                    // Создание нового пользователя
-                    if (response.login && response.pass) {
-                        showAuthData(response.login, response.pass);
-                        clearFormCookies();
-                        return;
-                    }
-                    
-                    // Стандартный успешный ответ
-                    if (response.success) {
-                        showSuccessMessage(response.message || 'Данные сохранены');
-                        clearFormCookies();
-                        
-                        if (response.redirect) {
-                            setTimeout(() => {
-                                window.location.href = response.redirect;
-                            }, 1500);
-                        }
-                        return;
-                    }
-                    
-                    // Неожиданный формат ответа
-                    console.warn('Unexpected response:', response);
-                    showError('Некорректный ответ сервера');
-                    
-                } catch (e) {
-                    console.error('Error processing response:', e);
-                    showError('Ошибка обработки ответа');
+                } else {
+                    showError(response.message || 'Произошла ошибка при сохранении');
                 }
             },
             error: function(xhr) {
@@ -277,11 +206,7 @@ window.addEventListener("DOMContentLoaded", function() {
                             highlightError(element, getErrorMessage(field, errors[field]));
                         }
                     });
-                } else if (xhr.status === 403) {
-                    showError('Ошибка CSRF токена. Обновите страницу и попробуйте снова.');
-                } else {
-                    showError('Произошла ошибка сервера. Пожалуйста, попробуйте позже.');
-                }
+                } 
             }
         });
     });
