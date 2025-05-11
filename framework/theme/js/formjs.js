@@ -289,7 +289,7 @@ window.addEventListener("DOMContentLoaded", function() {
     }
 
     // Восстановление данных при загрузке
-    restoreFormData();
+    restoreFormCookies();
 });
 
 
