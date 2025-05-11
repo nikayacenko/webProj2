@@ -168,33 +168,18 @@ window.addEventListener("DOMContentLoaded", function() {
             beforeSend: function(xhr) {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
-            success: function(response) {
+            success: function(response, status, xhr) {
+                // Успешные ответы (включая 200)
                 if (response.success) {
-                    // Очистка кук после успешной отправки
-                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
-                        deleteCookie(name);
-                    });
-                    
-                    // Очистка ошибок
-                    ['fio_error', 'field-tel_error', 'field-email_error', 'field-date_error', 
-                     'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(name => {
-                        deleteCookie(name);
-                    });
-            
-                    if (response.message) {
-                        showSuccessMessage(response.message);
-                    }
-                    
-                    if (response.redirect) {
-                        setTimeout(() => {
-                            window.location.href = response.redirect;
-                        }, 2000);
-                    } else if (response.save) {
-                        // Обработка успешного сохранения без редиректа
-                        form.reset();
+                    // Обработка успешного сохранения
+                    if (response.login && response.pass) {
+                        showSuccessMessage(`Логин: ${response.login}, Пароль: ${response.pass}`);
+                    } else {
+                        showSuccessMessage(response.message || 'Данные сохранены');
                     }
                 } else {
-                    showError(response.message || 'Произошла ошибка при сохранении');
+                    // Сервер вернул 200, но с success: false
+                    showError(response.message || 'Ошибка обработки данных');
                 }
             },
             error: function(xhr) {
