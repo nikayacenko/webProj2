@@ -169,6 +169,9 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response, status, xhr) {
+                console.log('Raw response:', response);
+        console.log('Status:', xhr.status);
+        console.log('Content-Type:', xhr.getResponseHeader('Content-Type'));
                 try {
                     // Проверяем, может ли response быть строкой (на случай неправильного Content-Type)
                     if (typeof response === 'string') {
