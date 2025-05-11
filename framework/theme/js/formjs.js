@@ -215,7 +215,6 @@ window.addEventListener("DOMContentLoaded", function() {
                     // Обработка успешного обновления данных
                     if (response.success || response.message) {
                         resetFormErrors();
-                        clearErrorCookies();
                         showSuccessMessage(response.message || 'Данные успешно сохранены');
                         
                         // Редирект если есть
