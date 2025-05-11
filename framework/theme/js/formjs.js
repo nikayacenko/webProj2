@@ -51,105 +51,93 @@
 //     }
 // });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const myButton = document.getElementById('saveButton');
-    if (myButton) {
-        myButton.type = 'button'; // Заменяем тип кнопки
-    }
-});
+window.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("MyForm");
 
-
-
-window.addEventListener("DOMContentLoaded", function () {
-    // Получаем элементы формы
-    const form = document.getElementById("myform");
-
-    // Восстанавливаем значения из LocalStorage при загрузке страницы
-    window.onload = function () {
-        const storedName = localStorage.getItem("fio");
-        const storedEmail = localStorage.getItem("field-email");
-        // const storedMessage = localStorage.getItem("field-message");
-        // const storedOrg = localStorage.getItem("field-company");
-        // const storedNumber = localStorage.getItem("field-number");
-        
-        if (storedName) document.getElementsByName("fio")[0].value = storedName;
-        if (storedEmail) document.getElementsByName("field-email")[0].value = storedEmail;
-        //if (storedMessage) document.getElementsByName("field-message")[0].value = storedMessage;
-       // if (storedOrg) document.getElementsByName("field-company")[0].value = storedOrg;
-        //if (storedNumber) document.getElementsByName("field-number")[0].value = storedNumber;
+    // Восстановление значений из LocalStorage
+    const restoreFormData = () => {
+        ['FIO', 'field-email', 'field-message', 'field-company', 'field-number', 'check-1'].forEach(name => {
+            const value = localStorage.getItem(name);
+            if (value && document.getElementsByName(name)[0]) {
+                document.getElementsByName(name)[0].value = value;
+            }
+        });
     };
 
-    // Сохраняем значения в LocalStorage при каждом вводе
-    form.addEventListener("input", function (event) {
+    // Сохранение в LocalStorage
+    form.addEventListener("input", function(event) {
         localStorage.setItem(event.target.name, event.target.value);
     });
 
     // Обработка отправки формы
-    form.addEventListener("click", function (e) {
+    form.addEventListener("submit", function(e) {
         e.preventDefault();
-
-        let email = document.getElementsByName("field-email")[0];
-        let name = document.getElementsByName("fio")[0];
-        //let number = document.getElementsByName("field-number")[0];
-        const checkbox = document.getElementsByName("check-1")[0];
-        let formcheck = true;
-
-        // Валидация полей
-        if (!name.value) formcheck = false;
-        if (!email.value) formcheck = false;
-        //if (!number.value) formcheck = false;
-        if (!checkbox.checked) formcheck = false;
-
-        if (formcheck) {
-            // Создаем объект FormData для отправки
-            const formData = new FormData(form);
-
-            // Отправляем данные через Fetch API
-            fetch(form.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest' // Добавляем заголовок для AJAX
-                }
-            })
-            .then(response => {
-                // Проверяем Content-Type ответа
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    return response.json();
-                } else {
-                    return response.text().then(text => {
-                        throw new Error('Ожидался JSON, но получили: ' + text.substring(0, 100));
-                    });
-                }
-            })
-            .then(data => {
-                if (data.success) {
-                    alert('Форма успешно отправлена!');
-                    form.reset();
-                    // Очистка localStorage после успешной отправки
-                    fieldsToRestore.forEach(fieldName => {
-                        localStorage.removeItem(fieldName);
-                    });
-                } else {
-                    alert('Ошибка: ' + (data.message || 'Неизвестная ошибка сервера'));
-                    // Можно добавить обработку ошибок валидации
-                    if (data.errors) {
-                        Object.entries(data.errors).forEach(([field, error]) => {
-                            const elements = document.getElementsByName(field);
-                            if (elements.length > 0) {
-                                elements[0].classList.add('error');
-                            }
-                        });
-                    }
-                }
-            })
-            .catch(error => {
-                alert("Ошибка при отправке: " + error.message);
-            });
-        } else {
-            alert("Заполните все обязательные поля формы");
+        
+        // Собираем данные формы
+        const formData = new FormData(this);
+        
+        // Добавляем CSRF-токен, если он нужен
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+        if (csrfToken) {
+            formData.append('csrf_token', csrfToken);
         }
+
+        // Валидация перед отправкой
+        const requiredFields = ['FIO', 'field-email', 'field-number'];
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!formData.get(field)) {
+                isValid = false;
+                document.cookie = `${field}_error=1; path=/`;
+            }
+        });
+
+        if (!isValid) {
+            alert("Заполните все обязательные поля");
+            return;
+        }
+
+        // Отправка AJAX
+        $.ajax({
+            url: form.action,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            },
+            success: function(response) {
+                if (response.redirect) {
+                    window.location.href = response.redirect;
+                } else {
+                    // Обработка успешной отправки
+                    alert("Форма успешно отправлена!");
+                    form.reset();
+                    localStorage.clear();
+                    
+                    // Очистка ошибок из cookies
+                    document.cookie = "fio_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "field-email_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "field-number_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                }
+            },
+            error: function(xhr) {
+                // Обработка ошибок валидации из PHP
+                if (xhr.status === 403) {
+                    alert("Ошибка CSRF токена");
+                } else {
+                    const errors = xhr.responseJSON?.errors || {};
+                    Object.keys(errors).forEach(field => {
+                        alert(`Ошибка в поле ${field}: ${errors[field]}`);
+                    });
+                }
+            }
+        });
     });
+
+    // Восстановление данных при загрузке
+    restoreFormData();
 });

@@ -214,12 +214,18 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
+    // Проверяем AJAX-запрос
   $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
-  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+              strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
-    http_response_code(403); 
-   
+    if ($isAjax) {
+        http_response_code(403);
+        exit(json_encode(['error' => 'CSRF token validation failed']));
+    } else {
+        http_response_code(403);
+        exit;
+    }
   }
 $fav_languages = ($request['post']['languages']) ?? [];
 // Проверяем ошибки.
@@ -337,44 +343,23 @@ if (!empty($request['post']['bio']) && !preg_match('/^[а-яА-Яa-zA-Z1-9.,?!:(
 setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UTF-8'), time() + 365 * 24 * 60 * 60);
 
 
-// if ($isAjax) {
-//   header('Content-Type: application/json');
-//   echo json_encode(['success' => true]);
-//   exit;
-// }
-// Обработка AJAX-запроса
-// if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-//   header('Content-Type: application/json');
-  
-//   if (!empty($errors)) {
-//       echo json_encode([
-//           'success' => false,
-//           'message' => 'Validation errors',
-//           'errors' => $errors,
-//           'values' => $values
-//       ]);
-//       exit;
-//   }
-// } else {
-//   // Стандартная обработка с куками
-//   foreach ($errors as $field => $error) {
-//       setcookie($field . '_error', $error, time() + 365 * 24 * 60 * 60);
-//   }
-//   foreach ($values as $field => $value) {
-//       setcookie($field . '_value', $value, time() + 365 * 24 * 60 * 60);
-//   }
-
-//   if (!empty($errors)) {
-//       if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && 
-//           $_SERVER['PHP_AUTH_USER'] == adminlog($db) && 
-//           password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db)) {
-//           return redirect('./', ['uid' => $request['post']['uid']]);
-//       }
-//       return redirect('./');
-//   }
-// }
-
 if ($errors) {
+  if ($isAjax) {
+    // Для AJAX возвращаем ошибки в JSON
+    $responseErrors = [];
+    foreach ($_COOKIE as $key => $value) {
+        if (strpos($key, '_error') !== false) {
+            $field = str_replace('_error', '', $key);
+            $responseErrors[$field] = $value;
+        }
+    }
+    http_response_code(422);
+    echo json_encode(['errors' => $responseErrors]);
+    exit;
+} else {
+    // Редирект для обычной формы
+    return redirect('./');
+}
   
   if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
   {
@@ -395,65 +380,116 @@ else {
 
 // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
 
-if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
-{
-  if(!empty($request['post']['uid']))
-  {
-    try{
-    $update_id = intval($request['post']['uid']);//XSS
-    $doplog=findLoginByUid($update_id, $db);
-    updateDB($doplog, $db);
-    return redirect('admin');
-
-    }
-    catch(PDOException $e){
-      return redirect('admin');
-    }
+if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] == adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db)) {
+  if(!empty($request['post']['uid'])) {
+      try {
+          $update_id = intval($request['post']['uid']); //XSS
+          $doplog = findLoginByUid($update_id, $db);
+          updateDB($doplog, $db);
+          
+          if ($isAjax) {
+              echo json_encode([
+                  'success' => true,
+                  'message' => 'Данные администратора успешно обновлены',
+                  'redirect' => 'admin'
+              ]);
+              exit;
+          } else {
+              return redirect('admin');
+          }
+      } catch(PDOException $e) {
+          if ($isAjax) {
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Ошибка базы данных при обновлении'
+              ]);
+              exit;
+          } else {
+              return redirect('admin');
+          }
+      }
+  } else {
+      if ($isAjax) {
+          echo json_encode([
+              'success' => false,
+              'message' => 'Вы не выбрали пользователя для изменения'
+          ]);
+          exit;
+      } else {
+          print('Вы не выбрали пользователя для изменения');
+          exit();
+      }
   }
-  else{
-    print('Вы не выбрали пользователя для изменения');
-    exit();
+} else {
+  if (isset($_COOKIE[session_name()]) && session_start() && !empty($_SESSION['login'])) {
+      try {
+          updateDB($_SESSION['login'], $db);
+          
+          // Сохраняем куку с признаком успешного сохранения
+          setcookie('save', '1');
+          
+          if ($isAjax) {
+              echo json_encode([
+                  'success' => true,
+                  'message' => 'Данные успешно сохранены'
+              ]);
+              exit;
+          } else {
+              return redirect();
+          }
+      } catch(PDOException $e) {
+          if ($isAjax) {
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Ошибка базы данных: ' . $e->getMessage()
+              ]);
+              exit;
+          } else {
+              print('Error : ' . $e->getMessage());
+              exit();
+          }
+      }
+  } else {
+      $login = generate_pass(7);
+      while(check_login($login, $db) > 0) {
+          $login = generate_pass(7);
+      }
+      $pass = generate_pass();
+      $hash_pass = password_hash($pass, PASSWORD_DEFAULT);
+      
+      try {
+          insertDB($db, $login, $hash_pass);
+          
+          // Сохраняем в Cookies
+          setcookie('login', $login);
+          setcookie('pass', $pass);
+          setcookie('save', '1');
+          
+          if ($isAjax) {
+              echo json_encode([
+                  'success' => true,
+                  'message' => 'Новый пользователь создан',
+                  'login' => $login,
+                  'pass' => $pass
+              ]);
+              exit;
+          } else {
+              return redirect();
+          }
+      } catch(PDOException $e) {
+          if ($isAjax) {
+              echo json_encode([
+                  'success' => false,
+                  'message' => 'Ошибка при создании пользователя: ' . $e->getMessage()
+              ]);
+              exit;
+          } else {
+              print('Error : ' . $e->getMessage());
+              exit();
+          }
+      }
   }
 }
-else{
-if (isset($_COOKIE[session_name()]) && session_start() && !empty($_SESSION['login'])) {
-  try {
-        updateDB($_SESSION['login'], $db);
-  }
-  catch(PDOException $e){
-      print('Error : ' . $e->getMessage());
-      exit();
-  }
-}
-else {
-  $login = generate_pass(7);
-  while(check_login($login, $db)>0)
-  {
-    $login = generate_pass(7);
-  }
-  $pass = generate_pass();
-  // Сохраняем в Cookies.
-  $hash_pass=password_hash($pass, PASSWORD_DEFAULT);
-  setcookie('login', $login);
-  setcookie('pass', $pass);
-  try {
-        insertDB($db, $login, $hash_pass);
-  }
-  catch(PDOException $e){
-      print('Error : ' . $e->getMessage());
-      exit();
-  }
-}
-}
-
-// Сохраняем куку с признаком успешного сохранения.
-setcookie('save', '1');
-
-// Делаем перенаправление.
-
-  return redirect();
-}
-
 //массив $request содержит всю необходимую информацию о входящем HTTP-запросе, 
 // что позволяет фреймворку правильно его обработать и сформировать соответствующий HTTP-ответ. 
 // Эта информация включает:
