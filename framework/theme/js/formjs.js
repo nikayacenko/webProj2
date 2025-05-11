@@ -169,7 +169,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response) {
-                if (response.success) {
+                if (response.redirect) {
                     // Очистка кук после успешной отправки
                     ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
                         deleteCookie(name);
@@ -180,7 +180,7 @@ window.addEventListener("DOMContentLoaded", function() {
                      'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(name => {
                         deleteCookie(name);
                     });
-            
+
                     if (response.message) {
                         showSuccessMessage(response.message);
                     }
@@ -189,8 +189,7 @@ window.addEventListener("DOMContentLoaded", function() {
                         setTimeout(() => {
                             window.location.href = response.redirect;
                         }, 2000);
-                    } else if (response.save) {
-                        // Обработка успешного сохранения без редиректа
+                    } else {
                         form.reset();
                     }
                 } else {

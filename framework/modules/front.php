@@ -430,8 +430,9 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           if ($isAjax) {
               echo json_encode([
                   'success' => true,
-                  'message' => 'Данные успешно сохранены',
-                  'save' => true
+    'message' => 'Данные успешно сохранены',
+    'save' => true,
+    'redirect' => '' // Добавлено
               ]);
               exit;
           } else {
@@ -469,10 +470,11 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           if ($isAjax) {
               echo json_encode([
                 'success' => true,
-                'message' => 'Новый пользователь создан',
-                'login' => $login,
-                'pass' => $pass,
-                'save' => true
+    'message' => 'Новый пользователь создан',
+    'login' => $login,
+    'pass' => $pass,
+    'save' => true,
+    'redirect' => '' // Добавлено
               ]);
               exit;
           } else {
