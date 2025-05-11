@@ -354,8 +354,11 @@ if ($errors) {
           }
       }
       http_response_code(422);
-      echo json_encode(['errors' => $responseErrors]);
-      exit;
+      echo json_encode([
+        'success' => false,
+        'errors' => $responseErrors
+    ]);
+    exit;
   } else {
       // Редирект для обычной формы
     
@@ -430,9 +433,8 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           if ($isAjax) {
               echo json_encode([
                   'success' => true,
-    'message' => 'Данные успешно сохранены',
-    'save' => true,
-    'redirect' => '' // Добавлено
+                  'message' => 'Данные успешно сохранены',
+                  'save' => true
               ]);
               exit;
           } else {
@@ -470,11 +472,10 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           if ($isAjax) {
               echo json_encode([
                 'success' => true,
-    'message' => 'Новый пользователь создан',
-    'login' => $login,
-    'pass' => $pass,
-    'save' => true,
-    'redirect' => '' // Добавлено
+                'message' => 'Новый пользователь создан',
+                'login' => $login,
+                'pass' => $pass,
+                'save' => true
               ]);
               exit;
           } else {
