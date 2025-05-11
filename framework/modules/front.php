@@ -502,7 +502,6 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
               echo json_encode([
                   'success' => false,
                   'message' => 'Ошибка при создании пользователя: ' . $e->getMessage()
-                  'error' => $e->getMessage() // Только для разработки
               ]);
               exit;
           } else {
