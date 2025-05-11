@@ -198,16 +198,45 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             },
             error: function(xhr) {
-                // Обработка ошибок валидации из PHP
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON?.errors || {};
-                    Object.keys(errors).forEach(field => {
-                        const element = document.querySelector(`[name="${field}"]`);
-                        if (element) {
-                            highlightError(element, getErrorMessage(field, errors[field]));
+                // Проверяем, есть ли тело ответа
+                if (!xhr.responseText) {
+                    showError('Сервер не ответил. Попробуйте позже.');
+                    return;
+                }
+            
+                try {
+                    const response = xhr.responseJSON || {};
+                    
+                    if (xhr.status === 422) {
+                        const errors = response.errors || {};
+                        let hasErrors = false;
+                        
+                        // Показываем общее сообщение
+                        showError('Исправьте отмеченные ошибки');
+                        
+                        // Обрабатываем каждую ошибку
+                        Object.keys(errors).forEach(field => {
+                            const element = document.querySelector(`[name="${field}"]`);
+                            if (element) {
+                                highlightError(element, getErrorMessage(field, errors[field]));
+                                hasErrors = true;
+                            }
+                        });
+                        
+                        if (!hasErrors) {
+                            showError('Некорректные данные в форме');
                         }
-                    });
-                } 
+                    } 
+                    else if (xhr.status === 403) {
+                        showError('Ошибка безопасности. Обновите страницу.');
+                    }
+                    else {
+                        showError(response.message || 'Ошибка сервера: ' + xhr.status);
+                    }
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                    showError('Не удалось обработать ответ сервера');
+                }
             }
         });
     });
@@ -215,18 +244,18 @@ window.addEventListener("DOMContentLoaded", function() {
     function highlightError(element, message) {
         if (!element) return;
         
+        const oldError = element.nextElementSibling;
+        if (oldError && oldError.classList.contains('error-message')) {
+            oldError.remove();
+        }
+
         const errorElement = document.createElement('div');
         errorElement.className = 'error-message';
         errorElement.style.color = 'red';
         errorElement.textContent = message;
         
-        element.style.borderColor = 'red';
-        element.parentNode.appendChild(errorElement);
-        
-        setTimeout(() => {
-            element.style.borderColor = '';
-            errorElement.remove();
-        }, 5000);
+        element.insertAdjacentElement('afterend', errorElement);
+    element.style.borderColor = 'red';
     }
 
     function getErrorMessage(field, code) {
