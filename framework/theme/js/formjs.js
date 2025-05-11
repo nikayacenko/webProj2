@@ -169,12 +169,14 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response) {
+                console.log('Response from server:', response);
                 // 1. Всегда очищаем куки ошибок при успешном ответе
                 ['fio_error', 'field-tel_error', 'field-email_error', 'field-date_error', 
                  'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(deleteCookie);
             
                 // 2. Обработка успешного создания пользователя
                 if (response.login && response.pass) {
+                    console.log('Login and pass received:', response.login, response.pass);
                     // Форматируем сообщение с логином/паролем
                     const message = `
                         <h4>Учетная запись создана!</h4>
@@ -296,15 +298,15 @@ window.addEventListener("DOMContentLoaded", function() {
         return `Ошибка в поле ${field}: ${code}`;
     }
 
-    function showSuccessMessage(message) {
+    function showSuccessMessage(message, duration = 5000) {
         const alertDiv = document.createElement('div');
         alertDiv.className = 'alert alert-success';
-        alertDiv.textContent = message;
+        alertDiv.innerHTML = message; // Измените textContent на innerHTML для форматирования
         form.prepend(alertDiv);
         
         setTimeout(() => {
             alertDiv.remove();
-        }, 5000);
+        }, duration);
     }
 
     function showError(message) {
