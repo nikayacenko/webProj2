@@ -313,10 +313,6 @@ window.addEventListener("DOMContentLoaded", function() {
         alertDiv.className = 'alert alert-success';
         alertDiv.textContent = message;
         form.prepend(alertDiv);
-        
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
     }
 
     function showError(message) {
@@ -324,10 +320,6 @@ window.addEventListener("DOMContentLoaded", function() {
         alertDiv.className = 'alert alert-danger';
         alertDiv.textContent = message;
         form.prepend(alertDiv);
-        
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
     }
 
     // Восстановление данных при загрузке
