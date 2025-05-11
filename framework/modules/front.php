@@ -463,7 +463,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           // Сохраняем в Cookies
           setcookie('login', $login);
           setcookie('pass', $pass);
-          setcookie('save', '1');
+          setcookie('save', '1', time() + 3600, '/', '', false, true);
           
           if ($isAjax) {
               echo json_encode([
