@@ -217,16 +217,23 @@ function front_post($request, $db) {
     // Проверяем AJAX-запрос
   $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+  if ($isAjax) {
+    header('Content-Type: application/json');
+  }
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
     if ($isAjax) {
         http_response_code(403);
-        exit(json_encode(['error' => 'CSRF token validation failed']));
-    } else {
-        http_response_code(403);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Ошибка CSRF токена',
+            'csrf_error' => true
+        ]);
         exit;
     }
-  }
+    http_response_code(403);
+    exit;
+}
 $fav_languages = ($request['post']['languages']) ?? [];
 // Проверяем ошибки.
 $errors = FALSE;
@@ -356,7 +363,8 @@ if ($errors) {
       http_response_code(422);
       echo json_encode([
         'success' => false,
-        'errors' => $responseErrors
+                'message' => 'Ошибки валидации',
+                'errors' => $responseErrors
     ]);
     exit;
   } else {
@@ -433,19 +441,20 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           if ($isAjax) {
               echo json_encode([
                   'success' => true,
-                  'message' => 'Данные успешно сохранены',
-                  'save' => true
+                    'message' => 'Данные сохранены'
               ]);
               exit;
-          } else {
+          } 
               setcookie('save', '1', time() + 3600, '/', '', false, true);
               return redirect();
-          }
+          
       } catch(PDOException $e) {
           if ($isAjax) {
+            http_response_code(500);
               echo json_encode([
                   'success' => false,
-                  'message' => 'Ошибка базы данных: ' . $e->getMessage()
+                  'message' => 'Ошибка базы данных',
+                    'error' => $e->getMessage()
               ]);
               exit;
           } else {
@@ -475,20 +484,20 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
                 'message' => 'Новый пользователь создан',
                 'login' => $login,
                 'pass' => $pass,
-                'save' => true
               ]);
               exit;
-          } else {
+          }
               setcookie('login', $login, time() + 3600, '/', '', false, true);
               setcookie('pass', $pass, time() + 3600, '/', '', false, true);
               setcookie('save', '1', time() + 3600, '/', '', false, true);
               return redirect();
-          }
+          
       } catch(PDOException $e) {
           if ($isAjax) {
               echo json_encode([
                   'success' => false,
-                  'message' => 'Ошибка при создании пользователя: ' . $e->getMessage()
+                'message' => 'Ошибка при создании пользователя',
+                'error' => $e->getMessage()
               ]);
               exit;
           } else {

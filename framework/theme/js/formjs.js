@@ -180,47 +180,52 @@ window.addEventListener("DOMContentLoaded", function() {
                 } else {
                     // Сервер вернул 200, но с success: false
                     showError(response.message || 'Ошибка обработки данных');
-                }
-            },
-            error: function(xhr) {
-                // Проверяем, есть ли тело ответа
-                if (!xhr.responseText) {
-                    showError('Сервер не ответил. Попробуйте позже.');
-                    return;
-                }
-            
-                try {
-                    const response = xhr.responseJSON || {};
-                    
-                    if (xhr.status === 422) {
-                        const errors = response.errors || {};
-                        let hasErrors = false;
-                        
-                        // Показываем общее сообщение
-                        showError('Исправьте отмеченные ошибки');
-                        
-                        // Обрабатываем каждую ошибку
-                        Object.keys(errors).forEach(field => {
+                    if (response.errors) {
+                        Object.keys(response.errors).forEach(field => {
                             const element = document.querySelector(`[name="${field}"]`);
                             if (element) {
-                                highlightError(element, getErrorMessage(field, errors[field]));
-                                hasErrors = true;
+                                highlightError(element, getErrorMessage(field, response.errors[field]));
                             }
                         });
-                        
-                        if (!hasErrors) {
-                            showError('Некорректные данные в форме');
-                        }
-                    } 
-                    else if (xhr.status === 403) {
-                        showError('Ошибка безопасности. Обновите страницу.');
                     }
-                    else {
-                        showError(response.message || 'Ошибка сервера: ' + xhr.status);
+                    return;
+                }
+                if (response.login && response.pass) {
+                    showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
+                    form.reset();
+                    return;
+                }
+                
+                // Стандартный успешный ответ
+                if (response.success) {
+                    showSuccessMessage(response.message || 'Данные сохранены');
+                    if (response.redirect) {
+                        setTimeout(() => window.location.href = response.redirect, 1500);
                     }
-                } catch (e) {
-                    console.error('Error parsing response:', e);
-                    showError('Не удалось обработать ответ сервера');
+                    return;
+                }
+                
+                // Неожиданный формат ответа
+                showError('Некорректный ответ сервера');
+            },
+            error: function(xhr) {
+                // Только для реальных HTTP ошибок (не 200)
+                let errorMsg = 'Ошибка сервера';
+                
+                if (xhr.status === 422) {
+                    errorMsg = 'Проверьте правильность данных';
+                } else if (xhr.status === 403) {
+                    errorMsg = 'Ошибка безопасности. Обновите страницу';
+                }
+                
+                showError(`${errorMsg} (код: ${xhr.status})`);
+                
+                // Дополнительная обработка ошибок валидации
+                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                    Object.entries(xhr.responseJSON.errors).forEach(([field, error]) => {
+                        const element = document.querySelector(`[name="${field}"]`);
+                        if (element) highlightError(element, error);
+                    });
                 }
             }
         });
