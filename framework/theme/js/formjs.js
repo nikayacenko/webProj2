@@ -214,6 +214,8 @@ window.addEventListener("DOMContentLoaded", function() {
             
                     // Обработка успешного обновления данных
                     if (response.success || response.message) {
+                        resetFormErrors();
+                        clearErrorCookies();
                         showSuccessMessage(response.message || 'Данные успешно сохранены');
                         
                         // Редирект если есть
@@ -322,6 +324,27 @@ window.addEventListener("DOMContentLoaded", function() {
         form.prepend(alertDiv);
     }
 
+    function resetFormErrors() {
+        // Удаляем все сообщения об ошибках
+        document.querySelectorAll('.error-message, .alert.alert-danger').forEach(el => el.remove());
+        
+        // Сбрасываем подсветку полей
+        document.querySelectorAll('input, textarea, select').forEach(field => {
+            field.style.borderColor = ''; // Возвращаем стандартный цвет
+        });
+        
+        // Очищаем сообщения в фиксированном контейнере (если используется)
+        const messageContainer = document.getElementById('message-container');
+        if (messageContainer) messageContainer.innerHTML = '';
+    }
+
+    function clearErrorCookies() {
+        ['fio_error', 'field-tel_error', 'field-email_error', 
+         'field-date_error', 'radio-group-1_error', 
+         'check-1_error', 'languages_error', 'bio_error'].forEach(name => {
+            deleteCookie(name);
+        });
+    }
     // Восстановление данных при загрузке
     restoreFormCookies();
 });
