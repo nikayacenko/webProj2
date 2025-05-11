@@ -107,6 +107,23 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             }
         });
+        if (getCookie('save')) {
+            showSuccessMessage('Данные успешно сохранены');
+            deleteCookie('save');
+        }
+        
+        // Восстановление ошибок
+        ['fio_error', 'field-tel_error', 'field-email_error', 'check-1_error'].forEach(errorName => {
+            const errorCode = getCookie(errorName);
+            if (errorCode) {
+                const field = errorName.replace('_error', '');
+                const element = document.querySelector(`[name="${field}"]`);
+                if (element) {
+                    highlightError(element, getErrorMessage(field, errorCode));
+                }
+                deleteCookie(errorName);
+            }
+        });
     };
     // Сохранение в Cookies
     form.addEventListener("input", function(event) {
@@ -169,22 +186,65 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response) {
-                if (response.success) {
-                    // Очистка ВСЕХ кук
+                // 1. Всегда очищаем куки ошибок при успешном ответе
+                ['fio_error', 'field-tel_error', 'field-email_error', 'field-date_error', 
+                 'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(deleteCookie);
+            
+                // 2. Обработка успешного создания пользователя
+                if (response.login && response.pass) {
+                    // Форматируем сообщение с логином/паролем
+                    const message = `
+                        <h4>Учетная запись создана!</h4>
+                        <p><strong>Логин:</strong> ${response.login}</p>
+                        <p><strong>Пароль:</strong> ${response.pass}</p>
+                        <p class="text-warning">Сохраните эти данные!</p>
+                    `;
+                    
+                    // Показываем сообщение на 15 секунд
+                    showSuccessMessage(message, 15000);
+                    
+                    // Очищаем форму и куки
+                    form.reset();
                     ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 
-                     'check-1', 'languages', 'bio', 'save', 'login', 'pass'].forEach(deleteCookie);
+                     'check-1', 'languages', 'bio', 'save'].forEach(deleteCookie);
                     
-                    if (response.login && response.pass) {
-                        showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
-                    } else if (response.message) {
-                        showSuccessMessage(response.message);
+                    // Дополнительные действия при успехе
+                    if (typeof onUserCreated === 'function') {
+                        onUserCreated(response.login, response.pass);
                     }
                     
+                    return;
+                }
+            
+                // 3. Обработка обычного успешного сохранения
+                if (response.success) {
+                    // Показываем сообщение из ответа или стандартное
+                    showSuccessMessage(response.message || 'Данные успешно сохранены');
+                    
+                    // Очищаем куки полей формы
+                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 
+                     'check-1', 'languages', 'bio'].forEach(deleteCookie);
+                    
+                    // Если есть редирект - выполняем его
                     if (response.redirect) {
-                        window.location.href = response.redirect;
+                        setTimeout(() => {
+                            window.location.href = response.redirect;
+                        }, 2000);
+                        return;
                     }
+                    
+                    // Очищаем форму только если нет редиректа
+                    form.reset();
+                    return;
+                }
+            
+                // 4. Обработка ответа с ошибкой (success: false)
+                if (response.message) {
+                    showError(response.message);
                 } else {
-                    showError(response.message || 'Ошибка сервера');
+                    // Логируем непредвиденный ответ для отладки
+                    console.error('Неожиданный формат ответа:', response);
+                    showError('Произошла непредвиденная ошибка');
                 }
             },
             error: function(xhr) {
