@@ -56,14 +56,13 @@ window.addEventListener("DOMContentLoaded", function() {
 
     // Восстановление значений из LocalStorage
     const restoreFormData = () => {
-        ['FIO', 'field-email', 'field-message', 'field-company', 'field-number', 'check-1'].forEach(name => {
+        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'].forEach(name => {
             const value = localStorage.getItem(name);
             if (value && document.getElementsByName(name)[0]) {
                 document.getElementsByName(name)[0].value = value;
             }
         });
     };
-
     // Сохранение в LocalStorage
     form.addEventListener("input", function(event) {
         localStorage.setItem(event.target.name, event.target.value);
@@ -83,7 +82,7 @@ window.addEventListener("DOMContentLoaded", function() {
         }
 
         // Валидация перед отправкой
-        const requiredFields = ['FIO', 'field-email', 'field-number'];
+        const requiredFields = ['fio', 'field-email', 'field-tel'];
         let isValid = true;
         
         requiredFields.forEach(field => {
@@ -121,7 +120,7 @@ window.addEventListener("DOMContentLoaded", function() {
                     // Очистка ошибок из cookies
                     document.cookie = "fio_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                     document.cookie = "field-email_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    document.cookie = "field-number_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    document.cookie = "field-tel_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
                 }
             },
             error: function(xhr) {
