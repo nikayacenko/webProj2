@@ -476,17 +476,21 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           // setcookie('save', '1', time() + 3600, '/', '', false, true);
           
           if ($isAjax) {
-            header('Content-Type: application/json');
-              echo json_encode([
+            $response = [
                 'success' => true,
                 'message' => 'Новый пользователь создан',
                 'login' => $login,
-                'pass' => $pass,
-                'save' => true
-                'csrf_refresh' => generateNewCsrfToken() // Генерация нового токена
-              ]);
-              exit;
-          } else {
+                'pass' => $pass
+            ];
+            
+            // Добавляем новый CSRF токен только если функция существует
+            if (function_exists('generateNewCsrfToken')) {
+                $response['csrf_refresh'] = generateNewCsrfToken();
+            }
+            
+            echo json_encode($response);
+            exit;
+        } else {
               setcookie('login', $login, time() + 3600, '/', '', false, true);
               setcookie('pass', $pass, time() + 3600, '/', '', false, true);
               setcookie('save', '1', time() + 3600, '/', '', false, true);
