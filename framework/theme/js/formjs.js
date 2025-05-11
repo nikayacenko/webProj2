@@ -226,40 +226,46 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response) {
-                // Обновляем CSRF токен если он пришел
-                if (response.csrf_refresh) {
-                    updateCsrfToken(response.csrf_refresh);
-                }
-                
-                // Обработка создания нового пользователя
-                if (response.login && response.pass) {
-                    showAuthModal(response.login, response.pass);
-                    clearFormCookies();
-                    return;
-                }
-                
-                // Стандартная обработка успеха
-                if (response.success === true) {
-                    showSuccessMessage(response.message || 'Данные сохранены');
-                    clearFormCookies();
-                    
-                    if (response.redirect) {
-                        setTimeout(() => window.location.href = response.redirect, 1500);
-                    } else {
-                        form.reset();
+                try {
+                    // Обновляем CSRF токен если он пришел
+                    if (response.csrf_refresh) {
+                        updateCsrfToken(response.csrf_refresh);
                     }
-                    return;
+                    
+                    // Обработка ошибок (даже при success: true)
+                    if (response.error) {
+                        showError(response.error);
+                        return;
+                    }
+                    
+                    // Создание нового пользователя
+                    if (response.login && response.pass) {
+                        showAuthData(response.login, response.pass);
+                        clearFormCookies();
+                        return;
+                    }
+                    
+                    // Стандартный успешный ответ
+                    if (response.success) {
+                        showSuccessMessage(response.message || 'Данные сохранены');
+                        clearFormCookies();
+                        
+                        if (response.redirect) {
+                            setTimeout(() => {
+                                window.location.href = response.redirect;
+                            }, 1500);
+                        }
+                        return;
+                    }
+                    
+                    // Неожиданный формат ответа
+                    console.warn('Unexpected response:', response);
+                    showError('Некорректный ответ сервера');
+                    
+                } catch (e) {
+                    console.error('Error processing response:', e);
+                    showError('Ошибка обработки ответа');
                 }
-                
-                // Обработка устаревшего CSRF
-                if (response.csrf_error) {
-                    handleCsrfError();
-                    return;
-                }
-                
-                // Неожиданный формат ответа
-                console.error('Unexpected response format:', response);
-                showError('Некорректный ответ сервера');
             },
             error: function(xhr) {
                 // Обработка ошибок валидации из PHP
