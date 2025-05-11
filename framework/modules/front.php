@@ -214,6 +214,7 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
+  ob_start();
     // Проверяем AJAX-запрос
   $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
@@ -490,6 +491,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           }
       } catch(PDOException $e) {
           if ($isAjax) {
+            header('Content-Type: application/json');
               echo json_encode([
                   'success' => false,
                   'message' => 'Ошибка при создании пользователя: ' . $e->getMessage()
