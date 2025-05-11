@@ -169,44 +169,67 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response, status, xhr) {
-                // Успешные ответы (включая 200)
-                if (response.success) {
-                    // Обработка успешного сохранения
+                try {
+                    // Проверяем, может ли response быть строкой (на случай неправильного Content-Type)
+                    if (typeof response === 'string') {
+                        response = JSON.parse(response);
+                    }
+            
+                    // Обработка ошибок валидации (422 статус)
+                    if (xhr.status === 422 || response.errors) {
+                        let errorMessage = response.message || 'Ошибки валидации';
+                        
+                        // Очищаем предыдущие ошибки
+                        document.querySelectorAll('.error-message').forEach(el => el.remove());
+                        
+                        // Показываем общее сообщение об ошибке
+                        showError(errorMessage);
+                        
+                        // Подсвечиваем конкретные ошибки полей
+                        if (response.errors) {
+                            Object.keys(response.errors).forEach(field => {
+                                const element = document.querySelector(`[name="${field}"]`);
+                                if (element) {
+                                    highlightError(element, getErrorMessage(field, response.errors[field]));
+                                }
+                            });
+                        }
+                        return;
+                    }
+            
+                    // Обработка успешного создания пользователя
                     if (response.login && response.pass) {
-                        showSuccessMessage(`Логин: ${response.login}, Пароль: ${response.pass}`);
-                    } else {
-                        showSuccessMessage(response.message || 'Данные сохранены');
-                    }
-                } else {
-                    // Сервер вернул 200, но с success: false
-                    showError(response.message || 'Ошибка обработки данных');
-                    if (response.errors) {
-                        Object.keys(response.errors).forEach(field => {
-                            const element = document.querySelector(`[name="${field}"]`);
-                            if (element) {
-                                highlightError(element, getErrorMessage(field, response.errors[field]));
-                            }
+                        showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
+                        form.reset();
+                        
+                        // Очищаем cookies после успешной отправки
+                        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
+                            deleteCookie(name);
                         });
+                        return;
                     }
-                    return;
-                }
-                if (response.login && response.pass) {
-                    showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
-                    form.reset();
-                    return;
-                }
-                
-                // Стандартный успешный ответ
-                if (response.success) {
-                    showSuccessMessage(response.message || 'Данные сохранены');
-                    if (response.redirect) {
-                        setTimeout(() => window.location.href = response.redirect, 1500);
+            
+                    // Обработка успешного обновления данных
+                    if (response.success || response.message) {
+                        showSuccessMessage(response.message || 'Данные успешно сохранены');
+                        
+                        // Редирект если есть
+                        if (response.redirect) {
+                            setTimeout(() => {
+                                window.location.href = response.redirect;
+                            }, 1500);
+                        }
+                        return;
                     }
-                    return;
+            
+                    // Если ответ не распознан
+                    showError('Некорректный формат ответа сервера');
+                    console.error('Неожиданный ответ сервера:', response);
+            
+                } catch (e) {
+                    showError('Ошибка обработки ответа сервера');
+                    console.error('Ошибка при обработке ответа:', e, 'Ответ:', response);
                 }
-                
-                // Неожиданный формат ответа
-                showError('Некорректный ответ сервера');
             },
             error: function(xhr) {
                 // Только для реальных HTTP ошибок (не 200)
