@@ -52,7 +52,7 @@
 // });
 
 window.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("MyForm");
+    const form = document.getElementById("myform");
 
     // Восстановление значений из LocalStorage
     const restoreFormData = () => {
