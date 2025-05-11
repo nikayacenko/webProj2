@@ -344,28 +344,27 @@ setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UT
 
 
 if ($errors) {
-  if ($isAjax) {
-    // Для AJAX возвращаем ошибки в JSON
-    $responseErrors = [];
-    foreach ($_COOKIE as $key => $value) {
-        if (strpos($key, '_error') !== false) {
-            $field = str_replace('_error', '', $key);
-            $responseErrors[$field] = $value;
-        }
+    if ($isAjax) {
+      // Для AJAX возвращаем ошибки в JSON
+      $responseErrors = [];
+      foreach ($_COOKIE as $key => $value) {
+          if (strpos($key, '_error') !== false) {
+              $field = str_replace('_error', '', $key);
+              $responseErrors[$field] = $value;
+          }
+      }
+      http_response_code(422);
+      echo json_encode(['errors' => $responseErrors]);
+      exit;
+  } else {
+      // Редирект для обычной формы
+    
+    if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
+    {
+      return redirect('./', ['uid' => $request['post']['uid']]);
     }
-    http_response_code(422);
-    echo json_encode(['errors' => $responseErrors]);
-    exit;
-} else {
-    // Редирект для обычной формы
     return redirect('./');
-}
-  
-  if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
-  {
-    return redirect('./', ['uid' => $request['post']['uid']]);
   }
-  return redirect('./');
 }
 else {
   setcookie('fio_error', '', 100000);
@@ -426,15 +425,17 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           updateDB($_SESSION['login'], $db);
           
           // Сохраняем куку с признаком успешного сохранения
-          setcookie('save', '1');
+          //setcookie('save', '1');
           
           if ($isAjax) {
               echo json_encode([
                   'success' => true,
-                  'message' => 'Данные успешно сохранены'
+                  'message' => 'Данные успешно сохранены',
+                  'save' => true
               ]);
               exit;
           } else {
+              setcookie('save', '1', time() + 3600, '/', '', false, true);
               return redirect();
           }
       } catch(PDOException $e) {
@@ -461,19 +462,23 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           insertDB($db, $login, $hash_pass);
           
           // Сохраняем в Cookies
-          setcookie('login', $login);
-          setcookie('pass', $pass);
-          setcookie('save', '1', time() + 3600, '/', '', false, true);
+          // setcookie('login', $login);
+          // setcookie('pass', $pass);
+          // setcookie('save', '1', time() + 3600, '/', '', false, true);
           
           if ($isAjax) {
               echo json_encode([
-                  'success' => true,
-                  'message' => 'Новый пользователь создан',
-                  'login' => $login,
-                  'pass' => $pass
+                'success' => true,
+                'message' => 'Новый пользователь создан',
+                'login' => $login,
+                'pass' => $pass,
+                'save' => true
               ]);
               exit;
           } else {
+              setcookie('login', $login, time() + 3600, '/', '', false, true);
+              setcookie('pass', $pass, time() + 3600, '/', '', false, true);
+              setcookie('save', '1', time() + 3600, '/', '', false, true);
               return redirect();
           }
       } catch(PDOException $e) {

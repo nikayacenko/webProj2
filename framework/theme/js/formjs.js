@@ -50,22 +50,74 @@
 //         console.error('Ошибка:', error);
 //     }
 // });
+function getCookie(name) {
+    const matches = document.cookie.match(new RegExp(
+        `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+}
+function setCookie(name, value, options = {}) {
+    options = {
+        path: '/',
+        secure: true,
+        sameSite: 'Lax',
+        ...options
+    };
+
+    let cookie = `${name}=${encodeURIComponent(value)}`;
+    
+    if (options.expires instanceof Date) {
+        cookie += `; expires=${options.expires.toUTCString()}`;
+    }
+    
+    if (options.maxAge) {
+        cookie += `; max-age=${options.maxAge}`;
+    }
+    
+    Object.keys(options).forEach(opt => {
+        if (['path', 'domain', 'secure', 'sameSite'].includes(opt)) {
+            cookie += `; ${opt}`;
+            if (options[opt] !== true) {
+                cookie += `=${options[opt]}`;
+            }
+        }
+    });
+
+    document.cookie = cookie;
+}
+function deleteCookie(name) {
+    setCookie(name, '', { maxAge: -1 });
+}
 
 window.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("myform");
 
     // Восстановление значений из LocalStorage
-    const restoreFormData = () => {
+    const restoreFormCookies = () => {
         ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'].forEach(name => {
-            const value = localStorage.getItem(name);
-            if (value && document.getElementsByName(name)[0]) {
-                document.getElementsByName(name)[0].value = value;
+            const value = getCookie(name);
+            const element = document.querySelector(`[name="${name}"]`);
+            const elements = document.getElementsByName(name);
+            
+            if (value && elements.length > 0) {
+                if (elements[0].type === 'checkbox' || elements[0].type === 'radio') {
+                    elements[0].checked = value === 'true';
+                } else {
+                    elements[0].value = value;
+                }
             }
         });
     };
-    // Сохранение в LocalStorage
+    // Сохранение в Cookies
     form.addEventListener("input", function(event) {
-        localStorage.setItem(event.target.name, event.target.value);
+        const expiryDate = new Date();
+        expiryDate.setHours(expiryDate.getHours() + 1);
+        
+        if (event.target.type === 'checkbox' || event.target.type === 'radio') {
+            setCookie(event.target.name, event.target.checked, { expires: expiryDate });
+        } else {
+            setCookie(event.target.name, event.target.value, { expires: expiryDate });
+        }
     });
 
     // Обработка отправки формы
@@ -86,11 +138,19 @@ window.addEventListener("DOMContentLoaded", function() {
         let isValid = true;
         
         requiredFields.forEach(field => {
-            if (!formData.get(field)) {
+            const element = document.querySelector(`[name="${field}"]`);
+            if (!element || !element.value.trim()) {
                 isValid = false;
-                document.cookie = `${field}_error=1; path=/`;
+                setCookie(`${field}_error`, '1', { maxAge: 60 });
+                highlightError(element, 'Это поле обязательно для заполнения');
             }
         });
+        const check1 = document.querySelector('[name="check-1"]');
+        if (!check1 || !check1.checked) {
+            isValid = false;
+            setCookie('check-1_error', '1', { maxAge: 60 });
+            highlightError(check1, 'Необходимо ваше согласие');
+        }
 
         if (!isValid) {
             alert("Заполните все обязательные поля");
@@ -110,33 +170,127 @@ window.addEventListener("DOMContentLoaded", function() {
             },
             success: function(response) {
                 if (response.redirect) {
-                    window.location.href = response.redirect;
-                } else {
-                    // Обработка успешной отправки
-                    alert("Форма успешно отправлена!");
-                    form.reset();
-                    localStorage.clear();
+                    // Очистка кук после успешной отправки
+                    ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
+                        deleteCookie(name);
+                    });
                     
-                    // Очистка ошибок из cookies
-                    document.cookie = "fio_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    document.cookie = "field-email_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                    document.cookie = "field-tel_error=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    // Очистка ошибок
+                    ['fio_error', 'field-tel_error', 'field-email_error', 'field-date_error', 
+                     'radio-group-1_error', 'check-1_error', 'languages_error', 'bio_error'].forEach(name => {
+                        deleteCookie(name);
+                    });
+
+                    if (response.message) {
+                        showSuccessMessage(response.message);
+                    }
+                    
+                    if (response.redirect) {
+                        setTimeout(() => {
+                            window.location.href = response.redirect;
+                        }, 2000);
+                    } else {
+                        form.reset();
+                    }
+                } else {
+                    showError(response.message || 'Произошла ошибка при сохранении');
                 }
             },
             error: function(xhr) {
                 // Обработка ошибок валидации из PHP
-                if (xhr.status === 403) {
-                    alert("Ошибка CSRF токена");
-                } else {
+                if (xhr.status === 422) {
                     const errors = xhr.responseJSON?.errors || {};
                     Object.keys(errors).forEach(field => {
-                        alert(`Ошибка в поле ${field}: ${errors[field]}`);
+                        const element = document.querySelector(`[name="${field}"]`);
+                        if (element) {
+                            highlightError(element, getErrorMessage(field, errors[field]));
+                        }
                     });
+                } else if (xhr.status === 403) {
+                    showError('Ошибка CSRF токена. Обновите страницу и попробуйте снова.');
+                } else {
+                    showError('Произошла ошибка сервера. Пожалуйста, попробуйте позже.');
                 }
             }
         });
     });
 
+    function highlightError(element, message) {
+        if (!element) return;
+        
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.style.color = 'red';
+        errorElement.textContent = message;
+        
+        element.style.borderColor = 'red';
+        element.parentNode.appendChild(errorElement);
+        
+        setTimeout(() => {
+            element.style.borderColor = '';
+            errorElement.remove();
+        }, 5000);
+    }
+
+    function getErrorMessage(field, code) {
+        const messages = {
+            'fio': {
+                '1': 'Заполните имя',
+                '2': 'ФИО должно содержать не более 150 символов',
+                '3': 'ФИО должно содержать только буквы и пробелы'
+            },
+            'field-email': {
+                '1': 'Email введен некорректно',
+                '2': 'Такой email уже зарегистрирован'
+            },
+            'field-tel': 'Телефон должен содержать только цифры и знак +',
+            'field-date': 'Заполните дату',
+            'radio-group-1': 'Выберите пол',
+            'check-1': 'Ознакомьтесь с контрактом',
+            'languages': {
+                '1': 'Укажите любимые языки программирования',
+                '2': 'Указан недопустимый язык'
+            },
+            'bio': {
+                '1': 'Заполните биографию',
+                '2': 'Используйте только допустимые символы'
+            }
+        };
+
+        if (messages[field] && typeof messages[field] === 'object' && messages[field][code]) {
+            return messages[field][code];
+        } else if (messages[field] && typeof messages[field] === 'string') {
+            return messages[field];
+        }
+        
+        return `Ошибка в поле ${field}: ${code}`;
+    }
+
+    function showSuccessMessage(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success';
+        alertDiv.textContent = message;
+        form.prepend(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+
+    function showError(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger';
+        alertDiv.textContent = message;
+        form.prepend(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+
     // Восстановление данных при загрузке
     restoreFormData();
 });
+
+
+
