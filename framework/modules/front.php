@@ -220,6 +220,7 @@ function front_post($request, $db) {
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
     if ($isAjax) {
+      header('Content-Type: application/json');
         http_response_code(403);
         exit(json_encode(['error' => 'CSRF token validation failed']));
     } else {
@@ -345,6 +346,7 @@ setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UT
 
 if ($errors) {
     if ($isAjax) {
+      header('Content-Type: application/json');
       // Для AJAX возвращаем ошибки в JSON
       $responseErrors = [];
       foreach ($_COOKIE as $key => $value) {
@@ -387,6 +389,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           updateDB($doplog, $db);
           
           if ($isAjax) {
+            header('Content-Type: application/json');
               echo json_encode([
                   'success' => true,
                   'message' => 'Данные администратора успешно обновлены',
@@ -409,6 +412,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
       }
   } else {
       if ($isAjax) {
+        header('Content-Type: application/json');
           echo json_encode([
               'success' => false,
               'message' => 'Вы не выбрали пользователя для изменения'
@@ -428,6 +432,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           //setcookie('save', '1');
           
           if ($isAjax) {
+            header('Content-Type: application/json');
               echo json_encode([
                   'success' => true,
                   'message' => 'Данные успешно сохранены',
@@ -440,6 +445,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           }
       } catch(PDOException $e) {
           if ($isAjax) {
+            header('Content-Type: application/json');
               echo json_encode([
                   'success' => false,
                   'message' => 'Ошибка базы данных: ' . $e->getMessage()
@@ -467,6 +473,7 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           // setcookie('save', '1', time() + 3600, '/', '', false, true);
           
           if ($isAjax) {
+            header('Content-Type: application/json');
               echo json_encode([
                 'success' => true,
                 'message' => 'Новый пользователь создан',
