@@ -214,16 +214,12 @@ function front_get($request, $db) {
 
 // Обработчик запросов методом POST.
 function front_post($request, $db) {
-  header('Content-Type: application/json'); // Всегда JSON для AJAX
-
-  ob_start();
     // Проверяем AJAX-запрос
   $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
               strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';  strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
   // Пример возврата редиректа.
   if (!validateCsrfToken()) {
     if ($isAjax) {
-      header('Content-Type: application/json');
         http_response_code(403);
         exit(json_encode(['error' => 'CSRF token validation failed']));
     } else {
@@ -349,7 +345,6 @@ setcookie('bio_value', htmlspecialchars($request['post']['bio'], ENT_QUOTES, 'UT
 
 if ($errors) {
     if ($isAjax) {
-      header('Content-Type: application/json');
       // Для AJAX возвращаем ошибки в JSON
       $responseErrors = [];
       foreach ($_COOKIE as $key => $value) {
@@ -392,7 +387,6 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           updateDB($doplog, $db);
           
           if ($isAjax) {
-            header('Content-Type: application/json');
               echo json_encode([
                   'success' => true,
                   'message' => 'Данные администратора успешно обновлены',
@@ -415,7 +409,6 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
       }
   } else {
       if ($isAjax) {
-        header('Content-Type: application/json');
           echo json_encode([
               'success' => false,
               'message' => 'Вы не выбрали пользователя для изменения'
@@ -435,7 +428,6 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           //setcookie('save', '1');
           
           if ($isAjax) {
-            header('Content-Type: application/json');
               echo json_encode([
                   'success' => true,
                   'message' => 'Данные успешно сохранены',
@@ -448,7 +440,6 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           }
       } catch(PDOException $e) {
           if ($isAjax) {
-            header('Content-Type: application/json');
               echo json_encode([
                   'success' => false,
                   'message' => 'Ошибка базы данных: ' . $e->getMessage()
@@ -476,21 +467,15 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           // setcookie('save', '1', time() + 3600, '/', '', false, true);
           
           if ($isAjax) {
-            $response = [
+              echo json_encode([
                 'success' => true,
                 'message' => 'Новый пользователь создан',
                 'login' => $login,
-                'pass' => $pass
-            ];
-            
-            // Добавляем новый CSRF токен только если функция существует
-            if (function_exists('generateNewCsrfToken')) {
-                $response['csrf_refresh'] = generateNewCsrfToken();
-            }
-            
-            echo json_encode($response);
-            exit;
-        } else {
+                'pass' => $pass,
+                'save' => true
+              ]);
+              exit;
+          } else {
               setcookie('login', $login, time() + 3600, '/', '', false, true);
               setcookie('pass', $pass, time() + 3600, '/', '', false, true);
               setcookie('save', '1', time() + 3600, '/', '', false, true);
@@ -498,7 +483,6 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
           }
       } catch(PDOException $e) {
           if ($isAjax) {
-            http_response_code(500);
               echo json_encode([
                   'success' => false,
                   'message' => 'Ошибка при создании пользователя: ' . $e->getMessage()
