@@ -9,9 +9,6 @@
 .login{
     background-color: #091723;
 }
-#text{
-    color:white;
-}
 .error-message {
     display: block !important;
     color: red !important;
