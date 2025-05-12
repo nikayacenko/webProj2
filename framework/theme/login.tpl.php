@@ -20,11 +20,11 @@
     <div class="content container-fluid mt-sm-0">
       <div class="log">
         <form action="<?php echo url('login'); ?>" method="post">
-          <label>
+          <label class="my-2">
             Логин: <br />
             <input name="login" />
           </label><br />
-          <label>
+          <label class="my-2">
             Пароль:<br />
             <input name="pass" type="password" />
           </label><br />
