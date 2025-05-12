@@ -646,13 +646,13 @@
                             </label> <br />
                             <label>
                                 email:<br />
-                                <input name="field-email"
+                                <input name="field-email" class="input-field"
                                 <?php if ($errors['field-email']) {print 'class="error"';} ?> value="<?php print $values['field-email']; ?>"
                                 />
                             </label><br />
                             <label>
                                 Дата рождения:<br />
-                                <input name="field-date"
+                                <input name="field-date" class="input-field"
                                 <?php if ($errors['field-date']) {print 'class="error"';} ?> value="<?php print $values['field-date']; ?>"
                                 type="date" />
                             </label><br />
@@ -690,7 +690,7 @@
                                 </label><br />
                                 <label>
                                     Биография:<br />
-                                    <textarea name="bio"<?php if ($errors['bio']) {print 'class="error"';} ?>><?php print $values['bio']; ?></textarea>  
+                                    <textarea name="bio" class="input-field" <?php if ($errors['bio']) {print 'class="error"';} ?>><?php print $values['bio']; ?></textarea>  
                                 </label><br />  
                                 С контрактом ознакомлен:<br />
                     <label сlass="form-checkbox"> <input type="checkbox" name="check-1" <?php if ($errors['check-1']) {print 'class="error"';} ?>  checked="<?php if (!$errors['check-1']) {print 'checked';} ?>">
