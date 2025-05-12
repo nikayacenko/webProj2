@@ -16,7 +16,7 @@
     <link rel="shortcut icon" href="theme/img/favicon.ico"  type="image/x-icon">
     <title>Project</title>
 </head>
-<body>
+<body class="login">
     <div class="content container-fluid mt-sm-0">
       <div class="log">
         <form action="<?php echo url('login'); ?>" method="post">
