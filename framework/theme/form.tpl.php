@@ -641,7 +641,7 @@
                             </label><br />
                             <label>
                                 Номер телефона:<br />
-                                <input name="field-tel"  <?php if ($errors['field-tel']) {print 'class="error"';} ?> value="<?php print $values['field-tel']; ?>"
+                                <input name="field-tel" class="input-field" <?php if ($errors['field-tel']) {print 'class="error"';} ?> value="<?php print $values['field-tel']; ?>"
                                 type="tel" />
                             </label> <br />
                             <label>
