@@ -19,7 +19,7 @@
 <body class="login">
     <div class="content container-fluid mt-sm-0">
       <div class="log">
-        <form action="<?php echo url('login'); ?>" method="post">
+        <form class="log2" action="<?php echo url('login'); ?>" method="post">
           <label class="my-2">
             Логин: <br />
             <input name="login" />
