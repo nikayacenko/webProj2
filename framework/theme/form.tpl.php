@@ -673,7 +673,7 @@
                                 <label>
                                     Любимый язык программирования:
                                     <br />
-                                    <select name="languages[]"
+                                    <select name="languages[]" class="input-field"
                                     multiple="multiple" <?php if ($errors['languages']) {print 'class="error"';} ?>>
                                     <option value="Pascal" <?php if(in_array('Pascal', $user_languages)) {print 'selected="selected"';}?>>Pascal</option>
                                     <option value="C" <?php if(in_array('C', $user_languages)) {print 'selected="selected"';}?>>C
