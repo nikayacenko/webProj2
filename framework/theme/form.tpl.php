@@ -637,7 +637,7 @@
                             <input type="hidden" name="uid" value='<?php print $values['uid'];?>' />
                             <label class="my-2">
                                 ФИО:<br />
-                                <input name="fio" <?php if ($errors['fio']) {print 'class="error"';} ?> value="<?php print $values['fio']; ?>" />
+                                <input name="fio" class="input-field" <?php if ($errors['fio']) {print 'class="error"';} ?> value="<?php print $values['fio']; ?>" />
                             </label><br />
                             <label>
                                 Номер телефона:<br />
