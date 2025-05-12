@@ -6,6 +6,8 @@
     list-style: none;
     text-decoration: none;
 }
+.login{
+    background-color: #F14D34;
 .error-message {
     display: block !important;
     color: red !important;
