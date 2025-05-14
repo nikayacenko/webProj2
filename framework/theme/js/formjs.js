@@ -143,7 +143,7 @@ window.addEventListener("DOMContentLoaded", function() {
         }
 
         // Валидация перед отправкой
-        const requiredFields = ['fio', 'field-email', 'field-tel'];
+        const requiredFields = ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'];
         let isValid = true;
         
         requiredFields.forEach(field => {
