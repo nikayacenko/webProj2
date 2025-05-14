@@ -178,7 +178,8 @@ window.addEventListener("DOMContentLoaded", function() {
                 highlightError(elements[0], message);
             }
         });
-    }function validateForm() {
+    }
+    function validateForm() {
         let isValid = true;
         resetFormErrors();
         
@@ -351,7 +352,7 @@ window.addEventListener("DOMContentLoaded", function() {
                             Object.keys(response.errors).forEach(field => {
                                 const element = document.querySelector(`[name="${field}"]`);
                                 if (element) {
-                                    highlightError(element, getErrorMessage(field, response.errors[field]));
+                                    highlightError(element, validateForm());
                                 }
                             });
                         }
