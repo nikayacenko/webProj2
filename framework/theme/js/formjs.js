@@ -61,25 +61,18 @@ function setCookie(name, value, options = {}) {
         path: '/',
         secure: true,
         sameSite: 'Lax',
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день по умолчанию
         ...options
     };
 
+    // Кодируем значение
     let cookie = `${name}=${encodeURIComponent(value)}`;
     
-    if (options.expires instanceof Date) {
-        cookie += `; expires=${options.expires.toUTCString()}`;
-    }
-    
-    if (options.maxAge) {
-        cookie += `; max-age=${options.maxAge}`;
-    }
-    
-    Object.keys(options).forEach(opt => {
-        if (['path', 'domain', 'secure', 'sameSite'].includes(opt)) {
-            cookie += `; ${opt}`;
-            if (options[opt] !== true) {
-                cookie += `=${options[opt]}`;
-            }
+    // Добавляем опции
+    Object.entries(options).forEach(([key, val]) => {
+        if (['path', 'domain', 'secure', 'sameSite', 'expires', 'maxAge'].includes(key)) {
+            cookie += `; ${key}`;
+            if (val !== true) cookie += `=${val}`;
         }
     });
 
@@ -159,29 +152,35 @@ window.addEventListener("DOMContentLoaded", function() {
         element.addEventListener('input', function() {
             const value = this.value.trim();
             const rules = validationRules[fieldName];
+            
+            if (!rules) return;
+            
+            // Проверяем валидность
             let isValid = true;
-    
-            // Проверяем правила только если они есть
-            if (rules) {
-                if (rules.required && !value) {
-                    isValid = false;
+            if (rules.required && !value) isValid = false;
+            if (value && rules.maxLength && value.length > rules.maxLength) isValid = false;
+            if (value && rules.pattern && !rules.pattern.test(value)) isValid = false;
+            
+            // Если валидно - сохраняем и убираем ошибки
+            if (isValid) {
+                // Сохраняем в куки
+                const expiryDate = new Date();
+                expiryDate.setHours(expiryDate.getHours() + 1);
+                
+                if (element.type === 'checkbox') {
+                    setCookie(fieldName, element.checked, { expires: expiryDate });
+                } else {
+                    setCookie(fieldName, value, { expires: expiryDate });
                 }
-                else if (value) {
-                    if (rules.maxLength && value.length > rules.maxLength) {
-                        isValid = false;
-                    }
-                    if (rules.pattern && !rules.pattern.test(value)) {
-                        isValid = false;
-                    }
-                }
-    
-                // Если поле валидно - убираем ошибку
-                if (isValid) {
-                    const errorContainer = this.closest('.form-group') || this.parentElement;
-                    const errorElement = errorContainer.querySelector('.error-message');
-                    if (errorElement) errorElement.remove();
-                    this.classList.remove('error-field');
-                }
+                
+                // Убираем ошибки
+                const errorContainer = this.closest('.form-group') || this.parentElement;
+                const errorElement = errorContainer.querySelector('.error-message');
+                if (errorElement) errorElement.remove();
+                this.classList.remove('error-field');
+                
+                // Удаляем куку с ошибкой если была
+                deleteCookie(`${fieldName}_error`);
             }
         });
     }
@@ -213,6 +212,34 @@ window.addEventListener("DOMContentLoaded", function() {
         });
         Object.keys(validationRules).forEach(fieldName => {
             validateFieldInRealTime(fieldName);
+            const element = document.querySelector(`[name="${fieldName}"]`);
+        if (!element) return;
+        
+            element.addEventListener('input', function() {
+                const expiryDate = new Date();
+                expiryDate.setHours(expiryDate.getHours() + 1);
+                
+                // Для чекбоксов сохраняем состояние
+                if (this.type === 'checkbox') {
+                    setCookie(this.name, this.checked, { expires: expiryDate });
+                } 
+                // Для radio сохраняем выбранное значение
+                else if (this.type === 'radio' && this.checked) {
+                    setCookie(this.name, this.value, { expires: expiryDate });
+                }
+                // Для остальных полей сохраняем значение
+                else if (this.type !== 'radio') {
+                    setCookie(this.name, this.value, { expires: expiryDate });
+                }
+            });
+        });
+        document.querySelectorAll('select[multiple]').forEach(select => {
+            select.addEventListener('change', function() {
+                const selected = Array.from(this.selectedOptions)
+                    .map(opt => opt.value)
+                    .join(',');
+                setCookie(this.name, selected);
+            });
         });
     }
     function validateForm() {
