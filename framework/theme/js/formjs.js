@@ -112,7 +112,8 @@ window.addEventListener("DOMContentLoaded", function() {
             if (errorCode) {
                 const element = document.querySelector(`[name="${field}"]`);
                 if (element) {
-                    highlightError(element, getErrorMessage(field, errorCode));
+                    const errorMessage = getErrorMessage(field, errorCode);
+                    highlightError(element, errorMessage);
                 }
             }
         });
@@ -143,7 +144,7 @@ window.addEventListener("DOMContentLoaded", function() {
         }
 
         // Валидация перед отправкой
-        const requiredFields = ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'];
+        const requiredFields = ['fio', 'field-email', 'field-tel'];
         let isValid = true;
         
         requiredFields.forEach(field => {
@@ -151,7 +152,7 @@ window.addEventListener("DOMContentLoaded", function() {
             if (!element || !element.value.trim()) {
                 isValid = false;
                 setCookie(`${field}_error`, '1', { maxAge: 60 });
-                highlightError(element, getErrorMessage(field, '1'));
+                highlightError(element, errorMessage);
             }
         });
         const check1 = document.querySelector('[name="check-1"]');
@@ -178,6 +179,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response, status, xhr) {
+
                 try {
                     // Проверяем, может ли response быть строкой (на случай неправильного Content-Type)
                     if (typeof response === 'string') {
@@ -299,7 +301,7 @@ window.addEventListener("DOMContentLoaded", function() {
             },
             'field-date': 'Заполните дату',
             'radio-group-1': 'Выберите пол',
-            'check-1': 'Необходимо ваше согласие',
+            'check-1': 'Ознакомьтесь с контрактом',
             'languages': {
                 '1': 'Укажите любимые языки программирования',
                 '2': 'Указан недопустимый язык'
