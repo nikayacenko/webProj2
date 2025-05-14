@@ -12,6 +12,14 @@
 .my-2{
     color:white;
 }
+.error-field {
+    border-color: red !important;
+}
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
 /*.log2{
     background-color:white;
 }*/

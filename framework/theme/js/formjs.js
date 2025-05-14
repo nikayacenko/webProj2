@@ -302,53 +302,27 @@ window.addEventListener("DOMContentLoaded", function() {
         
         // Валидация всех полей
         Object.keys(validationRules).forEach(fieldName => {
-            const elements = document.getElementsByName(fieldName);
-            if (!elements.length) return;
+            const element = document.querySelector(`[name="${fieldName}"]`);
+            if (!element) return;
             
-            const rules = validationRules[fieldName];
-            const element = elements[0];
-            let errorMessage = '';
-        
-        // Для radio/checkbox
-        if (element.type === 'radio' || element.type === 'checkbox') {
-            const isChecked = Array.from(elements).some(el => el.checked);
-            if (rules.required && !isChecked) {
-                isValid = false;
-                errorMessage = rules.messages.required;
-            }
-        } 
-        // Для select multiple
-        else if (element.tagName === 'SELECT' && element.multiple) {
-            const selected = Array.from(element.options).some(opt => opt.selected);
-            if (rules.required && !selected) {
-                isValid = false;
-                errorMessage = rules.messages.required;
-            }
-        }
-        // Для остальных полей
-        else {
             const value = element.value.trim();
+            const rules = validationRules[fieldName];
             
             if (rules.required && !value) {
                 isValid = false;
-                errorMessage = rules.messages.required;
+                highlightError(element, rules.messages.required);
             }
             else if (value) {
                 if (rules.maxLength && value.length > rules.maxLength) {
                     isValid = false;
-                    errorMessage = rules.messages.maxLength;
+                    highlightError(element, rules.messages.maxLength);
                 }
-                else if (rules.pattern && !rules.pattern.test(value)) {
+                if (rules.pattern && !rules.pattern.test(value)) {
                     isValid = false;
-                    errorMessage = rules.messages.pattern;
+                    highlightError(element, rules.messages.pattern);
                 }
             }
-        }
-        if (errorMessage) {
-            setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
-            highlightError(element, errorMessage);
-        }
-    });
+        });
 
         if (!isValid) {
             alert("Заполните все обязательные поля");
@@ -509,22 +483,25 @@ function getErrorMessage(field, code) {
 
     return messages[field]?.[code] || `Ошибка в поле ${field}`;
 }
-    function highlightError(element, message) {
-        if (!element) return;
-        
-        const oldError = element.nextElementSibling;
-        if (oldError && oldError.classList.contains('error-message')) {
-            oldError.remove();
-        }
-
+function highlightError(element, message) {
+    if (!element) return;
+    
+    // Удаляем старые ошибки
+    const errorContainer = element.closest('.form-group') || element.parentElement;
+    const oldError = errorContainer.querySelector('.error-message');
+    if (oldError) oldError.remove();
+    
+    // Добавляем новую ошибку
+    if (message) {
         const errorElement = document.createElement('div');
         errorElement.className = 'error-message';
-        errorElement.style.color = 'red';
         errorElement.textContent = message;
-        
-        element.insertAdjacentElement('afterend', errorElement);
-    element.style.borderColor = 'red';
+        errorContainer.appendChild(errorElement);
     }
+    
+    // Подсвечиваем поле
+    element.classList.add('error-field');
+}
 
     function showSuccessMessage(message) {
         const alertDiv = document.createElement('div');
@@ -542,16 +519,12 @@ function getErrorMessage(field, code) {
 
     function resetFormErrors() {
         // Удаляем все сообщения об ошибках
-        document.querySelectorAll('.error-message, .alert.alert-danger').forEach(el => el.remove());
+        document.querySelectorAll('.error-message').forEach(el => el.remove());
         
         // Сбрасываем подсветку полей
-        document.querySelectorAll('input, textarea, select').forEach(field => {
-            field.style.borderColor = ''; // Возвращаем стандартный цвет
+        document.querySelectorAll('.error-field').forEach(field => {
+            field.classList.remove('error-field');
         });
-        
-        // Очищаем сообщения в фиксированном контейнере (если используется)
-        const messageContainer = document.getElementById('message-container');
-        if (messageContainer) messageContainer.innerHTML = '';
     }
 
     
