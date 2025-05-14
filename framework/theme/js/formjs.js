@@ -147,11 +147,12 @@ window.addEventListener("DOMContentLoaded", function() {
         let isValid = true;
         
         requiredFields.forEach(field => {
+            const errorCode = getCookie(`${field}_error`);
             const element = document.querySelector(`[name="${field}"]`);
             if (!element || !element.value.trim()) {
                 isValid = false;
                 setCookie(`${field}_error`, '1', { maxAge: 60 });
-                highlightError(element, getErrorMessage(field, '1'));
+                highlightError(element, getErrorMessage(field, errorCode));
             }
         });
         const check1 = document.querySelector('[name="check-1"]');
