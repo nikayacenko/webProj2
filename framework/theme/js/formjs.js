@@ -265,28 +265,28 @@ window.addEventListener("DOMContentLoaded", function() {
         let isValid = true;
         
         // Валидация всех полей
-    Object.keys(validationRules).forEach(fieldName => {
-        const elements = document.getElementsByName(fieldName);
-        if (!elements.length) return;
+        Object.keys(validationRules).forEach(fieldName => {
+            const elements = document.getElementsByName(fieldName);
+            if (!elements.length) return;
+            
+            const rules = validationRules[fieldName];
+            const element = elements[0];
+            let errorMessage = '';
         
-        const rules = validationRules[fieldName];
-        const element = elements[0];
-        
-        // Для radio и checkbox
+        // Для radio/checkbox
         if (element.type === 'radio' || element.type === 'checkbox') {
             const isChecked = Array.from(elements).some(el => el.checked);
             if (rules.required && !isChecked) {
                 isValid = false;
-                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
-                highlightError(element.closest('.form-group') || element, rules.messages.required);
+                errorMessage = rules.messages.required;
             }
         } 
+        // Для select multiple
         else if (element.tagName === 'SELECT' && element.multiple) {
             const selected = Array.from(element.options).some(opt => opt.selected);
             if (rules.required && !selected) {
                 isValid = false;
-                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
-                highlightError(element, rules.messages.required);
+                errorMessage = rules.messages.required;
             }
         }
         // Для остальных полей
@@ -295,22 +295,22 @@ window.addEventListener("DOMContentLoaded", function() {
             
             if (rules.required && !value) {
                 isValid = false;
-                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
-                highlightError(element, rules.messages.required);
+                errorMessage = rules.messages.required;
             }
             else if (value) {
                 if (rules.maxLength && value.length > rules.maxLength) {
                     isValid = false;
-                    setCookie(`${fieldName}_error`, '2', { maxAge: 60 });
-                    highlightError(element, rules.messages.maxLength);
+                    errorMessage = rules.messages.maxLength;
                 }
-                
-                if (rules.pattern && !rules.pattern.test(value)) {
+                else if (rules.pattern && !rules.pattern.test(value)) {
                     isValid = false;
-                    setCookie(`${fieldName}_error`, '3', { maxAge: 60 });
-                    highlightError(element, rules.messages.pattern);
+                    errorMessage = rules.messages.pattern;
                 }
             }
+        }
+        if (errorMessage) {
+            setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+            highlightError(element, errorMessage);
         }
     });
 
@@ -352,7 +352,25 @@ window.addEventListener("DOMContentLoaded", function() {
                             Object.keys(response.errors).forEach(field => {
                                 const element = document.querySelector(`[name="${field}"]`);
                                 if (element) {
-                                    highlightError(element, getErrorMessage(field, response.errors[field]));
+                                    // Получаем сообщение об ошибке напрямую из validationRules
+                                    const errorCode = response.errors[field];
+                                    const fieldRules = validationRules[field];
+                                    let message = '';
+                                    
+                                    if (fieldRules && fieldRules.messages) {
+                                        // Если ошибка содержит код (например '1', '2')
+                                        if (typeof errorCode === 'string' || typeof errorCode === 'number') {
+                                            message = fieldRules.messages[errorCode] || fieldRules.messages.required || 'Ошибка в поле';
+                                        } 
+                                        // Если ошибка содержит готовое сообщение
+                                        else if (typeof errorCode === 'string') {
+                                            message = errorCode;
+                                        }
+                                    } else {
+                                        message = errorCode || 'Ошибка в поле';
+                                    }
+                                    
+                                    highlightError(element, message);
                                 }
                             });
                         }
