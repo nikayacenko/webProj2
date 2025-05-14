@@ -92,31 +92,148 @@ function deleteCookie(name) {
 window.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("myform");
 
+    const validationRules = {
+        'fio': {
+            required: true,
+            maxLength: 150,
+            pattern: /^[а-яА-ЯёЁa-zA-Z\s\-]+$/,
+            messages: {
+                required: 'Заполните имя',
+                maxLength: 'ФИО должно содержать не более 150 символов',
+                pattern: 'Используйте только буквы, пробелы и дефисы'
+            }
+        },
+        'field-email': {
+            required: true,
+            pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            messages: {
+                required: 'Введите email',
+                pattern: 'Введите корректный email'
+            }
+        },
+        'field-tel': {
+            required: true,
+            pattern: /^\+?[0-9\s\-()]+$/,
+            messages: {
+                required: 'Укажите номер телефона',
+                pattern: 'Используйте только цифры, пробелы и знак +'
+            }
+        },
+        'field-date': {
+            required: true,
+            messages: {
+                required: 'Выберите дату'
+            }
+        },
+        'radio-group-1': {
+            required: true,
+            messages: {
+                required: 'Укажите пол'
+            }
+        },
+        'check-1': {
+            required: true,
+            messages: {
+                required: 'Необходимо ваше согласие'
+            }
+        },
+        'languages': {
+            required: true,
+            messages: {
+                required: 'Выберите языки программирования'
+            }
+        },
+        'bio': {
+            required: true,
+            pattern: /^[а-яА-ЯёЁa-zA-Z0-9\s\.,!?()\-]+$/,
+            messages: {
+                required: 'Напишите информацию о себе',
+                pattern: 'Используйте только допустимые символы'
+            }
+        }
+    };
     // Восстановление значений из LocalStorage
-    const restoreFormCookies = () => {
-        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'].forEach(name => {
-            const value = getCookie(name);
-            const element = document.querySelector(`[name="${name}"]`);
-            const elements = document.getElementsByName(name);
+    function restoreFormCookies() {
+        Object.keys(validationRules).forEach(fieldName => {
+            const value = getCookie(fieldName);
+            const elements = document.getElementsByName(fieldName);
             
             if (value && elements.length > 0) {
-                if (elements[0].type === 'checkbox' || elements[0].type === 'radio') {
+                if (elements[0].type === 'checkbox') {
                     elements[0].checked = value === 'true';
+                } else if (elements[0].type === 'radio') {
+                    elements.forEach(el => {
+                        if (el.value === value) el.checked = true;
+                    });
                 } else {
                     elements[0].value = value;
                 }
             }
-        });
-        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'].forEach(field => {
-            const errorCode = getCookie(`${field}_error`);
+            
+            // Восстановление ошибок
+            const errorCode = getCookie(`${fieldName}_error`);
             if (errorCode) {
-                const element = document.querySelector(`[name="${field}"]`);
-                if (element) {
-                    highlightError(element, getErrorMessage(field, errorCode));
+                const message = validationRules[fieldName].messages[errorCode] || 
+                               validationRules[fieldName].messages.required;
+                highlightError(elements[0], message);
+            }
+        });
+    }function validateForm() {
+        let isValid = true;
+        resetFormErrors();
+        
+        Object.keys(validationRules).forEach(fieldName => {
+            const elements = document.getElementsByName(fieldName);
+            if (!elements.length) return;
+            
+            const rules = validationRules[fieldName];
+            const element = elements[0];
+            
+            // Для radio и checkbox
+            if (element.type === 'radio' || element.type === 'checkbox') {
+                const isChecked = Array.from(elements).some(el => el.checked);
+                if (rules.required && !isChecked) {
+                    isValid = false;
+                    setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+                    highlightError(element.closest('.form-group') || element, rules.messages.required);
+                }
+            } 
+            // Для select multiple
+            else if (element.tagName === 'SELECT' && element.multiple) {
+                const selected = Array.from(element.options).some(opt => opt.selected);
+                if (rules.required && !selected) {
+                    isValid = false;
+                    setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+                    highlightError(element, rules.messages.required);
+                }
+            }
+            // Для остальных полей
+            else {
+                const value = element.value.trim();
+                
+                if (rules.required && !value) {
+                    isValid = false;
+                    setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+                    highlightError(element, rules.messages.required);
+                }
+                else if (value) {
+                    if (rules.maxLength && value.length > rules.maxLength) {
+                        isValid = false;
+                        setCookie(`${fieldName}_error`, '2', { maxAge: 60 });
+                        highlightError(element, rules.messages.maxLength);
+                    }
+                    
+                    if (rules.pattern && !rules.pattern.test(value)) {
+                        isValid = false;
+                        setCookie(`${fieldName}_error`, '3', { maxAge: 60 });
+                        highlightError(element, rules.messages.pattern);
+                    }
                 }
             }
         });
-    };
+        
+        return isValid;
+    }
     // Сохранение в Cookies
     form.addEventListener("input", function(event) {
         const expiryDate = new Date();
@@ -146,20 +263,55 @@ window.addEventListener("DOMContentLoaded", function() {
         const requiredFields = ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'];
         let isValid = true;
         
-        requiredFields.forEach(field => {
-            const element = document.querySelector(`[name="${field}"]`);
-            if (!element || !element.value.trim()) {
+        // Валидация всех полей
+    Object.keys(validationRules).forEach(fieldName => {
+        const elements = document.getElementsByName(fieldName);
+        if (!elements.length) return;
+        
+        const rules = validationRules[fieldName];
+        const element = elements[0];
+        
+        // Для radio и checkbox
+        if (element.type === 'radio' || element.type === 'checkbox') {
+            const isChecked = Array.from(elements).some(el => el.checked);
+            if (rules.required && !isChecked) {
                 isValid = false;
-                setCookie(`${field}_error`, '1', { maxAge: 60 });
-                highlightError(element, getErrorMessage(field, '1'));
+                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+                highlightError(element.closest('.form-group') || element, rules.messages.required);
             }
-        });
-        const check1 = document.querySelector('[name="check-1"]');
-        if (!check1 || !check1.checked) {
-            isValid = false;
-            setCookie('check-1_error', '1', { maxAge: 60 });
-            highlightError(check1, 'Необходимо ваше согласие');
+        } 
+        else if (element.tagName === 'SELECT' && element.multiple) {
+            const selected = Array.from(element.options).some(opt => opt.selected);
+            if (rules.required && !selected) {
+                isValid = false;
+                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+                highlightError(element, rules.messages.required);
+            }
         }
+        // Для остальных полей
+        else {
+            const value = element.value.trim();
+            
+            if (rules.required && !value) {
+                isValid = false;
+                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+                highlightError(element, rules.messages.required);
+            }
+            else if (value) {
+                if (rules.maxLength && value.length > rules.maxLength) {
+                    isValid = false;
+                    setCookie(`${fieldName}_error`, '2', { maxAge: 60 });
+                    highlightError(element, rules.messages.maxLength);
+                }
+                
+                if (rules.pattern && !rules.pattern.test(value)) {
+                    isValid = false;
+                    setCookie(`${fieldName}_error`, '3', { maxAge: 60 });
+                    highlightError(element, rules.messages.pattern);
+                }
+            }
+        }
+    });
 
         if (!isValid) {
             alert("Заполните все обязательные поля");
@@ -264,6 +416,44 @@ window.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    // Функция getErrorMessage остается без изменений
+function getErrorMessage(field, code) {
+    const messages = {
+        'fio': {
+            '1': 'Заполните имя',
+            '2': 'ФИО должно содержать не более 150 символов',
+            '3': 'Используйте только буквы, пробелы и дефисы'
+        },
+        'field-email': {
+            '1': 'Введите email',
+            '2': 'Email введен некорректно',
+            '3': 'Такой email уже зарегистрирован'
+        },
+        'field-tel': {
+            '1': 'Укажите номер телефона',
+            '2': 'Телефон должен содержать только цифры и знак +'
+        },
+        'field-date': {
+            '1': 'Выберите дату'
+        },
+        'radio-group-1': {
+            '1': 'Укажите пол'
+        },
+        'check-1': {
+            '1': 'Необходимо ваше согласие'
+        },
+        'languages': {
+            '1': 'Выберите языки программирования',
+            '2': 'Указан недопустимый язык'
+        },
+        'bio': {
+            '1': 'Напишите информацию о себе',
+            '2': 'Используйте только допустимые символы'
+        }
+    };
+
+    return messages[field]?.[code] || `Ошибка в поле ${field}`;
+}
     function highlightError(element, message) {
         if (!element) return;
         
@@ -279,44 +469,6 @@ window.addEventListener("DOMContentLoaded", function() {
         
         element.insertAdjacentElement('afterend', errorElement);
     element.style.borderColor = 'red';
-    }
-
-    function getErrorMessage(field, code) {
-        const messages = {
-            'fio': {
-                '1': 'Заполните имя',
-                '2': 'ФИО должно содержать не более 150 символов',
-                '3': 'ФИО должно содержать только буквы и пробелы'
-            },
-            'field-email': {
-                '1': 'Введите корректный email',
-                '2': 'Email введен некорректно',
-                '3': 'Такой email уже зарегистрирован'
-            },
-            'field-tel': {
-                '1': 'Введите номер телефона',
-                '2': 'Телефон должен содержать только цифры и знак +'
-            },
-            'field-date': 'Заполните дату',
-            'radio-group-1': 'Выберите пол',
-            'check-1': 'Ознакомьтесь с контрактом',
-            'languages': {
-                '1': 'Укажите любимые языки программирования',
-                '2': 'Указан недопустимый язык'
-            },
-            'bio': {
-                '1': 'Заполните биографию',
-                '2': 'Используйте только допустимые символы'
-            }
-        };
-
-        if (messages[field] && typeof messages[field] === 'object' && messages[field][code]) {
-            return messages[field][code];
-        } else if (messages[field] && typeof messages[field] === 'string') {
-            return messages[field];
-        }
-        
-        return `Ошибка в поле ${field}: ${code}`;
     }
 
     function showSuccessMessage(message) {
