@@ -117,6 +117,16 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             }
         });
+        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'].forEach(field => {
+            const errorCode = getCookie(`${field}_error`);
+            if (errorCode) {
+                const element = document.querySelector(`[name="${field}"]`);
+                if (element) {
+                    const errorMessage = getErrorMessage(field, errorCode);
+                    highlightError(element, errorMessage);
+                }
+            }
+        });
     };
     // Сохранение в Cookies
     form.addEventListener("input", function(event) {
