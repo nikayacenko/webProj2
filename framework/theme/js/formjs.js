@@ -111,15 +111,6 @@ window.addEventListener("DOMContentLoaded", function() {
             const errorCode = getCookie(`${field}_error`);
             if (errorCode) {
                 const element = document.querySelector(`[name="${field}"]`);
-                const elements = document.getElementsByName(name);
-            
-            if (value && elements.length > 0) {
-                if (elements[0].type === 'checkbox' || elements[0].type === 'radio') {
-                    elements[0].checked = value === 'true';
-                } else {
-                    elements[0].value = value;
-                }
-            }
                 if (element) {
                     highlightError(element, getErrorMessage(field, errorCode));
                 }
