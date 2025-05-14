@@ -179,7 +179,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response, status, xhr) {
-
                 try {
                     // Проверяем, может ли response быть строкой (на случай неправильного Content-Type)
                     if (typeof response === 'string') {
