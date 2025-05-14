@@ -356,43 +356,6 @@ window.addEventListener("DOMContentLoaded", function() {
     element.style.borderColor = 'red';
     }
 
-    function getErrorMessage(field, code) {
-        const messages = {
-            'fio': {
-                '1': 'Заполните имя',
-                '2': 'ФИО должно содержать не более 150 символов',
-                '3': 'ФИО должно содержать только буквы и пробелы'
-            },
-            'field-email': {
-                '1': 'Введите корректный email',
-                '2': 'Email введен некорректно',
-                '3': 'Такой email уже зарегистрирован'
-            },
-            'field-tel': {
-                '1': 'Введите номер телефона',
-                '2': 'Телефон должен содержать только цифры и знак +'
-            },
-            'field-date': 'Заполните дату',
-            'radio-group-1': 'Выберите пол',
-            'check-1': 'Необходимо ваше согласие',
-            'languages': {
-                '1': 'Укажите любимые языки программирования',
-                '2': 'Указан недопустимый язык'
-            },
-            'bio': {
-                '1': 'Заполните биографию',
-                '2': 'Используйте только допустимые символы'
-            }
-        };
-
-        if (messages[field] && typeof messages[field] === 'object' && messages[field][code]) {
-            return messages[field][code];
-        } else if (messages[field] && typeof messages[field] === 'string') {
-            return messages[field];
-        }
-        
-        return `Ошибка в поле ${field}: ${code}`;
-    }
 
     function showSuccessMessage(message) {
         const alertDiv = document.createElement('div');
