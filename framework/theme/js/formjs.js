@@ -112,18 +112,7 @@ window.addEventListener("DOMContentLoaded", function() {
             if (errorCode) {
                 const element = document.querySelector(`[name="${field}"]`);
                 if (element) {
-                    const errorMessage = getErrorMessage(field, errorCode);
-                    highlightError(element, errorMessage);
-                }
-            }
-        });
-        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'].forEach(field => {
-            const errorCode = getCookie(`${field}_error`);
-            if (errorCode) {
-                const element = document.querySelector(`[name="${field}"]`);
-                if (element) {
-                    const errorMessage = getErrorMessage(field, errorCode);
-                    highlightError(element, errorMessage);
+                    highlightError(element, getErrorMessage(field, errorCode));
                 }
             }
         });
@@ -154,7 +143,7 @@ window.addEventListener("DOMContentLoaded", function() {
         }
 
         // Валидация перед отправкой
-        const requiredFields = ['fio', 'field-email', 'field-tel'];
+        const requiredFields = ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'];
         let isValid = true;
         
         requiredFields.forEach(field => {
