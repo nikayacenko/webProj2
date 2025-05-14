@@ -129,6 +129,89 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Валидационные правила для каждого поля
+    const validationRules = {
+        'fio': {
+            required: true,
+            maxLength: 150,
+            pattern: /^[а-яА-ЯёЁa-zA-Z\s\-]+$/,
+            messages: {
+                required: 'Заполните имя',
+                maxLength: 'ФИО должно содержать не более 150 символов',
+                pattern: 'Используйте только буквы, пробелы и дефисы'
+            }
+        },
+        'field-email': {
+            required: true,
+            pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            messages: {
+                required: 'Введите email',
+                pattern: 'Введите корректный email'
+            }
+        },
+        'field-tel': {
+            required: true,
+            pattern: /^\+?[0-9\s\-()]+$/,
+            messages: {
+                required: 'Укажите номер телефона',
+                pattern: 'Используйте только цифры, пробелы и знак +'
+            }
+        },
+        'field-date': {
+            required: true,
+            messages: {
+                required: 'Выберите дату'
+            }
+        },
+        'radio-group-1': {
+            required: true,
+            messages: {
+                required: 'Укажите пол'
+            }
+        },
+        'check-1': {
+            required: true,
+            messages: {
+                required: 'Необходимо ваше согласие'
+            }
+        },
+        'languages': {
+            required: true,
+            messages: {
+                required: 'Выберите языки программирования'
+            }
+        },
+        'bio': {
+            required: true,
+            pattern: /^[а-яА-ЯёЁa-zA-Z0-9\s\.,!?()\-]+$/,
+            messages: {
+                required: 'Напишите информацию о себе',
+                pattern: 'Используйте только допустимые символы'
+            }
+        }
+    };
+
+    // Функция валидации поля
+    function validateField(fieldName) {
+        const field = document.querySelector(`[name="${fieldName}"]`);
+        const rules = validationRules[fieldName];
+        const value = field.type === 'checkbox' ? field.checked : field.value.trim();
+        
+        if (rules.required && !value) {
+            return { isValid: false, message: rules.messages.required, code: '1' };
+        }
+        
+        if (rules.maxLength && value.length > rules.maxLength) {
+            return { isValid: false, message: rules.messages.maxLength, code: '2' };
+        }
+        
+        if (rules.pattern && !rules.pattern.test(value)) {
+            return { isValid: false, message: rules.messages.pattern, code: '3' };
+        }
+        
+        return { isValid: true };
+    }
+
     // Обработка отправки формы
     form.addEventListener("submit", function(e) {
         e.preventDefault();
@@ -143,24 +226,15 @@ window.addEventListener("DOMContentLoaded", function() {
         }
 
         // Валидация перед отправкой
-        const requiredFields = ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'];
-        let isValid = true;
-        
-        requiredFields.forEach(field => {
-            const errorCode = getCookie(`${field}_error`);
-            const element = document.querySelector(`[name="${field}"]`);
-            if (!element || !element.value.trim()) {
+        Object.keys(validationRules).forEach(fieldName => {
+            const validationResult = validateField(fieldName);
+            
+            if (!validationResult.isValid) {
                 isValid = false;
-                setCookie(`${field}_error`, '1', { maxAge: 60 });
-                highlightError(element, getErrorMessage(field, errorCode));
+                setCookie(`${fieldName}_error`, validationResult.code, { maxAge: 60 });
+                highlightError(document.querySelector(`[name="${fieldName}"]`), validationResult.message);
             }
         });
-        const check1 = document.querySelector('[name="check-1"]');
-        if (!check1 || !check1.checked) {
-            isValid = false;
-            setCookie('check-1_error', '1', { maxAge: 60 });
-            highlightError(check1, 'Необходимо ваше согласие');
-        }
 
         if (!isValid) {
             alert("Заполните все обязательные поля");
