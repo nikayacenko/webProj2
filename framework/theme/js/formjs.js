@@ -88,39 +88,7 @@ function setCookie(name, value, options = {}) {
 function deleteCookie(name) {
     setCookie(name, '', { maxAge: -1 });
 }
-function validateFieldInRealTime(fieldName) {
-    const element = document.querySelector(`[name="${fieldName}"]`);
-    if (!element) return;
 
-    element.addEventListener('input', function() {
-        const value = this.value.trim();
-        const rules = validationRules[fieldName];
-        let isValid = true;
-
-        // Проверяем правила только если они есть
-        if (rules) {
-            if (rules.required && !value) {
-                isValid = false;
-            }
-            else if (value) {
-                if (rules.maxLength && value.length > rules.maxLength) {
-                    isValid = false;
-                }
-                if (rules.pattern && !rules.pattern.test(value)) {
-                    isValid = false;
-                }
-            }
-
-            // Если поле валидно - убираем ошибку
-            if (isValid) {
-                const errorContainer = this.closest('.form-group') || this.parentElement;
-                const errorElement = errorContainer.querySelector('.error-message');
-                if (errorElement) errorElement.remove();
-                this.classList.remove('error-field');
-            }
-        }
-    });
-}
 window.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("myform");
 
@@ -184,9 +152,39 @@ window.addEventListener("DOMContentLoaded", function() {
             }
         }
     };
-    Object.keys(validationRules).forEach(fieldName => {
-        validateFieldInRealTime(fieldName);
-    });
+    function validateFieldInRealTime(fieldName) {
+        const element = document.querySelector(`[name="${fieldName}"]`);
+        if (!element) return;
+    
+        element.addEventListener('input', function() {
+            const value = this.value.trim();
+            const rules = validationRules[fieldName];
+            let isValid = true;
+    
+            // Проверяем правила только если они есть
+            if (rules) {
+                if (rules.required && !value) {
+                    isValid = false;
+                }
+                else if (value) {
+                    if (rules.maxLength && value.length > rules.maxLength) {
+                        isValid = false;
+                    }
+                    if (rules.pattern && !rules.pattern.test(value)) {
+                        isValid = false;
+                    }
+                }
+    
+                // Если поле валидно - убираем ошибку
+                if (isValid) {
+                    const errorContainer = this.closest('.form-group') || this.parentElement;
+                    const errorElement = errorContainer.querySelector('.error-message');
+                    if (errorElement) errorElement.remove();
+                    this.classList.remove('error-field');
+                }
+            }
+        });
+    }
     // Восстановление значений из LocalStorage
     function restoreFormCookies() {
         Object.keys(validationRules).forEach(fieldName => {
@@ -212,6 +210,9 @@ window.addEventListener("DOMContentLoaded", function() {
                                validationRules[fieldName].messages.required;
                 highlightError(elements[0], message);
             }
+        });
+        Object.keys(validationRules).forEach(fieldName => {
+            validateFieldInRealTime(fieldName);
         });
     }
     function validateForm() {
