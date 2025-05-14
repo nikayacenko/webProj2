@@ -113,7 +113,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 const element = document.querySelector(`[name="${field}"]`);
                 if (element) {
                     const errorMessage = getErrorMessage(field, errorCode);
-                    highlightError(element, errorMessage);
+                    highlightError(element, getErrorMessage(field, '1'));
                 }
             }
         });
@@ -152,7 +152,7 @@ window.addEventListener("DOMContentLoaded", function() {
             if (!element || !element.value.trim()) {
                 isValid = false;
                 setCookie(`${field}_error`, '1', { maxAge: 60 });
-                highlightError(element, 'Это поле обязательно для заполнения');
+                highlightError(element, errorMessage);
             }
         });
         const check1 = document.querySelector('[name="check-1"]');
@@ -179,9 +179,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             },
             success: function(response, status, xhr) {
-                console.log('Raw response:', response);
-        console.log('Status:', xhr.status);
-        console.log('Content-Type:', xhr.getResponseHeader('Content-Type'));
                 try {
                     // Проверяем, может ли response быть строкой (на случай неправильного Content-Type)
                     if (typeof response === 'string') {
@@ -293,13 +290,17 @@ window.addEventListener("DOMContentLoaded", function() {
                 '3': 'ФИО должно содержать только буквы и пробелы'
             },
             'field-email': {
-                '1': 'Email введен некорректно',
-                '2': 'Такой email уже зарегистрирован'
+                '1': 'Введите корректный email',
+                '2': 'Email введен некорректно',
+                '3': 'Такой email уже зарегистрирован'
             },
-            'field-tel': 'Телефон должен содержать только цифры и знак +',
+            'field-tel': {
+                '1': 'Введите номер телефона',
+                '2': 'Телефон должен содержать только цифры и знак +'
+            },
             'field-date': 'Заполните дату',
             'radio-group-1': 'Выберите пол',
-            'check-1': 'Ознакомьтесь с контрактом',
+            'check-1': 'Необходимо ваше согласие',
             'languages': {
                 '1': 'Укажите любимые языки программирования',
                 '2': 'Указан недопустимый язык'
