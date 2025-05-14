@@ -112,8 +112,7 @@ window.addEventListener("DOMContentLoaded", function() {
             if (errorCode) {
                 const element = document.querySelector(`[name="${field}"]`);
                 if (element) {
-                    const errorMessage = getErrorMessage(field, errorCode);
-                    highlightError(element, getErrorMessage(field, '1'));
+                    highlightError(element, getErrorMessage(field, errorCode));
                 }
             }
         });
@@ -152,7 +151,7 @@ window.addEventListener("DOMContentLoaded", function() {
             if (!element || !element.value.trim()) {
                 isValid = false;
                 setCookie(`${field}_error`, '1', { maxAge: 60 });
-                highlightError(element, errorMessage);
+                highlightError(element, getErrorMessage(field, '1'));
             }
         });
         const check1 = document.querySelector('[name="check-1"]');
