@@ -151,7 +151,7 @@ window.addEventListener("DOMContentLoaded", function() {
             if (!element || !element.value.trim()) {
                 isValid = false;
                 setCookie(`${field}_error`, '1', { maxAge: 60 });
-                highlightError(element, errorMessage);
+                highlightError(element, getErrorMessage(field, '1'));
             }
         });
         const check1 = document.querySelector('[name="check-1"]');
