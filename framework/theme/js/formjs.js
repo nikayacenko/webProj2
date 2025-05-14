@@ -352,7 +352,7 @@ window.addEventListener("DOMContentLoaded", function() {
                             Object.keys(response.errors).forEach(field => {
                                 const element = document.querySelector(`[name="${field}"]`);
                                 if (element) {
-                                    highlightError(element, validateForm());
+                                    highlightError(element, getErrorMessage(field, response.errors[field]));
                                 }
                             });
                         }
