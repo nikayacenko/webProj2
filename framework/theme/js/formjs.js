@@ -107,6 +107,16 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             }
         });
+        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'].forEach(field => {
+            const errorCode = getCookie(`${field}_error`);
+            if (errorCode) {
+                const element = document.querySelector(`[name="${field}"]`);
+                if (element) {
+                    const errorMessage = getErrorMessage(field, errorCode);
+                    highlightError(element, errorMessage);
+                }
+            }
+        });
     };
     // Сохранение в Cookies
     form.addEventListener("input", function(event) {
@@ -337,13 +347,8 @@ window.addEventListener("DOMContentLoaded", function() {
         if (messageContainer) messageContainer.innerHTML = '';
     }
 
-    function clearErrorCookies() {
-        ['fio_error', 'field-tel_error', 'field-email_error', 
-         'field-date_error', 'radio-group-1_error', 
-         'check-1_error', 'languages_error', 'bio_error'].forEach(name => {
-            deleteCookie(name);
-        });
-    }
+    
+
     // Восстановление данных при загрузке
     restoreFormCookies();
 });
