@@ -326,26 +326,57 @@ window.addEventListener("DOMContentLoaded", function() {
         // Валидация перед отправкой
         const requiredFields = ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'];
         let isValid = true;
-        
+        Object.keys(validationRules).forEach(fieldName => {
+            const element = document.querySelector(`[name="${fieldName}"]`);
+            if (!element) return;
+            
+            const value = element.type === 'checkbox' ? element.checked : element.value.trim();
+            const rules = validationRules[fieldName];
+            
+            // Проверяем валидность поля
+            let isValid = true;
+            if (rules.required && !value) isValid = false;
+            if (value && rules.maxLength && value.length > rules.maxLength) isValid = false;
+            if (value && rules.pattern && !rules.pattern.test(value)) isValid = false;
+            
+            // Если поле валидно - сохраняем в куки
+            if (isValid) {
+                const expiryDate = new Date();
+                expiryDate.setHours(expiryDate.getHours() + 1);
+                
+                if (element.type === 'checkbox') {
+                    setCookie(fieldName, element.checked, { expires: expiryDate });
+                } else if (element.type === 'radio' && element.checked) {
+                    setCookie(fieldName, element.value, { expires: expiryDate });
+                } else {
+                    setCookie(fieldName, value, { expires: expiryDate });
+                }
+                
+                // Удаляем куку с ошибкой, если она была
+                deleteCookie(`${fieldName}_error`);
+            }
+        });
         // Валидация всех полей
         Object.keys(validationRules).forEach(fieldName => {
             const element = document.querySelector(`[name="${fieldName}"]`);
             if (!element) return;
             
-            const value = element.value.trim();
-            const rules = validationRules[fieldName];
+            const value = element.type === 'checkbox' ? element.checked : element.value.trim();            const rules = validationRules[fieldName];
             
             if (rules.required && !value) {
                 isValid = false;
+                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
                 highlightError(element, rules.messages.required);
             }
             else if (value) {
                 if (rules.maxLength && value.length > rules.maxLength) {
                     isValid = false;
+                    setCookie(`${fieldName}_error`, '2', { maxAge: 60 });
                     highlightError(element, rules.messages.maxLength);
                 }
                 if (rules.pattern && !rules.pattern.test(value)) {
                     isValid = false;
+                    setCookie(`${fieldName}_error`, '3', { maxAge: 60 });
                     highlightError(element, rules.messages.pattern);
                 }
             }
