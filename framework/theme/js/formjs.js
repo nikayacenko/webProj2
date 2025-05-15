@@ -683,8 +683,11 @@ window.addEventListener("DOMContentLoaded", function() {
                 const selected = Array.from(elements).find(el => el.checked);
                 value = selected ? selected.value : '';
                 if (!selected) return;
-            } else if (element.tagName === 'SELECT' && element.multiple) {
-                value = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
+            }else if (element.tagName === 'SELECT' && element.multiple) {
+                element.addEventListener('change', function() {
+                    const selected = Array.from(this.selectedOptions).map(opt => opt.value).join(',');
+                    setCookie(fieldName, selected || '', { expires: 1 });
+                });
             } else {
                 value = element.value;
             }
