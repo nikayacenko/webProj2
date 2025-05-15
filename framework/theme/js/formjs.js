@@ -210,7 +210,37 @@ window.addEventListener("DOMContentLoaded", function() {
                 highlightError(elements[0], message);
             }
         });
+        Object.keys(validationRules).forEach(fieldName => {
+            validateFieldInRealTime(fieldName);
+            const element = document.querySelector(`[name="${fieldName}"]`);
+        if (!element) return;
         
+            element.addEventListener('input', function() {
+                const expiryDate = new Date();
+                expiryDate.setHours(expiryDate.getHours() + 1);
+                
+                // Для чекбоксов сохраняем состояние
+                if (this.type === 'checkbox') {
+                    setCookie(this.name, this.checked, { expires: expiryDate });
+                } 
+                // Для radio сохраняем выбранное значение
+                else if (this.type === 'radio' && this.checked) {
+                    setCookie(this.name, this.value, { expires: expiryDate });
+                }
+                // Для остальных полей сохраняем значение
+                else if (this.type !== 'radio') {
+                    setCookie(this.name, this.value, { expires: expiryDate });
+                }
+            });
+        });
+        document.querySelectorAll('select[multiple]').forEach(select => {
+            select.addEventListener('change', function() {
+                const selected = Array.from(this.selectedOptions)
+                    .map(opt => opt.value)
+                    .join(',');
+                setCookie(this.name, selected);
+            });
+        });
     }
     function validateForm() {
         let isValid = true;
