@@ -145,45 +145,44 @@ window.addEventListener("DOMContentLoaded", function() {
             }
         }
     };
-    function validateFieldInRealTime(fieldName) {
-        const element = document.querySelector(`[name="${fieldName}"]`);
-        if (!element) return;
-    
-        element.addEventListener('input', function() {
-            const value = this.value.trim();
-            const rules = validationRules[fieldName];
-            
-            if (!rules) return;
-            
-            // Проверяем валидность
-            let isValid = true;
-            if (rules.required && !value) isValid = false;
-            if (value && rules.maxLength && value.length > rules.maxLength) isValid = false;
-            if (value && rules.pattern && !rules.pattern.test(value)) isValid = false;
-            
-            // Если валидно - сохраняем и убираем ошибки
-            if (isValid) {
-                // Сохраняем в куки
-                const expiryDate = new Date();
-                expiryDate.setHours(expiryDate.getHours() + 1);
-                
-                if (element.type === 'checkbox') {
-                    setCookie(fieldName, element.checked, { expires: expiryDate });
-                } else {
-                    setCookie(fieldName, value, { expires: expiryDate });
-                }
-                
-                // Убираем ошибки
-                const errorContainer = this.closest('.form-group') || this.parentElement;
-                const errorElement = errorContainer.querySelector('.error-message');
-                if (errorElement) errorElement.remove();
-                this.classList.remove('error-field');
-                
-                // Удаляем куку с ошибкой если была
-                deleteCookie(`${fieldName}_error`);
-            }
-        });
-    }
+function validateFieldInRealTime(fieldName) {
+    const element = document.querySelector(`[name="${fieldName}"]`);
+    if (!element) return;
+
+    element.addEventListener('input', function() {
+        const value = this.type === 'checkbox' ? this.checked : this.value.trim();
+        const rules = validationRules[fieldName];
+        
+        if (!rules) return;
+        
+        // Проверяем валидность
+        let isValid = true;
+        if (rules.required && !value) isValid = false;
+        if (value && rules.maxLength && value.length > rules.maxLength) isValid = false;
+        if (value && rules.pattern && !rules.pattern.test(value)) isValid = false;
+        
+        // Всегда сохраняем значение (даже невалидное)
+        const expiryDate = new Date();
+        expiryDate.setHours(expiryDate.getHours() + 1);
+        
+        if (this.type === 'checkbox') {
+            setCookie(fieldName, this.checked, { expires: expiryDate });
+        } else if (this.type === 'radio' && this.checked) {
+            setCookie(fieldName, this.value, { expires: expiryDate });
+        } else {
+            setCookie(fieldName, value, { expires: expiryDate });
+        }
+        
+        // Если валидно - убираем ошибки
+        if (isValid) {
+            deleteCookie(`${fieldName}_error`);
+            const errorContainer = this.closest('.form-group') || this.parentElement;
+            const errorElement = errorContainer.querySelector('.error-message');
+            if (errorElement) errorElement.remove();
+            this.classList.remove('error-field');
+        }
+    });
+}
     // Восстановление значений из LocalStorage
     function restoreFormCookies() {
         Object.keys(validationRules).forEach(fieldName => {
@@ -209,29 +208,9 @@ window.addEventListener("DOMContentLoaded", function() {
                                validationRules[fieldName].messages.required;
                 highlightError(elements[0], message);
             }
-        });
-        Object.keys(validationRules).forEach(fieldName => {
+            
+            // Добавляем обработчик input только один раз
             validateFieldInRealTime(fieldName);
-            const element = document.querySelector(`[name="${fieldName}"]`);
-        if (!element) return;
-        
-            element.addEventListener('input', function() {
-                const expiryDate = new Date();
-                expiryDate.setHours(expiryDate.getHours() + 1);
-                
-                // Для чекбоксов сохраняем состояние
-                if (this.type === 'checkbox') {
-                    setCookie(this.name, this.checked, { expires: expiryDate });
-                } 
-                // Для radio сохраняем выбранное значение
-                else if (this.type === 'radio' && this.checked) {
-                    setCookie(this.name, this.value, { expires: expiryDate });
-                }
-                // Для остальных полей сохраняем значение
-                else if (this.type !== 'radio') {
-                    setCookie(this.name, this.value, { expires: expiryDate });
-                }
-            });
         });
         document.querySelectorAll('select[multiple]').forEach(select => {
             select.addEventListener('change', function() {
