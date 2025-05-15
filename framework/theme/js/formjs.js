@@ -51,29 +51,32 @@
 //     }
 // });
 function getCookie(name) {
-    // Сначала пробуем получить из document.cookie
-    const matches = document.cookie.match(new RegExp(
-        `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`
-    ));
-    
-    if (matches) return decodeURIComponent(matches[1]);
-    
-    // Если не найдено, пробуем получить из localStorage
-    return localStorage.getItem(`cookie_${name}`);
+    const matches = document.cookie.match(
+        new RegExp(`(?:^|; )${name.replace(/([.$?*|{}()\[\]\\\/+^])/g, '\\$1')}=([^;]*)`)
+    );
+    return matches ? decodeURIComponent(matches[1]) : null;
 }
 function setCookie(name, value, options = {}) {
-    try {
-        // Пробуем установить куки обычным способом
-        const cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${new Date(Date.now() + 86400000).toUTCString()}`;
-        document.cookie = cookie;
-        console.log('Cookie set:', cookie);
-        
-        // Дублируем в localStorage для отладки
-        localStorage.setItem(`cookie_${name}`, value);
-    } catch (e) {
-        console.error('Error setting cookie:', e);
-        localStorage.setItem(`cookie_${name}`, value);
-    }
+    options = {
+        path: '/',
+        secure: false,  // Отключаем для локального тестирования
+        sameSite: 'Lax', // Или 'None' если нужен кросс-сайтовый доступ
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день
+        ...options
+    };
+
+    let cookie = `${name}=${encodeURIComponent(value)}`;
+    
+    // Добавляем опции
+    Object.entries(options).forEach(([key, val]) => {
+        if (['path', 'domain', 'secure', 'sameSite', 'expires', 'maxAge'].includes(key)) {
+            cookie += `; ${key}`;
+            if (val !== true && val !== undefined) cookie += `=${val}`;
+        }
+    });
+
+    document.cookie = cookie;
+    console.log('Cookie set:', cookie); // Для отладки
 }
 function deleteCookie(name) {
     setCookie(name, '', { maxAge: -1 });
