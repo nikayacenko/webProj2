@@ -353,7 +353,7 @@ form.addEventListener("input", function(event) {
             formData.append('csrf_token', csrfToken);
         }
 
-
+        let isValid = true;
         // Валидация всех полей
         Object.keys(validationRules).forEach(fieldName => {
             const elements = document.getElementsByName(fieldName);
