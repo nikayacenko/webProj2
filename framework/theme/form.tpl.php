@@ -656,17 +656,24 @@
                                 <?php if ($errors['field-date']) {print 'class="error"';} ?> value="<?php print $values['field-date']; ?>"
                                 type="date" />
                             </label><br />
-                            <div <?php if ($errors['radio-group-1']) {print 'class="error_gen"';} ?>>
-                                Пол:<br />
-                                <label><input type="radio"  <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
-                <?php if ($values['radio-group-1']=='Женский') {print 'checked="checked"';} ?>
-                                name="radio-group-1" value="Женский" />
-                                Женский</label>
-                                <label><input type="radio"  <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
-                <?php if ($values['radio-group-1']=='Мужской') {print 'checked="checked"';} ?>
-                                name="radio-group-1" value="Мужской" />
-                                Мужской</label>
-                                </div>
+                            <div class="radio-group" <?php if ($errors['radio-group-1']) {print 'class="error_gen"';} ?>>
+    <div class="radio-label">Пол:</div>
+    <div class="radio-options">
+        <label>
+            <input type="radio" <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
+                   <?php if ($values['radio-group-1']=='Женский') {print 'checked="checked"';} ?>
+                   name="radio-group-1" value="Женский" />
+            Женский
+        </label>
+        <label>
+            <input type="radio" <?php if ($errors['radio-group-1']) {print 'class="error"';} ?>
+                   <?php if ($values['radio-group-1']=='Мужской') {print 'checked="checked"';} ?>
+                   name="radio-group-1" value="Мужской" />
+            Мужской
+        </label>
+    </div>
+    <!-- Здесь будет появляться сообщение об ошибке -->
+</div>
                                 <div class="form-group">
                                 <?php $user_languages = explode(",",  $values['languages']);?>              
                                 <label>
