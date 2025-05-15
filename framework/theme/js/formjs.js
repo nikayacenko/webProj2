@@ -50,6 +50,19 @@
 //         console.error('Ошибка:', error);
 //     }
 // });
+function cookiesEnabled() {
+    try {
+        document.cookie = 'test=1';
+        return document.cookie.includes('test=1');
+    } catch (e) {
+        console.error('Cookies blocked:', e);
+        return false;
+    }
+}
+
+if (!cookiesEnabled()) {
+    alert('Пожалуйста, разрешите куки для работы формы!');
+}
 function getCookie(name) {
     const matches = document.cookie.match(
         new RegExp(`(?:^|; )${name.replace(/([.$?*|{}()\[\]\\\/+^])/g, '\\$1')}=([^;]*)`)
