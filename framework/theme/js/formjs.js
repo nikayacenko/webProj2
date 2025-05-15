@@ -585,7 +585,9 @@ function highlightError(element, message) {
         errorElement.className = 'error-message';
         errorContainer.appendChild(errorElement);
     }
-    
+    if (element.tagName === 'SELECT' && element.multiple) {
+        element.closest('.select-container')?.classList.add('error-field');
+    }
     errorElement.textContent = message;
     element.classList.add('error-field');
 }
