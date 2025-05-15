@@ -301,44 +301,7 @@ window.addEventListener("DOMContentLoaded", function() {
         return isValid;
     }
     // Сохранение в Cookies
-    // Исправленный обработчик input
-form.addEventListener("input", function(event) {
-    const element = event.target;
-    const expiryDate = new Date();
-    expiryDate.setHours(expiryDate.getHours() + 1);
-    
-    // Для чекбоксов и радио сохраняем состояние
-    if (element.type === 'checkbox' || element.type === 'radio') {
-        if (element.type === 'radio' && !element.checked) return; // Сохраняем только выбранные radio
-        
-        const value = element.type === 'checkbox' ? element.checked : element.value;
-        setCookie(element.name, value, { expires: expiryDate });
-    } 
-    // Для остальных полей
-    else {
-        const value = element.value.trim();
-        const rules = validationRules[element.name];
-        
-        // Проверяем валидность перед сохранением
-        let isValid = true;
-        if (rules) {
-            if (rules.required && !value) isValid = false;
-            if (value && rules.maxLength && value.length > rules.maxLength) isValid = false;
-            if (value && rules.pattern && !rules.pattern.test(value)) isValid = false;
-        }
-        
-        if (isValid) {
-            setCookie(element.name, value, { expires: expiryDate });
-            // Удаляем ошибку если была
-            deleteCookie(`${element.name}_error`);
-            // Убираем подсветку ошибки
-            element.classList.remove('error-field');
-            const errorContainer = element.closest('.form-group') || element.parentElement;
-            const errorElement = errorContainer.querySelector('.error-message');
-            if (errorElement) errorElement.remove();
-        }
-    }
-});
+
 
     // Обработка отправки формы
     form.addEventListener("submit", function(e) {
