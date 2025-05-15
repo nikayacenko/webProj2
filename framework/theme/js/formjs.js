@@ -51,32 +51,29 @@
 //     }
 // });
 function getCookie(name) {
-    console.log('All cookies:', document.cookie); // Добавьте эту строку
+    // Сначала пробуем получить из document.cookie
     const matches = document.cookie.match(new RegExp(
         `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`
     ));
-    return matches ? decodeURIComponent(matches[1]) : null;
+    
+    if (matches) return decodeURIComponent(matches[1]);
+    
+    // Если не найдено, пробуем получить из localStorage
+    return localStorage.getItem(`cookie_${name}`);
 }
 function setCookie(name, value, options = {}) {
-    options = {
-        path: '/',
-        secure: false, // Изменили на false для локального тестирования
-        sameSite: 'Strict', // Изменили на Strict
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        ...options
-    };
-
-    let cookie = `${name}=${encodeURIComponent(value)}`;
-    
-    Object.entries(options).forEach(([key, val]) => {
-        if (['path', 'domain', 'secure', 'sameSite', 'expires', 'maxAge'].includes(key)) {
-            cookie += `; ${key}`;
-            if (val !== true && val !== undefined) cookie += `=${val}`;
-        }
-    });
-
-    console.log('Setting cookie:', cookie); // Добавили отладочный вывод
-    document.cookie = cookie;
+    try {
+        // Пробуем установить куки обычным способом
+        const cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${new Date(Date.now() + 86400000).toUTCString()}`;
+        document.cookie = cookie;
+        console.log('Cookie set:', cookie);
+        
+        // Дублируем в localStorage для отладки
+        localStorage.setItem(`cookie_${name}`, value);
+    } catch (e) {
+        console.error('Error setting cookie:', e);
+        localStorage.setItem(`cookie_${name}`, value);
+    }
 }
 function deleteCookie(name) {
     setCookie(name, '', { maxAge: -1 });
