@@ -672,10 +672,9 @@ window.addEventListener("DOMContentLoaded", function() {
     function setupFieldAutoSave(fieldName) {
         const elements = document.querySelectorAll(`[name="${fieldName}"]`);
         if (!elements.length) return;
-    
+        const element = elements[0];
         const saveFieldValue = () => {
             let value;
-            const element = elements[0];
             
             if (element.type === 'checkbox') {
                 value = element.checked;
@@ -683,27 +682,24 @@ window.addEventListener("DOMContentLoaded", function() {
                 const selected = Array.from(elements).find(el => el.checked);
                 value = selected ? selected.value : '';
                 if (!selected) return;
-            }else if (element.tagName === 'SELECT' && element.multiple) {
-                element.addEventListener('change', function() {
-                    const selected = Array.from(this.selectedOptions).map(opt => opt.value).join(',');
-                    setCookie(fieldName, selected || '', { expires: 1 });
-                });
+            } else if (element.tagName === 'SELECT' && element.multiple) {
+                const selected = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
+                value = selected;
             } else {
                 value = element.value;
             }
     
-            setCookie(fieldName, value, { expires: 1 }); // сохраняем на 1 день
+            setCookie(fieldName, value, { expires: 1 });
         };
     
-        elements.forEach(element => {
-            if (element.type === 'checkbox' || element.type === 'radio') {
-                element.addEventListener('change', saveFieldValue);
-            } else if (element.tagName === 'SELECT' && element.multiple) {
-                element.addEventListener('change', saveFieldValue);
-            } else {
+        if (element.type === 'checkbox' || element.type === 'radio') {
+            elements.forEach(el => el.addEventListener('change', saveFieldValue));
+        } else {
+            element.addEventListener('change', saveFieldValue);
+            if (element.tagName !== 'SELECT' || !element.multiple) {
                 element.addEventListener('input', saveFieldValue);
             }
-        });
+        }
     }
 
     // Восстановление значений из кук
@@ -755,11 +751,9 @@ window.addEventListener("DOMContentLoaded", function() {
         } else if (element.type === 'radio') {
             value = Array.from(elements).some(el => el.checked);
         } else if (element.tagName === 'SELECT' && element.multiple) {
-            // Для multi-select проверяем количество выбранных вариантов
             const selectedOptions = Array.from(element.selectedOptions);
             value = selectedOptions.length > 0;
             
-            // Сохраняем выбранные значения в куки
             if (value) {
                 const selectedValues = selectedOptions.map(opt => opt.value).join(',');
                 setCookie(fieldName, selectedValues, { expires: 1 });
