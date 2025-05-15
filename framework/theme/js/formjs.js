@@ -354,73 +354,92 @@ form.addEventListener("input", function(event) {
         }
 
         let isValid = true;
-        // Валидация всех полей
-        Object.keys(validationRules).forEach(fieldName => {
-            const elements = document.getElementsByName(fieldName);
-            if (!elements.length) return;
-            
-            const rules = validationRules[fieldName];
-            const element = elements[0];
-            let value;
-            
-            // Получаем значение в зависимости от типа элемента
-            if (element.type === 'checkbox') {
-                value = element.checked;
-            } else if (element.type === 'radio') {
-                value = Array.from(elements).find(el => el.checked)?.value || '';
-            } else {
-                value = element.value.trim();
-            }
-            
-            // Проверяем валидность поля
-            let isFieldValid = true;
-            if (rules.required && !value) {
-                isFieldValid = false;
-            }
-            if (value && rules.maxLength && value.length > rules.maxLength) {
-                isFieldValid = false;
-            }
-            if (value && rules.pattern && !rules.pattern.test(value)) {
-                isFieldValid = false;
-            }
-            
-            // Сохраняем значение в куки, если поле валидно
-            if (isFieldValid) {
-                const expiryDate = new Date();
-                expiryDate.setHours(expiryDate.getHours() + 1);
-                
-                if (element.type === 'checkbox') {
-                    setCookie(fieldName, element.checked, { expires: expiryDate });
-                } else if (element.type === 'radio') {
-                    const selectedValue = Array.from(elements).find(el => el.checked)?.value;
-                    if (selectedValue) setCookie(fieldName, selectedValue, { expires: expiryDate });
-                } else {
-                    setCookie(fieldName, value, { expires: expiryDate });
-                }
-                
-                // Удаляем куку с ошибкой, если она была
-                deleteCookie(`${fieldName}_error`);
-            } else {
-                isValid = false;
-                // Устанавливаем куку с ошибкой
-                let errorCode = '1'; // по умолчанию required
-                if (value && rules.maxLength && value.length > rules.maxLength) {
-                    errorCode = '2';
-                } else if (value && rules.pattern && !rules.pattern.test(value)) {
-                    errorCode = '3';
-                }
-                setCookie(`${fieldName}_error`, errorCode, { maxAge: 60 });
-                
-                // Показываем ошибку
-                const message = rules.messages[errorCode] || rules.messages.required;
-                highlightError(element, message);
-            }
-        });
+    let hasValidationErrors = false;
 
-        if (!isValid) {
-            alert("Заполните все обязательные поля");
-            return;
+    // Сначала сохраняем ВСЕ значения полей (даже невалидные)
+    Object.keys(validationRules).forEach(fieldName => {
+        const elements = document.getElementsByName(fieldName);
+        if (!elements.length) return;
+        
+        const element = elements[0];
+        const rules = validationRules[fieldName];
+        let value;
+
+        // Получаем значение в зависимости от типа элемента
+        if (element.type === 'checkbox') {
+            value = element.checked;
+            setCookie(fieldName, value, { expires: new Date(Date.now() + 86400000) });
+        } 
+        else if (element.type === 'radio') {
+            const selected = Array.from(elements).find(el => el.checked);
+            value = selected ? selected.value : '';
+            if (selected) setCookie(fieldName, value, { expires: new Date(Date.now() + 86400000) });
+        } 
+        else if (element.tagName === 'SELECT' && element.multiple) {
+            value = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
+            setCookie(fieldName, value, { expires: new Date(Date.now() + 86400000) });
         }
+        else {
+            value = element.value.trim();
+            setCookie(fieldName, value, { expires: new Date(Date.now() + 86400000) });
+        }
+    });
+
+    // Затем выполняем валидацию
+    Object.keys(validationRules).forEach(fieldName => {
+        const elements = document.getElementsByName(fieldName);
+        if (!elements.length) return;
+        
+        const element = elements[0];
+        const rules = validationRules[fieldName];
+        let value;
+
+        if (element.type === 'checkbox') {
+            value = element.checked;
+        } 
+        else if (element.type === 'radio') {
+            value = Array.from(elements).some(el => el.checked);
+        } 
+        else if (element.tagName === 'SELECT' && element.multiple) {
+            value = Array.from(element.selectedOptions).length > 0;
+        }
+        else {
+            value = element.value.trim();
+        }
+
+        // Валидация
+        if (rules.required && !value) {
+            isValid = false;
+            hasValidationErrors = true;
+            setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
+            highlightError(element, rules.messages.required);
+        }
+        else if (value && rules.maxLength && value.length > rules.maxLength) {
+            isValid = false;
+            hasValidationErrors = true;
+            setCookie(`${fieldName}_error`, '2', { maxAge: 60 });
+            highlightError(element, rules.messages.maxLength);
+        }
+        else if (value && rules.pattern && !rules.pattern.test(value)) {
+            isValid = false;
+            hasValidationErrors = true;
+            setCookie(`${fieldName}_error`, '3', { maxAge: 60 });
+            highlightError(element, rules.messages.pattern);
+        }
+        else {
+            // Если поле валидно, удаляем ошибку если она была
+            deleteCookie(`${fieldName}_error`);
+            const errorContainer = element.closest('.form-group') || element.parentElement;
+            const errorElement = errorContainer.querySelector('.error-message');
+            if (errorElement) errorElement.remove();
+            element.classList.remove('error-field');
+        }
+    });
+
+    if (hasValidationErrors) {
+        alert("Заполните все обязательные поля");
+        return;
+    }
 
         // Отправка AJAX
         $.ajax({
