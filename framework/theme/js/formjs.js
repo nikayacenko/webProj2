@@ -353,62 +353,67 @@ form.addEventListener("input", function(event) {
             formData.append('csrf_token', csrfToken);
         }
 
-        // Валидация перед отправкой
-        const requiredFields = ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1','languages','bio'];
-        let isValid = true;
+
+        // Валидация всех полей
         Object.keys(validationRules).forEach(fieldName => {
-            const element = document.querySelector(`[name="${fieldName}"]`);
-            if (!element) return;
+            const elements = document.getElementsByName(fieldName);
+            if (!elements.length) return;
             
-            const value = element.type === 'checkbox' ? element.checked : element.value.trim();
             const rules = validationRules[fieldName];
+            const element = elements[0];
+            let value;
+            
+            // Получаем значение в зависимости от типа элемента
+            if (element.type === 'checkbox') {
+                value = element.checked;
+            } else if (element.type === 'radio') {
+                value = Array.from(elements).find(el => el.checked)?.value || '';
+            } else {
+                value = element.value.trim();
+            }
             
             // Проверяем валидность поля
-            let isValid = true;
-            if (rules.required && !value) isValid = false;
-            if (value && rules.maxLength && value.length > rules.maxLength) isValid = false;
-            if (value && rules.pattern && !rules.pattern.test(value)) isValid = false;
+            let isFieldValid = true;
+            if (rules.required && !value) {
+                isFieldValid = false;
+            }
+            if (value && rules.maxLength && value.length > rules.maxLength) {
+                isFieldValid = false;
+            }
+            if (value && rules.pattern && !rules.pattern.test(value)) {
+                isFieldValid = false;
+            }
             
-            // Если поле валидно - сохраняем в куки
-            if (isValid) {
+            // Сохраняем значение в куки, если поле валидно
+            if (isFieldValid) {
                 const expiryDate = new Date();
                 expiryDate.setHours(expiryDate.getHours() + 1);
                 
                 if (element.type === 'checkbox') {
                     setCookie(fieldName, element.checked, { expires: expiryDate });
-                } else if (element.type === 'radio' && element.checked) {
-                    setCookie(fieldName, element.value, { expires: expiryDate });
+                } else if (element.type === 'radio') {
+                    const selectedValue = Array.from(elements).find(el => el.checked)?.value;
+                    if (selectedValue) setCookie(fieldName, selectedValue, { expires: expiryDate });
                 } else {
                     setCookie(fieldName, value, { expires: expiryDate });
                 }
                 
                 // Удаляем куку с ошибкой, если она была
                 deleteCookie(`${fieldName}_error`);
-            }
-        });
-        // Валидация всех полей
-        Object.keys(validationRules).forEach(fieldName => {
-            const element = document.querySelector(`[name="${fieldName}"]`);
-            if (!element) return;
-            
-            const value = element.type === 'checkbox' ? element.checked : element.value.trim();            const rules = validationRules[fieldName];
-            
-            if (rules.required && !value) {
+            } else {
                 isValid = false;
-                setCookie(`${fieldName}_error`, '1', { maxAge: 60 });
-                highlightError(element, rules.messages.required);
-            }
-            else if (value) {
-                if (rules.maxLength && value.length > rules.maxLength) {
-                    isValid = false;
-                    setCookie(`${fieldName}_error`, '2', { maxAge: 60 });
-                    highlightError(element, rules.messages.maxLength);
+                // Устанавливаем куку с ошибкой
+                let errorCode = '1'; // по умолчанию required
+                if (value && rules.maxLength && value.length > rules.maxLength) {
+                    errorCode = '2';
+                } else if (value && rules.pattern && !rules.pattern.test(value)) {
+                    errorCode = '3';
                 }
-                if (rules.pattern && !rules.pattern.test(value)) {
-                    isValid = false;
-                    setCookie(`${fieldName}_error`, '3', { maxAge: 60 });
-                    highlightError(element, rules.messages.pattern);
-                }
+                setCookie(`${fieldName}_error`, errorCode, { maxAge: 60 });
+                
+                // Показываем ошибку
+                const message = rules.messages[errorCode] || rules.messages.required;
+                highlightError(element, message);
             }
         });
 
