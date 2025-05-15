@@ -747,15 +747,23 @@ window.addEventListener("DOMContentLoaded", function() {
             let value, isFieldValid = true;
             
             // Получаем значение в зависимости от типа элемента
-            if (element.type === 'checkbox') {
-                value = element.checked;
-            } else if (element.type === 'radio') {
-                value = Array.from(elements).some(el => el.checked);
-            } else if (element.tagName === 'SELECT' && element.multiple) {
-                value = Array.from(element.selectedOptions).length > 0;
-            } else {
-                value = element.value.trim();
+        if (element.type === 'checkbox') {
+            value = element.checked;
+        } else if (element.type === 'radio') {
+            value = Array.from(elements).some(el => el.checked);
+        } else if (element.tagName === 'SELECT' && element.multiple) {
+            // Для multi-select проверяем количество выбранных вариантов
+            const selectedOptions = Array.from(element.selectedOptions);
+            value = selectedOptions.length > 0;
+            
+            // Сохраняем выбранные значения в куки
+            if (value) {
+                const selectedValues = selectedOptions.map(opt => opt.value).join(',');
+                setCookie(fieldName, selectedValues, { expires: 1 });
             }
+        } else {
+            value = element.value.trim();
+        }
             
             // Валидация
             if (rules.required && !value) {
