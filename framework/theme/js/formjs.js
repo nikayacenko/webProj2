@@ -594,20 +594,7 @@ function highlightError(element, message) {
     
     errorElement.textContent = message;
     element.classList.add('error-field');
-    if (element.name === 'radio-group-1') {
-        const radioGroup = element.closest('.radio-group');
-        let errorElement = radioGroup.querySelector('.error-message');
-        
-        if (!errorElement) {
-            errorElement = document.createElement('div');
-            errorElement.className = 'error-message';
-            radioGroup.appendChild(errorElement);
-        }
-        
-        errorElement.textContent = message;
-        radioGroup.classList.add('error-container');
-        return;
-    }
+    
     // Для select multiple добавляем класс к родительскому контейнеру
     if (isLanguagesSelect) {
         errorContainer.classList.add('error-container');
@@ -616,8 +603,7 @@ function highlightError(element, message) {
 
 function resetFormErrors() {
     document.querySelectorAll('.error-message').forEach(el => el.remove());
-    document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-    document.querySelectorAll('.error_gen').forEach(el => el.classList.remove('error_gen'));
+    document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
     document.querySelectorAll('.error-container').forEach(el => el.classList.remove('error-container'));
 }
 
