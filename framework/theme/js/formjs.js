@@ -145,44 +145,39 @@ window.addEventListener("DOMContentLoaded", function() {
             }
         }
     };
-function validateFieldInRealTime(fieldName) {
-    const element = document.querySelector(`[name="${fieldName}"]`);
-    if (!element) return;
-
-    element.addEventListener('input', function() {
-        const value = this.type === 'checkbox' ? this.checked : this.value.trim();
-        const rules = validationRules[fieldName];
-        
-        if (!rules) return;
-        
-        // Проверяем валидность
-        let isValid = true;
-        if (rules.required && !value) isValid = false;
-        if (value && rules.maxLength && value.length > rules.maxLength) isValid = false;
-        if (value && rules.pattern && !rules.pattern.test(value)) isValid = false;
-        
-        // Всегда сохраняем значение (даже невалидное)
-        const expiryDate = new Date();
-        expiryDate.setHours(expiryDate.getHours() + 1);
-        
-        if (this.type === 'checkbox') {
-            setCookie(fieldName, this.checked, { expires: expiryDate });
-        } else if (this.type === 'radio' && this.checked) {
-            setCookie(fieldName, this.value, { expires: expiryDate });
+    function setupFieldAutoSave(fieldName) {
+        const element = document.querySelector(`[name="${fieldName}"]`);
+        if (!element) return;
+    
+        const saveFieldValue = () => {
+            let value;
+            if (element.type === 'checkbox') {
+                value = element.checked;
+            } else if (element.type === 'radio') {
+                if (element.checked) {
+                    value = element.value;
+                } else {
+                    return; // Не сохраняем невыбранные radio
+                }
+            } else if (element.tagName === 'SELECT' && element.multiple) {
+                value = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
+            } else {
+                value = element.value;
+            }
+    
+            console.log(`Saving ${fieldName}:`, value); // Отладочный вывод
+            setCookie(fieldName, value, { expires: new Date(Date.now() + 86400000) });
+        };
+    
+        // Для разных типов полей разные события
+        if (element.type === 'checkbox' || element.type === 'radio') {
+            element.addEventListener('change', saveFieldValue);
+        } else if (element.tagName === 'SELECT' && element.multiple) {
+            element.addEventListener('change', saveFieldValue);
         } else {
-            setCookie(fieldName, value, { expires: expiryDate });
+            element.addEventListener('input', saveFieldValue);
         }
-        
-        // Если валидно - убираем ошибки
-        if (isValid) {
-            deleteCookie(`${fieldName}_error`);
-            const errorContainer = this.closest('.form-group') || this.parentElement;
-            const errorElement = errorContainer.querySelector('.error-message');
-            if (errorElement) errorElement.remove();
-            this.classList.remove('error-field');
-        }
-    });
-}
+    }
     // Восстановление значений из LocalStorage
     function restoreFormCookies() {
         Object.keys(validationRules).forEach(fieldName => {
@@ -195,6 +190,11 @@ function validateFieldInRealTime(fieldName) {
                 } else if (elements[0].type === 'radio') {
                     elements.forEach(el => {
                         if (el.value === value) el.checked = true;
+                    });
+                } else if (elements[0].tagName === 'SELECT' && elements[0].multiple) {
+                    const values = value.split(',');
+                    Array.from(elements[0].options).forEach(opt => {
+                        opt.selected = values.includes(opt.value);
                     });
                 } else {
                     elements[0].value = value;
@@ -209,16 +209,8 @@ function validateFieldInRealTime(fieldName) {
                 highlightError(elements[0], message);
             }
             
-            // Добавляем обработчик input только один раз
-            validateFieldInRealTime(fieldName);
-        });
-        document.querySelectorAll('select[multiple]').forEach(select => {
-            select.addEventListener('change', function() {
-                const selected = Array.from(this.selectedOptions)
-                    .map(opt => opt.value)
-                    .join(',');
-                setCookie(this.name, selected);
-            });
+            // Настраиваем автосохранение для каждого поля
+            setupFieldAutoSave(fieldName);
         });
     }
     function validateForm() {
