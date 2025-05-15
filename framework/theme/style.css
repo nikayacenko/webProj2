@@ -29,6 +29,37 @@
 select[name="languages[]"].error-field {
     border-color: #ff3860 !important;
 }
+.radio-group {
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.radio-options {
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.radio-options label {
+    display: inline-block;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.error-message {
+    color: #ff3860;
+    font-size: 0.8em;
+    margin-top: 5px;
+    display: block;
+    clear: both;
+}
+
+.error-container {
+    padding-bottom: 18px; /* Место для сообщения об ошибке */
+}
+
+.error-container .radio-options {
+    border: none; /* Убираем границу если она есть */
+}
 /*.log2{
     background-color:white;
 }*/
