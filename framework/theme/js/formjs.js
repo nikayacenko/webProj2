@@ -51,6 +51,7 @@
 //     }
 // });
 function getCookie(name) {
+    console.log('All cookies:', document.cookie); // Добавьте эту строку
     const matches = document.cookie.match(new RegExp(
         `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`
     ));
@@ -59,23 +60,22 @@ function getCookie(name) {
 function setCookie(name, value, options = {}) {
     options = {
         path: '/',
-        secure: true,
-        sameSite: 'Lax',
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день по умолчанию
+        secure: false, // Изменили на false для локального тестирования
+        sameSite: 'Strict', // Изменили на Strict
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         ...options
     };
 
-    // Кодируем значение
     let cookie = `${name}=${encodeURIComponent(value)}`;
     
-    // Добавляем опции
     Object.entries(options).forEach(([key, val]) => {
         if (['path', 'domain', 'secure', 'sameSite', 'expires', 'maxAge'].includes(key)) {
             cookie += `; ${key}`;
-            if (val !== true) cookie += `=${val}`;
+            if (val !== true && val !== undefined) cookie += `=${val}`;
         }
     });
 
+    console.log('Setting cookie:', cookie); // Добавили отладочный вывод
     document.cookie = cookie;
 }
 function deleteCookie(name) {
