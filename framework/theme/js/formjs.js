@@ -577,24 +577,34 @@ function deleteCookie(name) {
 }
 
 function highlightError(element, message) {
-    const errorContainer = element.closest('.form-group') || element.parentElement;
+    // Для select multiple с именем languages[]
+    const isLanguagesSelect = element.name === 'languages[]';
+    const errorContainer = isLanguagesSelect 
+        ? element.closest('.form-group') || element.parentElement
+        : element.closest('.form-group') || element.parentElement;
+    
     let errorElement = errorContainer.querySelector('.error-message');
     
     if (!errorElement) {
         errorElement = document.createElement('div');
         errorElement.className = 'error-message';
-        errorContainer.appendChild(errorElement);
+        // Вставляем после select
+        element.parentNode.insertBefore(errorElement, element.nextSibling);
     }
-    if (element.tagName === 'SELECT' && element.multiple) {
-        element.closest('.select-container')?.classList.add('error-field');
-    }
+    
     errorElement.textContent = message;
     element.classList.add('error-field');
+    
+    // Для select multiple добавляем класс к родительскому контейнеру
+    if (isLanguagesSelect) {
+        errorContainer.classList.add('error-container');
+    }
 }
 
 function resetFormErrors() {
     document.querySelectorAll('.error-message').forEach(el => el.remove());
     document.querySelectorAll('.error-field').forEach(el => el.classList.remove('error-field'));
+    document.querySelectorAll('.error-container').forEach(el => el.classList.remove('error-container'));
 }
 
 function showError(message) {
@@ -654,10 +664,10 @@ window.addEventListener("DOMContentLoaded", function() {
                 required: 'Необходимо ваше согласие'
             }
         },
-        'languages': {
+        'languages[]': {
             required: true,
             messages: {
-                required: 'Выберите языки программирования'
+                required: 'Выберите хотя бы один язык программирования'
             }
         },
         'bio': {
@@ -719,8 +729,8 @@ window.addEventListener("DOMContentLoaded", function() {
                     elements.forEach(el => {
                         if (el.value === value) el.checked = true;
                     });
-                } else if (element.tagName === 'SELECT' && element.multiple) {
-                    const values = value.split(',');
+                } else if (element.name === 'languages[]') {
+                    const values = value ? value.split(',') : [];
                     Array.from(element.options).forEach(opt => {
                         opt.selected = values.includes(opt.value);
                     });
@@ -752,13 +762,13 @@ window.addEventListener("DOMContentLoaded", function() {
             value = element.checked;
         } else if (element.type === 'radio') {
             value = Array.from(elements).some(el => el.checked);
-        } else if (element.tagName === 'SELECT' && element.multiple) {
+        } else if (element.name === 'languages[]') {
             const selectedOptions = Array.from(element.selectedOptions);
             value = selectedOptions.length > 0;
             
             if (value) {
                 const selectedValues = selectedOptions.map(opt => opt.value).join(',');
-                setCookie(fieldName, selectedValues, { expires: 1 });
+                setCookie('languages', selectedValues, { expires: 1 });
             }
         } else {
             value = element.value.trim();

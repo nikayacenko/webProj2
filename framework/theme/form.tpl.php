@@ -667,9 +667,8 @@
                                 name="radio-group-1" value="Мужской" />
                                 Мужской</label>
                                 </div>
-                                <?php 
-                $user_languages = explode(",",  $values['languages']);
-                ?>
+                                <div class="form-group">
+                                <?php $user_languages = explode(",",  $values['languages']);?>              
                                 <label>
                                     Любимый язык программирования:
                                     <br />
@@ -688,6 +687,7 @@
                                     <option value="Scala" <?php if(in_array('Scala', $user_languages)) {print 'selected="selected"';}?>>Scala
                                     </select>
                                 </label><br />
+                                </div>
                                 <label>
                                     Биография:<br />
                                     <textarea name="bio" class="input-field" <?php if ($errors['bio']) {print 'class="error"';} ?>><?php print $values['bio']; ?></textarea>  
