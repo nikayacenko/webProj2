@@ -21,11 +21,20 @@
     margin:20px;
     color:#f40d0d !important;
     margin-left:0;
+    text-decoration: underline;
 }
 .admhref{
     margin:20px;
     color:#f40d0d !important;
     margin-left:0;
+}
+
+.admhref:hover{
+    text-decoration: underline;
+}
+
+.loginhref:hover{
+    text-decoration: underline;
 }
 #saveButton{
     color:white;
