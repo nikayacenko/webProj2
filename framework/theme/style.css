@@ -64,7 +64,7 @@ select[name="languages[]"].error-field {
 }*/
 .error-message {
     display: block !important;
-    color: red !important;
+    color: #ff3860 !important;
     margin-top: 5px;
     font-size: 0.9em;
 }
