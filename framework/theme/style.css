@@ -1261,6 +1261,9 @@ div.num{
     }
     .advert1{
         min-height:100%;
+        display: block !important;
+        color: white !important;
+        background-color: #00000000 !important;
     }
     .advert{
         min-height:100%;  
@@ -1786,6 +1789,9 @@ div.num{
     }
     .advert1{
         min-height:80%;
+        display: block !important;
+        color: white !important;
+        background-color: #00000000 !important;
     }
     .advert{
         min-height:80%;  
@@ -2033,6 +2039,9 @@ div.num{
     }
     .advert1{
         height:60%;
+        display: block !important;
+        color: white !important;
+        background-color: #00000000 !important;
     }
     .advert{
         height:60%;  
