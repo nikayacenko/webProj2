@@ -68,6 +68,9 @@ select[name="languages[]"].error-field {
     margin-top: 5px;
     font-size: 0.9em;
 }
+.radio-label{
+    color:white;
+}
 html{
     width:100%;
 }
