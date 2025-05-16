@@ -589,22 +589,21 @@ function highlightError(element, message) {
         errorElement = document.createElement('div');
         errorElement.className = 'error-message';
         // Вставляем после select
-        element.parentNode.insertBefore(errorElement, element.nextSibling);
+        element.parentNode.insert(errorElement, element.nextSibling);
     }
     
     errorElement.textContent = message;
-    //element.classList.add('error-field');
-    if(element.type=='radio')
-    {
-        element.parentElement.classList.add('error-field');
-    }
-    else if(element.type=='checkbox')
-    {
-        element.parentElement.classList.add('error-field');
-    }
-    else element.classList.add('error-field');
+    element.classList.add('error-field');
+    // if(element.type=='radio')
+    // {
+    //     element.parentElement.classList.add('error-field');
+    // }
+    // else if(element.type=='checkbox')
+    // {
+    //     element.parentElement.classList.add('error-field');
+    // }
     
-    // Для select multiple добавляем класс к родительскому контейнеру
+    // // Для select multiple добавляем класс к родительскому контейнеру
     if (isLanguagesSelect) {
         errorContainer.classList.add('error-container');
     }
