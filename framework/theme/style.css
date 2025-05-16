@@ -17,7 +17,16 @@
     border-radius: 4px;
 }
 
+a{
+    color:#f40d0d;
+}
 
+.loginhref{
+    margin:20px;
+}
+.admhref{
+    margin:20px;
+}
 #saveButton{
     color:white;
     background-color: #00000000;
