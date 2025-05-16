@@ -590,6 +590,10 @@ function highlightError(element, message) {
         errorElement.className = 'error-message';
         // Вставляем после select
         element.parentNode.insertBefore(errorElement, element.nextSibling);
+        if(element.type='radio')
+        {
+            element.parentNode.parentNode.insertBefore(errorElement, element.nextSibling);
+        }
     }
     
     errorElement.textContent = message;
