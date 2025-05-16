@@ -596,7 +596,7 @@ function highlightError(element, message) {
         }
         if(element.type==='checkbox')
         {
-            element.parentNode.insertBefore(errorElement, element);
+            element.parentNode.appendChild(errorElement);
         }
     }
     
