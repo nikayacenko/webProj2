@@ -6,7 +6,7 @@
     list-style: none;
     text-decoration: none;
     color:white;
-    background-color: #212529;
+    background: url(img/black_square_support.png) no-repeat center / cover;
 }
 
 @font-face {
