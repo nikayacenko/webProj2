@@ -18,7 +18,7 @@ table {
     font-size: smaller;
     border-collapse: separate;
     border-spacing: 1px;
-    background-color:#ce3119;
+    background-color:#9a1400;
     max-width: fit-content;
     overflow:auto;
     border-radius: 3px;
@@ -93,7 +93,7 @@ button:hover{
         overflow:auto;
     }
 }
-.nametb{ background-color:#60190e}
+.nametb{ background-color:#560c00}
 @font-face {
     font-family: "Montserrat";
     src: url("/webProj2/framework/theme/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
