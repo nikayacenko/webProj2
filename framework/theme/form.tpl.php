@@ -712,7 +712,7 @@
                 
                 <?php 
                                          
-                    if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
+                    if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login']) && !(!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))){
                         print('<a class="loginhref" href="' . url('login') . '">Вход</a></br>');
                     }
                                     
