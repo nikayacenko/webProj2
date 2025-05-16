@@ -593,7 +593,16 @@ function highlightError(element, message) {
     }
     
     errorElement.textContent = message;
-    element.classList.add('error-field');
+    //element.classList.add('error-field');
+    if(element.type=='radio')
+    {
+        element.parentElement.classList.add('error-field');
+    }
+    else if(element.type=='checkbox')
+    {
+        element.parentElement.classList.add('error-field');
+    }
+    else element.classList.add('error-field');
     
     // Для select multiple добавляем класс к родительскому контейнеру
     if (isLanguagesSelect) {
@@ -915,7 +924,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 let errorMsg = 'Ошибка сервера';
                 
                 if (xhr.status === 422) {
-                    errorMsg = 'Проверьте правильность данных';
+                    errorMsg = 'Такая почта уже зарегистрирована.';
                 } else if (xhr.status === 403) {
                     errorMsg = 'Ошибка безопасности. Обновите страницу';
                 }
