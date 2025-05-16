@@ -1,0 +1,17 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: Montserrat;
+    list-style: none;
+    text-decoration: none;
+    background-color: #091723;
+}
+
+@font-face {
+    font-family: "Montserrat";
+    src: url("/webProj2/framework/theme/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
