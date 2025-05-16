@@ -19,12 +19,12 @@
 
 .loginhref{
     margin:20px;
-    color:#f40d0d;
+    color:#f40d0d !important;
     margin-left:0;
 }
 .admhref{
     margin:20px;
-    color:#f40d0d;
+    color:#f40d0d !important;
 }
 #saveButton{
     color:white;
