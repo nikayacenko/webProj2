@@ -883,6 +883,9 @@ div.num{
 .b-form label, .input-field{
     width: 100%;
 }
+#messages{
+    color:white;
+}
 .input-field{
     background-color: #ffffff00 !important;
     border-color:#d7d7d7;
