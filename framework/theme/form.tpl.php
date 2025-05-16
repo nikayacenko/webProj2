@@ -75,7 +75,7 @@
             </div>
             <div class="ad">
                 <div class="first_trio">
-                    <div class="advert1 col-xl-4">
+                    <div class="cuppp col-xl-4">
                         <h1>#1</h1>
                         <img src="theme/img/cup.png" alt="" width="59" height="58">
                         <p> Drupal-разработчик по России по версии Рейтинга Рунета</p>

@@ -292,7 +292,7 @@ div.ad div.second_trio{
     margin-top:40px;
 
 }
-.advert1{
+.cuppp{
     height:30%;
     border-left:5px solid #F14D34;
     padding:10px;
@@ -317,7 +317,7 @@ header h1{
     font-size:30px;
     font-family: Montserrat_b;
 }
-div.advert1 h1{
+div.cuppp h1{
         float:left;
         font-size:40px;
         font-family: Montserrat_b;
@@ -1250,16 +1250,16 @@ div.num{
         height:30%;
         margin-top:0px;
     }
-    .advert1 img{
+    .cuppp img{
         position:absolute;
         top:-13%;
         left:40%;
 
     }
-    div.advert1 h1{
+    div.cuppp h1{
         float:none;
     }
-    .advert1{
+    .cuppp{
         min-height:100%;
         display: block !important;
         color: white !important;
@@ -1272,7 +1272,7 @@ div.num{
     .advert p{
         max-width:100%;
     }
-    .advert1 p{
+    .cuppp p{
         margin-bottom: 0;
         max-width:100%;
     }
@@ -1779,15 +1779,15 @@ div.num{
         height:50%;
         margin-top:0px;
     }
-    .advert1 img{
+    .cuppp img{
         position:absolute;
         top:-13%;
         left:30%;
     }
-    div.advert1 h1{
+    div.cuppp h1{
         float:none;
     }
-    .advert1{
+    .cuppp{
         min-height:80%;
         display: block !important;
         color: white !important;
@@ -1800,7 +1800,7 @@ div.num{
     .advert p{
         max-width:80%;
     }
-    .advert1 p{
+    .cuppp p{
         margin-bottom: 0;
         max-width:80%;
     }
@@ -2032,12 +2032,12 @@ div.num{
         border-bottom: 0px;
         border-right: 2px solid #dfdede;
     }
-    .advert1 img{
+    .cuppp img{
         position:absolute;
         top:-15%;
         left:30%;
     }
-    .advert1{
+    .cuppp{
         height:60%;
         display: block !important;
         color: white !important;
