@@ -592,7 +592,7 @@ function highlightError(element, message) {
         element.parentNode.insertBefore(errorElement, element.nextSibling);
         if(element.type==='radio')
         {
-            element.parentNode.insertBefore(errorElement, element.parentElement);
+            element.parentNode.insertBefore(errorElement, element.parentNode);
         }
     }
     
