@@ -71,6 +71,7 @@ select[name="languages[]"].error-field {
 .radio-label{
     color:white;
 }
+
 html{
     width:100%;
 }
@@ -883,7 +884,7 @@ div.num{
     width: 100%;
 }
 .input-field{
-    background-color: #ffffff00;
+    background-color: #ffffff00 !important;
     border-color:#d7d7d7;
     border-radius: 5px;
     padding: 5%;
