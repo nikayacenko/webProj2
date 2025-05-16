@@ -713,7 +713,7 @@
                 <?php 
                                          
                     if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
-                        print('<a class="loginhref" href="' . url('login') . '">Вход</a>');
+                        print('<a class="loginhref" href="' . url('login') . '">Вход</a></br>');
                     }
                                     
                     require_once './scripts/db.php';

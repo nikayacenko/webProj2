@@ -25,6 +25,7 @@
 .admhref{
     margin:20px;
     color:#f40d0d !important;
+    margin-left:0;
 }
 #saveButton{
     color:white;
