@@ -592,7 +592,7 @@ function highlightError(element, message) {
         element.parentNode.insertBefore(errorElement, element.nextSibling);
         if(element.type==='radio')
         {
-            element.parentNode.parentNode.parentNode.parentNode.insertBefore(errorElement, element.parentElement.parentElement.parentElement);
+            element.parentNode.parentNode.parentNode.appendChild(errorElement);
         }
         if(element.type==='checkbox')
         {
