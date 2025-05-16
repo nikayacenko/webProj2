@@ -71,7 +71,7 @@
             <div class="adv">
                 <h1> Поддержка сайтов на Drupal</h1>
                 <p>Сопровождение и поддержка сайтов на CMS Drupal любых версий запущенности</p>
-                <button type="button" id="tarif">Тарифы</button>
+                <button type="button" id="tarif">Форма</button>
             </div>
             <div class="ad">
                 <div class="first_trio">
