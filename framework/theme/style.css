@@ -1001,6 +1001,12 @@ div.num{
     background-color: transparent;
 }
 
+.b-bottom a:hover{
+
+    text-decoration: underline;
+}
+
+
 .footer-body ul li img{
     margin: 5px;
     height: 20px;
