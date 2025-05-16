@@ -30,15 +30,21 @@ table {
 
 .tdstat{
     padding:5px;
+    width:100%;
 }
 
 tr{
     background-color:#090b18;
+    width:100%;
 }
 table.stat{
     min-width:75%;
+    display:block;
 }
 
+tbody{
+    width:100%;
+}
 h3{
     margin: 40px;
     text-align:center;
