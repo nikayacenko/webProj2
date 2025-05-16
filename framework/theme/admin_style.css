@@ -11,7 +11,10 @@
 body{
     background: url(img/black_square_support.png) no-repeat center / cover;
 }
+div.content{
+    max-width: 90%;
 
+}
 table {
     margin: 15px auto;
     text-align: center;
@@ -22,6 +25,7 @@ table {
     max-width: fit-content;
     overflow:auto;
     border-radius: 3px;
+    display:flex;
 }
 
 .tdstat{
@@ -89,10 +93,8 @@ button:hover{
         min-width:50%;
     }
 
-        table.t{
-        overflow:auto;
-    }
 }
+
 .nametb{ background-color:#560c00}
 @font-face {
     font-family: "Montserrat";

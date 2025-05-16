@@ -61,7 +61,7 @@
 
         <?php
         try {
-            echo "<table class='stat'><thead> <tr class='nametb px-sm-2 pt-sm-2 pb-sm-2'><td>LANGUAGE</td><td>COUNT</td></tr></thead> ";
+            echo "<table class='stat'><tr class='nametb px-sm-2 pt-sm-2 pb-sm-2'><td>LANGUAGE</td><td>COUNT</td></tr>";
             foreach($stat as $row){
               echo "<tr><td class='tdstat'>" . htmlspecialchars($row['namelang'], ENT_QUOTES, 'UTF-8'). "</td><td>" . htmlspecialchars($row['cnt'], ENT_QUOTES, 'UTF-8') . "</td></tr>";
           }
