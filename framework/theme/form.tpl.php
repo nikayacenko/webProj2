@@ -701,7 +701,7 @@
                                 </label><br />  
                                 
                     <label сlass="form-checkbox"> <input type="checkbox" name="check-1" <?php if ($errors['check-1']) {print 'class="error"';} ?>  checked="<?php if (!$errors['check-1']) {print 'checked';} ?>">
-                        Отправляя заявку, я даю согласие на <a href="index.html">обработку своих персональных данных</a
+                        Отправляя заявку, я даю согласие на <a href="index.html">обработку своих персональных данных</a>
                     </label><br />
                     <div class="kn pb-sm-3">
                         <input type="submit" value="Сохранить" id="saveButton" />
