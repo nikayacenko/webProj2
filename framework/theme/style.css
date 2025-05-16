@@ -12,8 +12,7 @@
 .my-2{
     color:white;
 }
-.error-field,
-.error-container {
+.error-field{
     border: 1px solid #ff3860 !important;
     border-radius: 4px;
 }
