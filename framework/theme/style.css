@@ -17,15 +17,13 @@
     border-radius: 4px;
 }
 
-a{
-    color:#f40d0d;
-}
-
 .loginhref{
     margin:20px;
+    color:#f40d0d;
 }
 .admhref{
     margin:20px;
+    color:#f40d0d;
 }
 #saveButton{
     color:white;
@@ -983,6 +981,13 @@ div.num{
 
 .b-bottom{
     border-top:1px solid #9f9e9e;
+}
+
+.b-bottom a{
+
+    color:#f14d34;
+    text-decoration: none;
+    background-color: transparent;
 }
 
 .footer-body ul li img{
