@@ -300,6 +300,9 @@ div.ad div.second_trio{
     font-size: 12px;
     margin-bottom:15px;
     width:80%;
+    display: block !important;
+    color: white !important;
+    background-color: #00000000 !important;
 }
 .advert{
     height:30%;
