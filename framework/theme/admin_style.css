@@ -6,6 +6,9 @@
     list-style: none;
     text-decoration: none;
     color:white;
+}
+
+body{
     background: url(img/black_square_support.png) no-repeat center / cover;
 }
 
