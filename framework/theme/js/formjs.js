@@ -589,8 +589,9 @@ function highlightError(element, message) {
         errorElement = document.createElement('div');
         errorElement.className = 'error-message';
         // Вставляем после select
-        element.parentNode.insert(errorElement, element.nextSibling);
+        element.parentNode.insertAfter(errorElement, element.nextSibling);
     }
+
     
     errorElement.textContent = message;
     element.classList.add('error-field');
