@@ -973,13 +973,9 @@ window.addEventListener("DOMContentLoaded", function() {
                 showError(`${errorMsg} (код: ${xhr.status})`);
                 
                 if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                    Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
+                    Object.entries(xhr.responseJSON.errors).forEach(([field, error]) => {
                         const element = document.querySelector(`[name="${field}"]`);
-                        if (element) {
-                            const rules = validationRules[field];
-                            const message = rules?.messages?.[errorCode] || errorCode;
-                            highlightError(element, message);
-                        }
+                        if (element) highlightError(element, error);
                     });
                 }
             }
