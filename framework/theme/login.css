@@ -1,6 +1,4 @@
-.login{
-    background-color: #091723;
-}
+
 .my-2{
     color:white;
 }
@@ -10,6 +8,7 @@ body.login {
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    background: url(img/black_square_support.png) no-repeat center / cover;
 }
 
 .content {
