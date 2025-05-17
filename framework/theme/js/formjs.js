@@ -741,7 +741,7 @@ window.addEventListener("DOMContentLoaded", function() {
             const value = getCookie(fieldName);
             const elements = document.getElementsByName(fieldName);
             
-            if (value && elements.length > 0) {
+            if (value !== null && elements.length > 0) { // Проверяем value !== null вместо просто value
                 const element = elements[0];
                 
                 if (element.type === 'checkbox') {
