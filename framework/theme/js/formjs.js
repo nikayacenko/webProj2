@@ -938,12 +938,7 @@ window.addEventListener("DOMContentLoaded", function() {
                         
                         // Полностью очищаем форму и ошибки
                         clearFormButKeepCookies();
-                        
-                        // Удаляем ВСЕ куки связанные с формой
-                        Object.keys(validationRules).forEach(name => {
-                            deleteCookie(name);
-                            deleteCookie(`${name}_value`);
-                        });
+
                         
                         return;
                     }
