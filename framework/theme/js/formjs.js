@@ -850,6 +850,20 @@ window.addEventListener("DOMContentLoaded", function() {
             else {
                 deleteCookie(`${fieldName}_error`);
             }
+            if (fieldName === 'field-email' && value && !rules.pattern.test(value)) {
+                isValid = false;
+                setCookie(`${fieldName}_error`, 'pattern', { maxAge: 60 });
+                highlightError(element, rules.messages.pattern);
+                return;
+            }
+            
+            // Проверка существующего email (только если формат корректен)
+            const cookieError = getCookie(`${fieldName}_error`);
+            if (cookieError && fieldName === 'field-email') {
+                isValid = false;
+                highlightError(element, rules.messages[cookieError]);
+                return;
+            }
         });
         
         return isValid;
