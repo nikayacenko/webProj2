@@ -575,21 +575,7 @@ function setCookie(name, value, options = {}) {
 function deleteCookie(name) {
     setCookie(name, '', { maxAge: -1 });
 }
-function clearFormButKeepCookies() {
-    // Очищаем только форму, не трогая куки с значениями
-    const form = document.getElementById("myform");
-    if (form) {
-        form.reset();
-    }
-    
-    // Удаляем только куки с ошибками
-    Object.keys(validationRules).forEach(name => {
-        deleteCookie(`${name}_error`);
-    });
-    
-    // Очищаем визуальные ошибки
-    resetFormErrors();
-}
+
 function highlightError(element, message) {
     // Для select multiple с именем languages[]
     const isLanguagesSelect = element.name === 'languages[]';
@@ -714,7 +700,21 @@ window.addEventListener("DOMContentLoaded", function() {
             }
         }
     };
-
+    function clearFormButKeepCookies() {
+        // Очищаем только форму, не трогая куки с значениями
+        const form = document.getElementById("myform");
+        if (form) {
+            form.reset();
+        }
+        
+        // Удаляем только куки с ошибками
+        Object.keys(validationRules).forEach(name => {
+            deleteCookie(`${name}_error`);
+        });
+        
+        // Очищаем визуальные ошибки
+        resetFormErrors();
+    }
     // Настройка автосохранения полей
     function setupFieldAutoSave(fieldName) {
         const elements = document.querySelectorAll(`[name="${fieldName}"]`);
