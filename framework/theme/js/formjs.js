@@ -551,54 +551,18 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : null;
 }
 
-function setCookie(name, value, options = {}) {
-    options = {
-        path: '/',
-        secure: true,
-        sameSite: 'Lax',
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день по умолчанию
-        ...options
-    };
+// Установка куки
+function setCookie(name, value, days = 1) {
+    const date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${date.toUTCString()}; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+  }
 
-    let cookie = `${name}=${encodeURIComponent(value)}`;
-    
-    Object.entries(options).forEach(([key, val]) => {
-        if (['path', 'domain', 'secure', 'sameSite', 'expires', 'maxAge'].includes(key)) {
-            cookie += `; ${key}`;
-            if (val !== true && val !== undefined) cookie += `=${val}`;
-        }
-    });
-
-    document.cookie = cookie;
-}
-
+// Удаление куки
 function deleteCookie(name) {
-    // Базовые параметры удаления (такие же как при установке)
-    const baseOptions = {
-        path: '/',
-        secure: true,
-        sameSite: 'Lax'
-    };
-
-    // Формируем команды для удаления всех вариантов cookie
-    const cookiesToDelete = [
-        name,
-        `${name}_value`,
-        name.replace(/[\[\]]/g, '') // Удаляем квадратные скобки для случаев как languages[]
-    ];
-
-    cookiesToDelete.forEach(cookieName => {
-        let deleteCommand = `${cookieName}=; path=${baseOptions.path}; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=${baseOptions.sameSite}`;
-        
-        // Добавляем Secure только если установлен флаг secure или это HTTPS
-        if (baseOptions.secure || location.protocol === 'https:') {
-            deleteCommand += '; Secure';
-        }
-
-        console.log('Deleting cookie:', deleteCommand);
-        document.cookie = deleteCommand;
-    });
-}
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+    document.cookie = `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
+  }
 
 function highlightError(element, message) {
     // Для select multiple с именем languages[]
