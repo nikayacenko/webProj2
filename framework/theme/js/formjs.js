@@ -905,10 +905,33 @@ window.addEventListener("DOMContentLoaded", function() {
             
                     if (response.login && response.pass) {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
+                        // Сохраняем ТЕКУЩИЕ значения из формы в куки перед reset
+                        Object.keys(validationRules).forEach(fieldName => {
+                            const elements = document.getElementsByName(fieldName);
+                            if (!elements.length) return;
+                            
+                            const element = elements[0];
+                            let value;
+                            
+                            if (element.type === 'checkbox') {
+                                value = element.checked;
+                            } else if (element.type === 'radio') {
+                                const selected = Array.from(elements).find(el => el.checked);
+                                value = selected ? selected.value : '';
+                            } else if (element.tagName === 'SELECT' && element.multiple) {
+                                value = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
+                            } else {
+                                value = element.value;
+                            }
+                            
+                            setCookie(fieldName, value, { expires: 1 });
+                        });
+                        
+                        // Очищаем форму
                         form.reset();
                         
                         // Восстанавливаем значения из куки сразу после очистки
-                        restoreFormCookies();
+                        //restoreFormCookies();
 
                         // Очищаем cookies после успешной отправки
                         //Object.keys(validationRules).forEach(name => deleteCookie(name));
