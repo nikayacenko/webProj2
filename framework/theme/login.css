@@ -10,7 +10,6 @@ body.login {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #f5f5f5; /* Фон страницы */
 }
 
 .content {
