@@ -379,24 +379,21 @@ if ($errors) {
   }
 }
 else {
-   // Массив всех возможных кук ошибок
-   $error_cookies = [
-    'fio_error', 'field-tel_error', 'field-email_error', 
-    'field-date_error', 'radio-group-1_error', 
-    'check-1_error', 'languages_error', 'bio_error'
-  ];
-
-  // Удаляем каждую куку с правильными параметрами
-  foreach ($error_cookies as $cookie) {
-    setcookie($cookie, '', [
-      'expires' => time() - 3600,
-      'path' => '/',
-      'domain' => $_SERVER['HTTP_HOST'],
-      'secure' => isset($_SERVER['HTTPS']),
-      'httponly' => true,
-      'samesite' => 'Lax'
-    ]);
-  }
+  $cookieParams = [
+    'expires' => time() - 3600,
+    'path' => '/',
+    'domain' => $_SERVER['HTTP_HOST'],
+    'secure' => isset($_SERVER['HTTPS']),
+    'httponly' => true
+];
+  setcookie('fio_error', '', $cookieParams);
+  setcookie('field-tel_error', '', $cookieParams);
+  setcookie('field-email_error', '', $cookieParams);
+  setcookie('field-date_error', '', $cookieParams);
+  setcookie('radio-group-1_error', '', $cookieParams);
+  setcookie('check-1_error', '', $cookieParams);
+  setcookie('languages_error', '', $cookieParams);
+  setcookie('bio_error', '', $cookieParams);
 }
 
 // Проверяем меняются ли ранее сохраненные данные или отправляются новые.

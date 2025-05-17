@@ -558,11 +558,28 @@ function setCookie(name, value, days = 1) {
     document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${date.toUTCString()}; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
   }
 
-// Удаление куки
-function deleteCookie(name) {
-    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
-    document.cookie = `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${location.protocol === 'https:' ? '; Secure' : ''}`;
-  }
+  function deleteCookie(name) {
+    // Удаляем все возможные варианты кук
+    const cookiesToDelete = [
+        name,
+        `${name}_value`,
+        name.replace(/[\[\]]/g, '') // Для случаев вроде languages[]
+    ];
+    
+    // Параметры должны соответствовать установке в PHP
+    const domain = window.location.hostname;
+    const isSecure = window.location.protocol === 'https:';
+    
+    cookiesToDelete.forEach(cookieName => {
+        // Базовое удаление
+        document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        
+        // Дополнительные попытки с разными параметрами
+        document.cookie = `${cookieName}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`;
+        document.cookie = `${cookieName}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`;
+    });
+}
 
 function highlightError(element, message) {
     // Для select multiple с именем languages[]
