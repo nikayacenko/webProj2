@@ -9,7 +9,7 @@ global $db;
 // Обработчик запросов методом GET.
 require_once './scripts/db.php';
 function front_get($request, $db) {
-  echo "".htmlspecialchars($_COOKIE['save']);
+  print($_COOKIE['save']);
   exit();
     $allowed_lang=getLangs($db);
     // Массив для временного хранения сообщений пользователю.
