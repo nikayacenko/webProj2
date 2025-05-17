@@ -840,6 +840,11 @@ window.addEventListener("DOMContentLoaded", function() {
                 setCookie(`${fieldName}_error`, 'pattern', { maxAge: 60 });
                 highlightError(element, rules.messages.pattern);
             }
+            if (getCookie('field-email_error') === '2') {
+                const emailField = document.getElementsByName('field-email')[0];
+                highlightError(emailField, '2');
+                isValid = false;
+            }
             else {
                 deleteCookie(`${fieldName}_error`);
             }
@@ -906,29 +911,14 @@ window.addEventListener("DOMContentLoaded", function() {
                     }
             
                     if (xhr.status === 422 || response.errors) {
-                        let errorMessage = response.message || 'Ошибки валидации';
-                        showError(errorMessage);
-                        
-                        if (response.errors) {
-                            Object.keys(response.errors).forEach(field => {
-                                const element = document.querySelector(`[name="${field}"]`);
-                                if (element) {
-                                    const errorCode = response.errors[field];
-                                    const fieldRules = validationRules[field];
-                                    let message = '';
-                                    
-                                    if (fieldRules?.messages) {
-                                        message = fieldRules.messages[errorCode] || 
-                                                  fieldRules.messages.required || 
-                                                  errorCode;
-                                    } else {
-                                        message = errorCode || 'Ошибка в поле';
-                                    }
-                                    
-                                    highlightError(element, message);
-                                }
-                            });
-                        }
+                        // Убрали showError() - ошибки теперь только под полями
+                        Object.keys(response.errors).forEach(field => {
+                            const element = document.querySelector(`[name="${field}"]`);
+                            if (element) {
+                                const errorCode = response.errors[field];
+                                highlightError(element, errorCode);
+                            }
+                        });
                         return;
                     }
             
@@ -965,7 +955,11 @@ window.addEventListener("DOMContentLoaded", function() {
                 let errorMsg = 'Ошибка сервера';
                 
                 if (xhr.status === 422) {
-                    errorMsg = 'Такая почта уже зарегистрирована.';
+                    // Обработка ошибки существующего email
+                    const emailField = document.getElementsByName('field-email')[0];
+                    if (emailField) {
+                        highlightError(emailField, 'email_exists');
+                    }
                 } else if (xhr.status === 403) {
                     errorMsg = 'Ошибка безопасности. Обновите страницу';
                 }

@@ -96,7 +96,7 @@ function front_get($request, $db) {
       setcookie('field-email_error', '', 100000);
       setcookie('field-email_value', '', 100000);
       // Выводим сообщение.
-      $messages[] = '<div>Такой email уже зарегестрирован</div>';
+      $messages[] = '<div>Такой email уже зарегистрирован</div>';
     }
   
     if ($errors['field-date']) {
