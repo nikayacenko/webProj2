@@ -905,12 +905,14 @@ window.addEventListener("DOMContentLoaded", function() {
             
                     if (response.login && response.pass) {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
-                        // 1. Очищаем все куки связанные с формой
-                        Object.keys(validationRules).forEach(name => deleteCookie(name));
+                        console.log('До удаления куки:', document.cookie);
+                        Object.keys(validationRules).forEach(name => {
+                            deleteCookie(name);
+                            console.log(`Удален cookie: ${name}`);
+                        });
+                        console.log('После удаления куки:', document.cookie);
                         
-                        // 2. Очищаем форму
                         form.reset();
-    
                         return;
                     }
             
