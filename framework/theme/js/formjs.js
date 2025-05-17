@@ -965,8 +965,8 @@ window.addEventListener("DOMContentLoaded", function() {
                     // Обработка ошибки валидации (существующий email)
                     const emailField = document.getElementsByName('field-email')[0];
                     if (emailField) {
-                        highlightError(emailField, '2'); // Показываем ошибку под полем
-                    }
+                        highlightError(emailField, validationRules['field-email'].messages['2']);
+                        setCookie('field-email_error', '2', { maxAge: 60 });                    }
                     
                     // Дополнительная обработка других ошибок валидации
                     if (xhr.responseJSON?.errors) {
