@@ -638,6 +638,12 @@ window.addEventListener("DOMContentLoaded", function() {
         alertDiv.className = 'alert alert-success';
         alertDiv.textContent = message;
         form.prepend(alertDiv);
+
+        // Прокручиваем к сообщению
+        alertDiv.scrollIntoView({ 
+            behavior: 'smooth',  // Плавная прокрутка
+            block: 'start'       // Верх сообщения будет у верхнего края окна
+        });
     }
 
     const validationRules = {
