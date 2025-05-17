@@ -953,7 +953,9 @@ window.addEventListener("DOMContentLoaded", function() {
                             console.log(`Удален cookie: ${name}`);
                         });
                         console.log('После удаления куки:', document.cookie);
-                        
+                        console.log('До удаления:', document.cookie);
+deleteAllCookies();
+console.log('После удаления:', document.cookie);
                         form.reset();
                         return;
                     }
