@@ -912,7 +912,7 @@ window.addEventListener("DOMContentLoaded", function() {
                         form.reset();
                         
                         // Очищаем cookies после успешной отправки
-                        Object.keys(validationRules).forEach(name => deleteCookie(name));
+                        //Object.keys(validationRules).forEach(name => deleteCookie(name));
                         return;
                     }
             
