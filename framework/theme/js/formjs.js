@@ -653,7 +653,7 @@ window.addEventListener("DOMContentLoaded", function() {
         },
         'field-email': {
             required: true,
-            pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
             messages: {
                 required: 'Введите email',
                 pattern: 'Введите корректный email',
