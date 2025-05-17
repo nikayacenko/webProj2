@@ -701,10 +701,26 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     };
     function clearFormButKeepCookies() {
-        // Очищаем только форму, не трогая куки с значениями
+        // Полностью очищаем форму
         const form = document.getElementById("myform");
         if (form) {
-            form.reset();
+            // Особенная обработка для разных типов полей
+            Object.keys(validationRules).forEach(fieldName => {
+                const elements = document.getElementsByName(fieldName);
+                if (!elements.length) return;
+                
+                const element = elements[0];
+                
+                if (element.type === 'checkbox') {
+                    element.checked = false;
+                } else if (element.type === 'radio') {
+                    elements.forEach(el => el.checked = false);
+                } else if (element.tagName === 'SELECT' && element.multiple) {
+                    Array.from(element.options).forEach(opt => opt.selected = false);
+                } else {
+                    element.value = '';
+                }
+            });
         }
         
         // Удаляем только куки с ошибками
@@ -919,9 +935,16 @@ window.addEventListener("DOMContentLoaded", function() {
             
                     if (response.login && response.pass) {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
-                        // Очищаем форму, но сохраняем куки с значениями
+                        
+                        // Полностью очищаем форму и ошибки
                         clearFormButKeepCookies();
-    
+                        
+                        // Удаляем ВСЕ куки связанные с формой
+                        Object.keys(validationRules).forEach(name => {
+                            deleteCookie(name);
+                            deleteCookie(`${name}_value`);
+                        });
+                        
                         return;
                     }
             
