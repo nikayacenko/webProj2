@@ -829,7 +829,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
         // Затем валидируем
         if (!validateForm()) {
-            showError("Заполните все обязательные поля корректно");
+            // showError("Заполните все обязательные поля корректно");
             return;
         }
 
