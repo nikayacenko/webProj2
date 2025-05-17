@@ -902,24 +902,16 @@ window.addEventListener("DOMContentLoaded", function() {
                         }
                         return;
                     }
-                    // Обработка успешного создания пользователя
-//                     if (response.login && response.pass) {
-//                         showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
-//                         form.reset();
-                        
-//                         // Очищаем cookies после успешной отправки
-//                         ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
-//                             deleteCookie(name);
-//                         });
-//                         return;
-//                     }
             
                     if (response.login && response.pass) {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
                         form.reset();
                         
+                        // Восстанавливаем значения из куки сразу после очистки
+                        restoreFormCookies();
+
                         // Очищаем cookies после успешной отправки
-                        Object.keys(validationRules).forEach(name => deleteCookie(name));
+                        //Object.keys(validationRules).forEach(name => deleteCookie(name));
                         return;
                     }
             
