@@ -79,7 +79,15 @@
     margin-top: 5px;
     display: block;
 }
-
+.alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+}
+.alert-success {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
 /* Стили для select multiple с ошибкой */
 select[name="languages[]"].error-field {
     border-color: #ff3860 !important;

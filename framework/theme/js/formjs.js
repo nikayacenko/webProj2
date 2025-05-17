@@ -622,6 +622,12 @@ function showError(message) {
 function showSuccessMessage(message) {
     alert(message); // Можно заменить на более красивый вывод
 }
+function showSuccessMessageEntry(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success';
+    alertDiv.textContent = message;
+    form.prepend(alertDiv);
+}
 
 window.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("myform");
@@ -889,9 +895,20 @@ window.addEventListener("DOMContentLoaded", function() {
                         }
                         return;
                     }
+                    // Обработка успешного создания пользователя
+//                     if (response.login && response.pass) {
+//                         showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
+//                         form.reset();
+                        
+//                         // Очищаем cookies после успешной отправки
+//                         ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
+//                             deleteCookie(name);
+//                         });
+//                         return;
+//                     }
             
                     if (response.login && response.pass) {
-                        showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
+                        showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
                         form.reset();
                         
                         // Очищаем cookies после успешной отправки
