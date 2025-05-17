@@ -13,7 +13,6 @@ function front_get($request, $db) {
     $allowed_lang=getLangs($db);
     // Массив для временного хранения сообщений пользователю.
     $messages = array();
-    console.log(($_COOKIE['save']));
     // В суперглобальном массиве $_COOKIE PHP хранит все имена и значения куки текущего запроса.
     // Выдаем сообщение об успешном сохранении.
     if (!empty($_COOKIE['save'])) {
