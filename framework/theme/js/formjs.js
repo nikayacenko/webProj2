@@ -573,13 +573,17 @@ function setCookie(name, value, options = {}) {
 }
 
 function deleteCookie(name) {
-    // Удаляем с основными параметрами, которые использовались при установке
-    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; Secure`;
-    document.cookie = `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; Secure`;
+    const cookies = [
+        `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax` + 
+        (location.protocol === 'https:' ? '; Secure' : ''),
+        `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax` + 
+        (location.protocol === 'https:' ? '; Secure' : '')
+    ];
     
-    // Дополнительные варианты на всякий случай
-    document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax; Secure`;
-    document.cookie = `${name}_value=; path=/; max-age=0; SameSite=Lax; Secure`;
+    cookies.forEach(cookie => {
+        console.log('Deleting cookie:', cookie);
+        document.cookie = cookie;
+    });
 }
 
 function highlightError(element, message) {
@@ -911,22 +915,14 @@ window.addEventListener("DOMContentLoaded", function() {
             
                     if (response.login && response.pass) {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
-                        
                         console.log('До удаления куки:', document.cookie);
-                        
-                        // Удаляем все возможные варианты куки
                         Object.keys(validationRules).forEach(name => {
-                            // Удаляем все возможные варианты имен куки
-                            [name, `${name}_value`, `${name}_value_value`].forEach(cookieName => {
-                                document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax; Secure`;
-                                document.cookie = `${cookieName}=; path=/; max-age=0; SameSite=Lax; Secure`;
-                                console.log(`Пытаемся удалить cookie: ${cookieName}`);
-                            });
+                            deleteCookie(name);
+                            console.log(`Удален cookie: ${name}`);
                         });
-                        
                         console.log('После удаления куки:', document.cookie);
-                        form.reset();
                         
+                        form.reset();
                         return;
                     }
             
