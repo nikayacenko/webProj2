@@ -842,7 +842,7 @@ window.addEventListener("DOMContentLoaded", function() {
             }
             if (getCookie('field-email_error') === '2') {
                 const emailField = document.getElementsByName('field-email')[0];
-                highlightError(emailField, '2');
+                highlightError(emailField, 'email_exists');
                 isValid = false;
             }
             else {
@@ -912,7 +912,7 @@ window.addEventListener("DOMContentLoaded", function() {
             
                     if (xhr.status === 422 || response.errors) {
                         let errorMessage = response.message || 'Ошибки валидации';
-                        //showError(errorMessage);
+                        showError(errorMessage);
                         
                         if (response.errors) {
                             Object.keys(response.errors).forEach(field => {
