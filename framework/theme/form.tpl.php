@@ -71,11 +71,11 @@
             <div class="adv">
                 <h1> Поддержка сайтов на Drupal</h1>
                 <p>Сопровождение и поддержка сайтов на CMS Drupal любых версий запущенности</p>
-                <button id="tarif">Тарифы</button>
+                <button type="button" id="tarif">Форма</button>
             </div>
             <div class="ad">
                 <div class="first_trio">
-                    <div class="advert1 col-xl-4">
+                    <div class="cuppp col-xl-4">
                         <h1>#1</h1>
                         <img src="theme/img/cup.png" alt="" width="59" height="58">
                         <p> Drupal-разработчик по России по версии Рейтинга Рунета</p>
@@ -701,7 +701,7 @@
                                 </label><br />  
                                 
                     <label сlass="form-checkbox"> <input type="checkbox" name="check-1" <?php if ($errors['check-1']) {print 'class="error"';} ?>  checked="<?php if (!$errors['check-1']) {print 'checked';} ?>">
-                        Отправляя заявку, я даю согласие на <a href="index.html">обработку своих персональных данных</a
+                        Отправляя заявку, я даю согласие на <a href="index.html">обработку своих персональных данных</a>
                     </label><br />
                     <div class="kn pb-sm-3">
                         <input type="submit" value="Сохранить" id="saveButton" />
@@ -711,20 +711,21 @@
                 </form>
                 
                 <?php 
-                                         
-                    if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login'])){
-                        print('<a href="' . url('login') . '">Login</a>');
-                    }
-                                    
+                      
                     require_once './scripts/db.php';
                     global $db;
+                    if(!isset($_COOKIE[session_name()]) || empty($_SESSION['login']) && (empty($_SERVER['PHP_AUTH_USER']) || empty($_SERVER['PHP_AUTH_PW']) || $_SERVER['PHP_AUTH_USER'] !=  adminlog($db) || !password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))){
+                        print('<a class="loginhref" href="' . url('login') . '">Вход</a></br>');
+                    }
+                                    
+                
                     if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SERVER['PHP_AUTH_USER'] ==  adminlog($db) && password_check(adminlog($db), $_SERVER['PHP_AUTH_PW'], $db))
                     {
                         print('<a class="admhref" href="' . url('admin') . '">Страница администратора</a><br />');
                     }
                     if (isset($_COOKIE[session_name()]) && !empty($_SESSION['login'])) {
                         print('<form class="logout_form" action="' . url('logout') . '" method="POST">
-                            <input type="submit" name="logout" value="Выйти"/>
+                            <input id="logoutButton" type="submit" name="logout" value="Выйти"/>
                         </form>');
                     }
                  ?>

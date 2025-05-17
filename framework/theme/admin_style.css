@@ -1,0 +1,109 @@
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Montserrat;
+    list-style: none;
+    text-decoration: none;
+    color:white;
+}
+
+body{
+    background: url(img/black_square_support.png) no-repeat center / cover;
+}
+div.content{
+    max-width: 90%;
+
+}
+table {
+    margin: 15px auto;
+    text-align: center;
+    font-size:medium;
+    border-collapse: separate;
+    border-spacing: 1px;
+    background-color:#9a1400;
+    max-width: fit-content;
+    overflow:auto;
+    border-radius: 3px;
+    display:flex;
+}
+
+.tdstat{
+    padding:5px;
+    width:100%;
+}
+
+tr{
+    background-color:#090b18;
+    width:100%;
+}
+table.stat{
+    min-width:75%;
+    display:block;
+}
+
+
+h3{
+    margin: 40px;
+    text-align:center;
+}
+td{
+    padding-right:12px;
+    padding-left:12px;
+}
+a{
+    display: block;
+    margin-bottom:10px;
+    margin-top:10px;
+    color:#00d154;
+    border:solid 1px;
+    border-radius:3px;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+a:hover{
+    text-decoration:none;
+    color:black;
+    background-color:#28ff7e;
+    border:solid 1px #28ff7e; 
+}
+button{
+ 
+    color:#c8280f;
+    background-color: #00000000;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    border-radius: 3px;
+    border: solid 1px #c8280f;
+}
+
+button:hover{
+    color:black;
+    background-color:#c8280f;
+}
+
+
+
+
+@media screen and (min-width: 800px) {
+
+        table.stat{
+        min-width:50%;
+    }
+
+}
+
+.nametb{ background-color:#560c00}
+@font-face {
+    font-family: "Montserrat";
+    src: url("/webProj2/framework/theme/fonts/Montserrat-VariableFont_wght.ttf") format("truetype");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}

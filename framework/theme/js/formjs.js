@@ -590,6 +590,14 @@ function highlightError(element, message) {
         errorElement.className = 'error-message';
         // Вставляем после select
         element.parentNode.insertBefore(errorElement, element.nextSibling);
+        if(element.type==='radio')
+        {
+            element.parentNode.parentNode.parentNode.appendChild(errorElement);
+        }
+        if(element.type==='checkbox')
+        {
+            element.parentNode.appendChild(errorElement);
+        }
     }
     
     errorElement.textContent = message;
@@ -915,7 +923,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 let errorMsg = 'Ошибка сервера';
                 
                 if (xhr.status === 422) {
-                    errorMsg = 'Проверьте правильность данных';
+                    errorMsg = 'Такая почта уже зарегистрирована.';
                 } else if (xhr.status === 403) {
                     errorMsg = 'Ошибка безопасности. Обновите страницу';
                 }

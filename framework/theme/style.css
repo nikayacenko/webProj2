@@ -12,11 +12,66 @@
 .my-2{
     color:white;
 }
-.error-field,
-.error-container {
+.error-field{
     border: 1px solid #ff3860 !important;
     border-radius: 4px;
 }
+
+.loginhref{
+    margin:20px;
+    color:#f40d0d !important;
+    margin-left:0;
+    text-decoration: underline;
+}
+.admhref{
+    margin:20px;
+    color:#f40d0d !important;
+    margin-left:0;
+}
+
+.admhref:hover{
+    text-decoration: underline;
+}
+
+.loginhref:hover{
+    text-decoration: underline;
+}
+#saveButton{
+    color:white;
+    background-color: #00000000;
+    margin: 10, 15, 15,10;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    border-radius: 3px;
+    border: solid 1px #f40d0d;
+
+}
+
+#saveButton:hover{
+    background-color:#f40d0d;
+}
+
+#logoutButton{
+    color:white;
+    background-color: #00000000;
+    margin: 10, 15, 15,10;
+    padding-bottom: 10px;
+    padding-right: 20px;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-left: 20px;
+    border-radius: 3px;
+    border: solid 1px #f40d0d;
+
+}
+
+#logoutButton:hover{
+    background-color:#f40d0d;
+}
+
 
 .error-message {
     color: #ff3860;
@@ -65,10 +120,14 @@ select[name="languages[]"].error-field {
 }*/
 .error-message {
     display: block !important;
-    color: red !important;
+    color: #ff3860 !important;
     margin-top: 5px;
     font-size: 0.9em;
 }
+.radio-label{
+    color:white;
+}
+
 html{
     width:100%;
 }
@@ -100,6 +159,7 @@ div.adv p{
 }
 #tarif:hover{
     opacity:0.9;
+    background-color:#f40d0d;
 }
 
 #logo{
@@ -250,7 +310,7 @@ div.ad div.second_trio{
     margin-top:40px;
 
 }
-.advert1{
+.cuppp{
     height:30%;
     border-left:5px solid #F14D34;
     padding:10px;
@@ -258,6 +318,9 @@ div.ad div.second_trio{
     font-size: 12px;
     margin-bottom:15px;
     width:80%;
+    display: block !important;
+    color: white !important;
+    background-color: #00000000 !important;
 }
 .advert{
     height:30%;
@@ -272,7 +335,7 @@ header h1{
     font-size:30px;
     font-family: Montserrat_b;
 }
-div.advert1 h1{
+div.cuppp h1{
         float:left;
         font-size:40px;
         font-family: Montserrat_b;
@@ -880,8 +943,12 @@ div.num{
 .b-form label, .input-field{
     width: 100%;
 }
+#messages{
+    color:white;
+}
+
 .input-field{
-    background-color: #ffffff00;
+    background-color: #ffffff00 !important;
     border-color:#d7d7d7;
     border-radius: 5px;
     padding: 5%;
@@ -926,6 +993,19 @@ div.num{
 .b-bottom{
     border-top:1px solid #9f9e9e;
 }
+
+.b-bottom a{
+
+    color:#f14d34;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.b-bottom a:hover{
+
+    text-decoration: underline;
+}
+
 
 .footer-body ul li img{
     margin: 5px;
@@ -1201,17 +1281,20 @@ div.num{
         height:30%;
         margin-top:0px;
     }
-    .advert1 img{
+    .cuppp img{
         position:absolute;
         top:-13%;
         left:40%;
 
     }
-    div.advert1 h1{
+    div.cuppp h1{
         float:none;
     }
-    .advert1{
+    .cuppp{
         min-height:100%;
+        display: block !important;
+        color: white !important;
+        background-color: #00000000 !important;
     }
     .advert{
         min-height:100%;  
@@ -1220,7 +1303,7 @@ div.num{
     .advert p{
         max-width:100%;
     }
-    .advert1 p{
+    .cuppp p{
         margin-bottom: 0;
         max-width:100%;
     }
@@ -1365,7 +1448,7 @@ div.num{
         padding:0;
         z-index:1;
         order:1;
-        margin-left: 60%;
+        margin-left: 50%;
         width:40%
     }
 
@@ -1727,16 +1810,19 @@ div.num{
         height:50%;
         margin-top:0px;
     }
-    .advert1 img{
+    .cuppp img{
         position:absolute;
         top:-13%;
         left:30%;
     }
-    div.advert1 h1{
+    div.cuppp h1{
         float:none;
     }
-    .advert1{
+    .cuppp{
         min-height:80%;
+        display: block !important;
+        color: white !important;
+        background-color: #00000000 !important;
     }
     .advert{
         min-height:80%;  
@@ -1745,7 +1831,7 @@ div.num{
     .advert p{
         max-width:80%;
     }
-    .advert1 p{
+    .cuppp p{
         margin-bottom: 0;
         max-width:80%;
     }
@@ -1977,13 +2063,16 @@ div.num{
         border-bottom: 0px;
         border-right: 2px solid #dfdede;
     }
-    .advert1 img{
+    .cuppp img{
         position:absolute;
         top:-15%;
         left:30%;
     }
-    .advert1{
+    .cuppp{
         height:60%;
+        display: block !important;
+        color: white !important;
+        background-color: #00000000 !important;
     }
     .advert{
         height:60%;  
