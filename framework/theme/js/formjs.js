@@ -949,7 +949,7 @@ window.addEventListener("DOMContentLoaded", function() {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
                         console.log('До удаления куки:', document.cookie);
                         Object.keys(validationRules).forEach(name => {
-                            deleteAllCookie(name);
+                            deleteAllCookies(name);
                             console.log(`Удален cookie: ${name}`);
                         });
                         console.log('После удаления куки:', document.cookie);
