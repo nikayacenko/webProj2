@@ -856,14 +856,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 highlightError(element, rules.messages.pattern);
                 return;
             }
-            
-            // Проверка существующего email (только если формат корректен)
-            const cookieError = getCookie(`${fieldName}_error`);
-            if (cookieError && fieldName === 'field-email') {
-                isValid = false;
-                highlightError(element, rules.messages[cookieError]);
-                return;
-            }
         });
         
         return isValid;
