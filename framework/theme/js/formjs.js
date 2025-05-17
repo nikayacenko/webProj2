@@ -573,41 +573,30 @@ function setCookie(name, value, options = {}) {
 }
 
 function deleteCookie(name) {
-    // Получаем параметры, с которыми куки были установлены
-    const cookies = document.cookie.split(';');
-    const targetCookies = cookies.filter(c => c.trim().startsWith(`${name}=`) || c.trim().startsWith(`${name}_value=`));
-    
-    // Для каждого найденного куки создаём команду на удаление
-    targetCookies.forEach(cookie => {
-        const parts = cookie.split(';');
-        const nameValue = parts[0].trim();
-        const cookieName = nameValue.split('=')[0];
-        
-        // Базовые параметры удаления
-        let deleteCmd = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-        
-        // Добавляем дополнительные параметры из оригинального куки
-        parts.slice(1).forEach(part => {
-            const [key, val] = part.trim().split('=');
-            if (['domain', 'path', 'secure', 'samesite'].includes(key.toLowerCase())) {
-                deleteCmd += `; ${key}`;
-                if (val) deleteCmd += `=${val}`;
-            }
-        });
-        
-        console.log('Deleting cookie:', deleteCmd);
-        document.cookie = deleteCmd;
-    });
-    
-    // Дополнительно пытаемся удалить стандартными путями
-    const standardDeletes = [
-        `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${options.secure ? '; Secure' : ''}`,
-        `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${options.secure ? '; Secure' : ''}`
+    // Базовые параметры удаления (такие же как при установке)
+    const baseOptions = {
+        path: '/',
+        secure: true,
+        sameSite: 'Lax'
+    };
+
+    // Формируем команды для удаления всех вариантов cookie
+    const cookiesToDelete = [
+        name,
+        `${name}_value`,
+        name.replace(/[\[\]]/g, '') // Удаляем квадратные скобки для случаев как languages[]
     ];
-    
-    standardDeletes.forEach(cmd => {
-        console.log('Standard delete attempt:', cmd);
-        document.cookie = cmd;
+
+    cookiesToDelete.forEach(cookieName => {
+        let deleteCommand = `${cookieName}=; path=${baseOptions.path}; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=${baseOptions.sameSite}`;
+        
+        // Добавляем Secure только если установлен флаг secure или это HTTPS
+        if (baseOptions.secure || location.protocol === 'https:') {
+            deleteCommand += '; Secure';
+        }
+
+        console.log('Deleting cookie:', deleteCommand);
+        document.cookie = deleteCommand;
     });
 }
 
