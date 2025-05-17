@@ -969,25 +969,32 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             },
             error: function(xhr) {
-                let errorMsg = 'Ошибка сервера';
-                
                 if (xhr.status === 422) {
-                    errorMsg = 'Такая почта уже зарегистрирована.';
-                } else if (xhr.status === 403) {
-                    errorMsg = 'Ошибка безопасности. Обновите страницу';
+                    // Обработка ошибки валидации (существующий email)
+                    const emailField = document.getElementsByName('field-email')[0];
+                    if (emailField) {
+                        highlightError(emailField, '2'); // Показываем ошибку под полем
+                    }
+                    
+                    // Дополнительная обработка других ошибок валидации
+                    if (xhr.responseJSON?.errors) {
+                        Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
+                            const element = document.querySelector(`[name="${field}"]`);
+                            if (element && field !== 'field-email') { // email уже обработали
+                                const rules = validationRules[field];
+                                const message = rules?.messages?.[errorCode] || errorCode;
+                                highlightError(element, message);
+                            }
+                        });
+                    }
+                } 
+                else if (xhr.status === 403) {
+                    // Оставляем всплывающее окно только для 403 ошибки
+                    showError('Ошибка безопасности. Обновите страницу (код: 403)');
                 }
-                
-                showError(`${errorMsg} (код: ${xhr.status})`);
-                
-                if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                    Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
-                        const element = document.querySelector(`[name="${field}"]`);
-                        if (element) {
-                            const rules = validationRules[field];
-                            const message = rules?.messages?.[errorCode] || errorCode;
-                            highlightError(element, message);
-                        }
-                    });
+                else {
+                    // Общие серверные ошибки
+                    showError(`Ошибка сервера (код: ${xhr.status})`);
                 }
             }
         });
