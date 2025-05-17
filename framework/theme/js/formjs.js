@@ -911,14 +911,29 @@ window.addEventListener("DOMContentLoaded", function() {
                     }
             
                     if (xhr.status === 422 || response.errors) {
-                        // Убрали showError() - ошибки теперь только под полями
-                        Object.keys(response.errors).forEach(field => {
-                            const element = document.querySelector(`[name="${field}"]`);
-                            if (element) {
-                                const errorCode = response.errors[field];
-                                highlightError(element, errorCode);
-                            }
-                        });
+                        let errorMessage = response.message || 'Ошибки валидации';
+                        //showError(errorMessage);
+                        
+                        if (response.errors) {
+                            Object.keys(response.errors).forEach(field => {
+                                const element = document.querySelector(`[name="${field}"]`);
+                                if (element) {
+                                    const errorCode = response.errors[field];
+                                    const fieldRules = validationRules[field];
+                                    let message = '';
+                                    
+                                    if (fieldRules?.messages) {
+                                        message = fieldRules.messages[errorCode] || 
+                                                  fieldRules.messages.required || 
+                                                  errorCode;
+                                    } else {
+                                        message = errorCode || 'Ошибка в поле';
+                                    }
+                                    
+                                    highlightError(element, message);
+                                }
+                            });
+                        }
                         return;
                     }
             
