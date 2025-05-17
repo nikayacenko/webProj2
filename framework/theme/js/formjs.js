@@ -622,16 +622,23 @@ function showError(message) {
 function showSuccessMessage(message) {
     alert(message); // Можно заменить на более красивый вывод
 }
-function showSuccessMessageEntry(message) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = 'alert alert-success';
-    alertDiv.textContent = message;
-    form.prepend(alertDiv);
-}
+// function showSuccessMessageEntry(message) {
+//     const alertDiv = document.createElement('div');
+//     alertDiv.className = 'alert alert-success';
+//     alertDiv.textContent = message;
+//     form.prepend(alertDiv);
+// }
 
 window.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("myform");
     if (!form) return;
+
+    function showSuccessMessageEntry(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success';
+        alertDiv.textContent = message;
+        form.prepend(alertDiv);
+    }
 
     const validationRules = {
         'fio': {
