@@ -489,9 +489,9 @@ if (!empty($_SERVER['PHP_AUTH_USER']) && !empty($_SERVER['PHP_AUTH_PW']) && $_SE
               ]);
               exit;
           }
-              setcookie('login', $login, time() + 3600, '/', '', false, true);
-              setcookie('pass', $pass, time() + 3600, '/', '', false, true);
-              setcookie('save', '1', time() + 3600, '/', '', false, true);
+              setcookie('login', $login);
+              setcookie('pass', $pass);
+              setcookie('save', '1');
               return redirect();
           
       } catch(PDOException $e) {
