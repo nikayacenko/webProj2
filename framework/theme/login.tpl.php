@@ -22,7 +22,7 @@
         <form class="log2" action="<?php echo url('login'); ?>" method="post">
           <label class="my-2">
             Логин: <br />
-            <input name="login" />
+            <input name="login" type="text" />
           </label><br />
           <label class="my-2">
             Пароль:<br />
