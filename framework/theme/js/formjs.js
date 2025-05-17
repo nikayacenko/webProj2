@@ -573,7 +573,11 @@ function setCookie(name, value, options = {}) {
 }
 
 function deleteCookie(name) {
-    setCookie(name, '', { maxAge: -1 });
+    // Удаляем оба варианта - с _value и без
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax` + 
+                     (location.protocol === 'https:' ? '; Secure' : '');
+    document.cookie = `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax` + 
+                     (location.protocol === 'https:' ? '; Secure' : '');
 }
 
 function highlightError(element, message) {
@@ -908,6 +912,7 @@ window.addEventListener("DOMContentLoaded", function() {
                         console.log('До удаления куки:', document.cookie);
                         Object.keys(validationRules).forEach(name => {
                             deleteCookie(name);
+                            deleteCookie(`${name}_value`); // Дополнительно удаляем с суффиксом
                             console.log(`Удален cookie: ${name}`);
                         });
                         console.log('После удаления куки:', document.cookie);
