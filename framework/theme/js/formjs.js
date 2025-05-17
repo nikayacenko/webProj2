@@ -999,6 +999,4 @@ window.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
-    const emailField = document.getElementsByName('field-email')[0];
-
 });
