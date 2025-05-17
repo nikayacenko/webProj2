@@ -578,13 +578,6 @@ function deleteCookie(name) {
 
 function highlightError(element, message) {
     // Для select multiple с именем languages[]
-    const rules = validationRules[element.name];
-    let message = errorCode; // По умолчанию выводим код ошибки
-    
-    // Если есть сообщение для этого кода ошибки
-    if (rules && rules.messages && rules.messages[errorCode]) {
-        message = rules.messages[errorCode];
-    }
     const isLanguagesSelect = element.name === 'languages[]';
     const errorContainer = isLanguagesSelect 
         ? element.closest('.form-group') || element.parentElement
@@ -829,13 +822,6 @@ window.addEventListener("DOMContentLoaded", function() {
             }
         } else {
             value = element.value.trim();
-        }
-
-        const cookieError = getCookie(`${fieldName}_error`);
-        if (cookieError) {
-            isValid = false;
-            highlightError(element, rules.messages[cookieError] || cookieError);
-            return; // Прерываем дальнейшую проверку для этого поля
         }
             
             // Валидация
