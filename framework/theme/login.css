@@ -38,8 +38,8 @@ body.login {
 }
 
 .log2 input[type="submit"] {
-    padding: 10px 20px;
-    background-color: #007bff;
+    padding: 10px;
+    background-color: #d20202;
     color: white;
     border: none;
     border-radius: 4px;
@@ -48,12 +48,11 @@ body.login {
 }
 
 .log2 input[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #891616;
 }
 
 .log a {
     display: block;
     margin-top: 20px;
-    color: #007bff;
-    text-decoration: none;
+    color: #9f0000;
 }
