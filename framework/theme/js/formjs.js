@@ -580,6 +580,43 @@ function setCookie(name, value, days = 1) {
         document.cookie = `${cookieName}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`;
     });
 }
+// Удаление кук с полным соответствием параметрам PHP
+function deleteAllCookies() {
+    const domain = window.location.hostname;
+    const isSecure = window.location.protocol === 'https:';
+    
+    // Получаем все куки
+    const cookies = document.cookie.split(';');
+    
+    // Удаляем каждую куку всеми возможными способами
+    cookies.forEach(cookie => {
+        const [name] = cookie.trim().split('=');
+        
+        // Базовое удаление
+        document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        
+        // С доменом (для поддоменов)
+        document.cookie = `${name}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        
+        // Secure версия
+        if (isSecure) {
+            document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`;
+            document.cookie = `${name}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure`;
+        }
+    });
+    
+    // Специально удаляем куки с _value
+    const valueCookies = [
+        'fio_value', 'field-tel_value', 'radio-group-1_value',
+        'languages_value', 'field-date_value', 'check-1_value',
+        'bio_value', 'field-email_value'
+    ];
+    
+    valueCookies.forEach(name => {
+        document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        document.cookie = `${name}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+    });
+}
 
 function highlightError(element, message) {
     // Для select multiple с именем languages[]
@@ -912,7 +949,7 @@ window.addEventListener("DOMContentLoaded", function() {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
                         console.log('До удаления куки:', document.cookie);
                         Object.keys(validationRules).forEach(name => {
-                            deleteCookie(name);
+                            deleteAllCookie(name);
                             console.log(`Удален cookie: ${name}`);
                         });
                         console.log('После удаления куки:', document.cookie);
