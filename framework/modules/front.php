@@ -379,21 +379,15 @@ if ($errors) {
   }
 }
 else {
-  $cookieParams = [
-    'expires' => time() - 3600,
-    'path' => '/',
-    'domain' => $_SERVER['HTTP_HOST'],
-    'secure' => isset($_SERVER['HTTPS']),
-    'httponly' => true
-];
-  setcookie('fio_error', '', $cookieParams);
-  setcookie('field-tel_error', '', $cookieParams);
-  setcookie('field-email_error', '', $cookieParams);
-  setcookie('field-date_error', '', $cookieParams);
-  setcookie('radio-group-1_error', '', $cookieParams);
-  setcookie('check-1_error', '', $cookieParams);
-  setcookie('languages_error', '', $cookieParams);
-  setcookie('bio_error', '', $cookieParams);
+  
+  setcookie('fio_error', '', 100000);
+  setcookie('field-tel_error', '', 100000);
+  setcookie('field-email_error', '', 100000);
+  setcookie('field-date_error', '', 100000);
+  setcookie('radio-group-1_error', '', 100000);
+  setcookie('check-1_error', '', 100000);
+  setcookie('languages_error', '', 100000);
+  setcookie('bio_error', '', 100000);
 }
 
 // Проверяем меняются ли ранее сохраненные данные или отправляются новые.
