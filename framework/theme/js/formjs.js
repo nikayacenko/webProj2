@@ -824,6 +824,13 @@ window.addEventListener("DOMContentLoaded", function() {
             value = element.value.trim();
         }
             
+        // Проверяем наличие ошибки в куках (для email с кодом 2)
+        const cookieError = getCookie(`${fieldName}_error`);
+        if (cookieError) {
+            isValid = false;
+            highlightError(element, rules.messages[cookieError] || cookieError);
+            return; // Прерываем дальнейшую проверку для этого поля
+        }
             // Валидация
             if (rules.required && !value) {
                 isValid = false;
