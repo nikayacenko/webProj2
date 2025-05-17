@@ -438,11 +438,15 @@ window.addEventListener("DOMContentLoaded", function() {
                     if (response.login && response.pass) {
                         showSuccessMessage(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
                         form.reset();
-                        
-                        // Очищаем cookies после успешной отправки
-                        ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
+                        Object.keys(validationRules).forEach(name => {
                             deleteCookie(name);
+                            console.log(`Удален cookie: ${name}`);
                         });
+                        console.log('После удаления куки:', document.cookie);
+                        // Очищаем cookies после успешной отправки
+                        // ['fio', 'field-tel', 'field-email', 'field-date', 'radio-group-1', 'check-1', 'languages', 'bio'].forEach(name => {
+                        //     deleteCookie(name);
+                        // });
                         return;
                     }
             
