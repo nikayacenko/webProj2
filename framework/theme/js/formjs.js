@@ -565,7 +565,7 @@ function setCookie(name, value, options = {}) {
     Object.entries(options).forEach(([key, val]) => {
         if (['path', 'domain', 'secure', 'sameSite', 'expires', 'maxAge'].includes(key)) {
             cookie += `; ${key}`;
-            if (val !== true) cookie += `=${val}`;
+            if (val !== true && val !== undefined) cookie += `=${val}`;
         }
     });
 
@@ -573,16 +573,41 @@ function setCookie(name, value, options = {}) {
 }
 
 function deleteCookie(name) {
-    const cookies = [
-        `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax` + 
-        (location.protocol === 'https:' ? '; Secure' : ''),
-        `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax` + 
-        (location.protocol === 'https:' ? '; Secure' : '')
+    // Получаем параметры, с которыми куки были установлены
+    const cookies = document.cookie.split(';');
+    const targetCookies = cookies.filter(c => c.trim().startsWith(`${name}=`) || c.trim().startsWith(`${name}_value=`));
+    
+    // Для каждого найденного куки создаём команду на удаление
+    targetCookies.forEach(cookie => {
+        const parts = cookie.split(';');
+        const nameValue = parts[0].trim();
+        const cookieName = nameValue.split('=')[0];
+        
+        // Базовые параметры удаления
+        let deleteCmd = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+        
+        // Добавляем дополнительные параметры из оригинального куки
+        parts.slice(1).forEach(part => {
+            const [key, val] = part.trim().split('=');
+            if (['domain', 'path', 'secure', 'samesite'].includes(key.toLowerCase())) {
+                deleteCmd += `; ${key}`;
+                if (val) deleteCmd += `=${val}`;
+            }
+        });
+        
+        console.log('Deleting cookie:', deleteCmd);
+        document.cookie = deleteCmd;
+    });
+    
+    // Дополнительно пытаемся удалить стандартными путями
+    const standardDeletes = [
+        `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${options.secure ? '; Secure' : ''}`,
+        `${name}_value=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax${options.secure ? '; Secure' : ''}`
     ];
     
-    cookies.forEach(cookie => {
-        console.log('Deleting cookie:', cookie);
-        document.cookie = cookie;
+    standardDeletes.forEach(cmd => {
+        console.log('Standard delete attempt:', cmd);
+        document.cookie = cmd;
     });
 }
 
