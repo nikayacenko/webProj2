@@ -656,7 +656,8 @@ window.addEventListener("DOMContentLoaded", function() {
             pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
             messages: {
                 required: 'Введите email',
-                pattern: 'Введите корректный email'
+                pattern: 'Введите корректный email',
+                2: 'Такой email уже зарегистрирован' // Новое сообщение
             }
         },
         'field-tel': {
@@ -972,9 +973,13 @@ window.addEventListener("DOMContentLoaded", function() {
                 showError(`${errorMsg} (код: ${xhr.status})`);
                 
                 if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                    Object.entries(xhr.responseJSON.errors).forEach(([field, error]) => {
+                    Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
                         const element = document.querySelector(`[name="${field}"]`);
-                        if (element) highlightError(element, error);
+                        if (element) {
+                            const rules = validationRules[field];
+                            const message = rules?.messages?.[errorCode] || errorCode;
+                            highlightError(element, message);
+                        }
                     });
                 }
             }
