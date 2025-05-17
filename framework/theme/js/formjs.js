@@ -952,29 +952,12 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             },
             error: function(xhr) {
-                let errorMsg = 'Ошибка сервера';
-                
                 if (xhr.status === 422) {
                     // Обработка ошибки существующего email
                     const emailField = document.getElementsByName('field-email')[0];
                     if (emailField) {
                         highlightError(emailField, 'email_exists');
                     }
-                } else if (xhr.status === 403) {
-                    errorMsg = 'Ошибка безопасности. Обновите страницу';
-                }
-                
-                showError(`${errorMsg} (код: ${xhr.status})`);
-                
-                if (xhr.status === 422 && xhr.responseJSON?.errors) {
-                    Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
-                        const element = document.querySelector(`[name="${field}"]`);
-                        if (element) {
-                            const rules = validationRules[field];
-                            const message = rules?.messages?.[errorCode] || errorCode;
-                            highlightError(element, message);
-                        }
-                    });
                 }
             }
         });
