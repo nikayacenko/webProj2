@@ -9,11 +9,10 @@ global $db;
 // Обработчик запросов методом GET.
 require_once './scripts/db.php';
 function front_get($request, $db) {
-  
+  echo htmlspecialchars($_COOKIE['save']);
     $allowed_lang=getLangs($db);
     // Массив для временного хранения сообщений пользователю.
     $messages = array();
-    echo($_COOKIE['save']);
     // В суперглобальном массиве $_COOKIE PHP хранит все имена и значения куки текущего запроса.
     // Выдаем сообщение об успешном сохранении.
     if (!empty($_COOKIE['save'])) {
