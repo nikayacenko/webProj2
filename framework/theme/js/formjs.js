@@ -732,26 +732,26 @@ window.addEventListener("DOMContentLoaded", function() {
     // Настройка автосохранения полей
     function setupFieldAutoSave(fieldName) {
         const elements = document.querySelectorAll(`[name="${fieldName}"]`);
-    if (!elements.length) return;
+        if (!elements.length) return;
+        const element = elements[0];
+        const saveFieldValue = () => {
+            let value;
+            
+            if (element.type === 'checkbox') {
+                value = element.checked;
+            } else if (element.type === 'radio') {
+                const selected = Array.from(elements).find(el => el.checked);
+                value = selected ? selected.value : '';
+                if (!selected) return;
+            } else if (element.tagName === 'SELECT' && element.multiple) {
+                const selected = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
+                value = selected;
+            } else {
+                value = element.value;
+            }
     
-    const element = elements[0];
-    const saveFieldValue = () => {
-        let value;
-        
-        if (element.type === 'checkbox') {
-            value = element.checked;
-        } else if (element.type === 'radio') {
-            const selected = Array.from(elements).find(el => el.checked);
-            value = selected ? selected.value : '';
-        } else if (element.tagName === 'SELECT' && element.multiple) {
-            value = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
-        } else {
-            value = element.value.trim();
-        }
-        
-        // Сохраняем при любом изменении
-        setCookie(fieldName, value || '', { expires: 1 });
-    };
+            setCookie(fieldName, value, { expires: 1 });
+        };
     
         if (element.type === 'checkbox' || element.type === 'radio') {
             elements.forEach(el => el.addEventListener('change', saveFieldValue));
@@ -769,7 +769,7 @@ window.addEventListener("DOMContentLoaded", function() {
             const value = getCookie(fieldName);
             const elements = document.getElementsByName(fieldName);
             
-            if (value !== null && elements.length > 0) {
+            if (value !== null && elements.length > 0) { // Проверяем value !== null вместо просто value
                 const element = elements[0];
                 
                 if (element.type === 'checkbox') {
@@ -788,98 +788,40 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             }
             
+            // Настраиваем автосохранение для каждого поля
             setupFieldAutoSave(fieldName);
         });
     }
 
     // Валидация формы
-    // function validateForm() {
-    //     let isValid = true;
-    //     resetFormErrors();
-        
-    //     Object.keys(validationRules).forEach(fieldName => {
-    //         const elements = document.getElementsByName(fieldName);
-    //         if (!elements.length) return;
-            
-    //         const rules = validationRules[fieldName];
-    //         const element = elements[0];
-    //         let value, isFieldValid = true;
-            
-    //         // Получаем значение в зависимости от типа элемента
-    //     if (element.type === 'checkbox') {
-    //         value = element.checked;
-    //     } else if (element.type === 'radio') {
-    //         value = Array.from(elements).some(el => el.checked);
-    //     } else if (element.name === 'languages[]') {
-    //         const selectedOptions = Array.from(element.selectedOptions);
-    //         value = selectedOptions.length > 0;
-            
-    //         if (value) {
-    //             const selectedValues = selectedOptions.map(opt => opt.value).join(',');
-    //             setCookie('languages', selectedValues, { expires: 1 });
-    //         }
-    //     } else {
-    //         value = element.value.trim();
-    //     }
-            
-    //         // Валидация
-    //         if (rules.required && !value) {
-    //             isValid = false;
-    //             setCookie(`${fieldName}_error`, 'required', { maxAge: 60 });
-    //             highlightError(element, rules.messages.required);
-    //         }
-    //         else if (value && rules.maxLength && value.length > rules.maxLength) {
-    //             isValid = false;
-    //             setCookie(`${fieldName}_error`, 'maxLength', { maxAge: 60 });
-    //             highlightError(element, rules.messages.maxLength);
-    //         }
-    //         else if (value && rules.pattern && !rules.pattern.test(value)) {
-    //             isValid = false;
-    //             setCookie(`${fieldName}_error`, 'pattern', { maxAge: 60 });
-    //             highlightError(element, rules.messages.pattern);
-    //         }
-    //         else {
-    //             deleteCookie(`${fieldName}_error`);
-    //         }
-    //     });
-        
-    //     return isValid;
-    // }
     function validateForm() {
         let isValid = true;
         resetFormErrors();
         
-        // Сначала сохраняем ВСЕ значения полей
-        Object.keys(validationRules).forEach(fieldName => {
-            const elements = document.getElementsByName(fieldName);
-            if (!elements.length) return;
-            
-            const element = elements[0];
-            let value;
-            
-            if (element.type === 'checkbox') {
-                value = element.checked;
-            } else if (element.type === 'radio') {
-                const selected = Array.from(elements).find(el => el.checked);
-                value = selected ? selected.value : '';
-            } else if (element.tagName === 'SELECT' && element.multiple) {
-                value = Array.from(element.selectedOptions).map(opt => opt.value).join(',');
-            } else {
-                value = element.value.trim();
-            }
-            
-            // Сохраняем значение независимо от валидности
-            setCookie(fieldName, value || '', { expires: 1 });
-        });
-        
-        // Затем выполняем валидацию
         Object.keys(validationRules).forEach(fieldName => {
             const elements = document.getElementsByName(fieldName);
             if (!elements.length) return;
             
             const rules = validationRules[fieldName];
             const element = elements[0];
-            let value = getCookie(fieldName); // Получаем значение из кук
+            let value, isFieldValid = true;
+            
+            // Получаем значение в зависимости от типа элемента
+        if (element.type === 'checkbox') {
+            value = element.checked;
+        } else if (element.type === 'radio') {
+            value = Array.from(elements).some(el => el.checked);
+        } else if (element.name === 'languages[]') {
+            const selectedOptions = Array.from(element.selectedOptions);
+            value = selectedOptions.length > 0;
+            
+            if (value) {
+                const selectedValues = selectedOptions.map(opt => opt.value).join(',');
+                setCookie('languages', selectedValues, { expires: 1 });
+            }
+        } else {
+            value = element.value.trim();
+        }
             
             // Валидация
             if (rules.required && !value) {
