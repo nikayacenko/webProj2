@@ -824,18 +824,26 @@ window.addEventListener("DOMContentLoaded", function() {
             value = element.value.trim();
         }
             
-        // Проверяем наличие ошибки в куках (для email с кодом 2)
-        const cookieError = getCookie(`${fieldName}_error`);
-        if (cookieError) {
-            isValid = false;
-            highlightError(element, rules.messages[cookieError] || cookieError);
-            return; // Прерываем дальнейшую проверку для этого поля
-        }
+
             // Валидация
             if (rules.required && !value) {
                 isValid = false;
                 setCookie(`${fieldName}_error`, 'required', { maxAge: 60 });
                 highlightError(element, rules.messages.required);
+            }
+            else if (fieldName === 'field-email' && value) {
+                if (!rules.pattern.test(value)) {
+                    isValid = false;
+                    setCookie(`${fieldName}_error`, 'pattern', { maxAge: 60 });
+                    highlightError(element, rules.messages.pattern);
+                    return;
+                }
+                const cookieError = getCookie(`${fieldName}_error`);
+            if (cookieError === '2') {
+                isValid = false;
+                highlightError(element, rules.messages['2']);
+                return;
+            }
             }
             else if (value && rules.maxLength && value.length > rules.maxLength) {
                 isValid = false;
