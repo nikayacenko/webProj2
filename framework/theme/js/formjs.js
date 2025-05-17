@@ -913,29 +913,21 @@ window.addEventListener("DOMContentLoaded", function() {
                     }
             
                     if (xhr.status === 422 || response.errors) {
-                        let errorMessage = response.message || 'Ошибки валидации';
-                        showError(errorMessage);
-                        
-                        if (response.errors) {
-                            Object.keys(response.errors).forEach(field => {
-                                const element = document.querySelector(`[name="${field}"]`);
-                                if (element) {
-                                    const errorCode = response.errors[field];
-                                    const fieldRules = validationRules[field];
-                                    let message = '';
-                                    
-                                    if (fieldRules?.messages) {
-                                        message = fieldRules.messages[errorCode] || 
-                                                  fieldRules.messages.required || 
-                                                  errorCode;
-                                    } else {
-                                        message = errorCode || 'Ошибка в поле';
-                                    }
-                                    
-                                    highlightError(element, message);
+                        Object.keys(response.errors).forEach(field => {
+                            const element = document.querySelector(`[name="${field}"]`);
+                            if (element) {
+                                const errorCode = response.errors[field];
+                                const rules = validationRules[field];
+                                // Используем сообщение из validationRules вместо кода
+                                const message = rules?.messages?.[errorCode] || errorCode;
+                                highlightError(element, message);
+                                
+                                // Сохраняем ошибку в куки (если нужно)
+                                if (field === 'field-email' && errorCode === '2') {
+                                    setCookie(`${field}_error`, '2', { maxAge: 60 });
                                 }
-                            });
-                        }
+                            }
+                        });
                         return;
                     }
             
