@@ -1000,11 +1000,5 @@ window.addEventListener("DOMContentLoaded", function() {
         });
     });
     const emailField = document.getElementsByName('field-email')[0];
-if (emailField) {
-    emailField.addEventListener('input', function() {
-        // При изменении email очищаем ошибки
-        deleteCookie('field-email_error');
-        resetFormErrors();
-    });
-}
+
 });
