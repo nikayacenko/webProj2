@@ -861,6 +861,20 @@ window.addEventListener("DOMContentLoaded", function() {
     form.addEventListener("submit", function(e) {
         e.preventDefault();
         
+        const emailField = document.getElementsByName('field-email')[0];
+    const email = emailField.value.trim();
+    
+    if (!email) {
+        highlightError(emailField, validationRules['field-email'].messages.required);
+        emailField.focus();
+        return;
+    }
+    
+    if (!validateEmail(email)) {
+        highlightError(emailField, validationRules['field-email'].messages.pattern);
+        emailField.focus();
+        return;
+    }
         // Сначала сохраняем все значения полей
         Object.keys(validationRules).forEach(fieldName => {
             const elements = document.getElementsByName(fieldName);
@@ -961,25 +975,24 @@ window.addEventListener("DOMContentLoaded", function() {
             },
             error: function(xhr) {
                 if (xhr.status === 422) {
-                    const errors = xhr.responseJSON?.errors || {};
+                    // Обработка ошибки валидации (существующий email)
+                    const emailField = document.getElementsByName('field-email')[0];
+                    if (emailField) {
+                        highlightError(emailField, validationRules['field-email'].messages['new']);
+                        setCookie('field-email_error', 'new', { maxAge: 60 });                    }
                     
-                    // Сначала показываем ошибку email, если есть
-                    if (errors['field-email']) {
-                        const emailField = document.getElementsByName('field-email')[0];
-                        highlightError(emailField, validationRules['field-email'].messages.new);
-                    }
-                    
-                    // Затем остальные ошибки
-                    Object.entries(errors).forEach(([field, error]) => {
-                        if (field !== 'field-email') {
+                    // Дополнительная обработка других ошибок валидации
+                    if (xhr.responseJSON?.errors) {
+                        Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
                             const element = document.querySelector(`[name="${field}"]`);
-                            if (element) {
-                                const message = validationRules[field]?.messages?.[error] || error;
+                            if (element && field !== 'field-email') { // email уже обработали
+                                const rules = validationRules[field];
+                                const message = rules?.messages?.[errorCode] || errorCode;
                                 highlightError(element, message);
                             }
-                        }
-                    });
-                }
+                        });
+                    }
+                } 
                 else if (xhr.status === 403) {
                     // Оставляем всплывающее окно только для 403 ошибки
                     showError('Ошибка безопасности. Обновите страницу (код: 403)');
