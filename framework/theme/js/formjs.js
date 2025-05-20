@@ -831,11 +831,6 @@ window.addEventListener("DOMContentLoaded", function() {
                 setCookie(`${fieldName}_error`, 'required', { maxAge: 60 });
                 highlightError(element, rules.messages.required);
             }
-            else if (value && rules.new) {
-                isValid = false;
-                setCookie(`${fieldName}_error`, 'new', { maxAge: 60 });
-                highlightError(element, rules.messages.new);
-            }
             else if (value && rules.maxLength && value.length > rules.maxLength) {
                 isValid = false;
                 setCookie(`${fieldName}_error`, 'maxLength', { maxAge: 60 });
@@ -845,6 +840,11 @@ window.addEventListener("DOMContentLoaded", function() {
                 isValid = false;
                 setCookie(`${fieldName}_error`, 'pattern', { maxAge: 60 });
                 highlightError(element, rules.messages.pattern);
+            }
+            else if (value && rules.new) {
+                isValid = false;
+                setCookie(`${fieldName}_error`, 'new', { maxAge: 60 });
+                highlightError(element, rules.messages.new);
             }
             else {
                 deleteCookie(`${fieldName}_error`);
