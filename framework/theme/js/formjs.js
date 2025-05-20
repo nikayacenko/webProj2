@@ -922,8 +922,8 @@ window.addEventListener("DOMContentLoaded", function() {
                                 highlightError(element, message);
                                 
                                 // Сохраняем ошибку в куки (если нужно)
-                                if (field === 'field-email' && errorCode === '2') {
-                                    setCookie(`${field}_error`, '2', { maxAge: 60 });
+                                if (field === 'field-email' && errorCode === 'new') {
+                                    setCookie(`${field}_error`, 'new', { maxAge: 60 });
                                 }
                             }
                         });
