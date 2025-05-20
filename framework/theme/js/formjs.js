@@ -657,7 +657,7 @@ window.addEventListener("DOMContentLoaded", function() {
             messages: {
                 required: 'Введите email',
                 pattern: 'Введите корректный email',
-                2: 'Такой email уже зарегистрирован' // Новое сообщение
+                new: 'Такой email уже зарегистрирован' // Новое сообщение
             }
         },
         'field-tel': {
@@ -831,19 +831,10 @@ window.addEventListener("DOMContentLoaded", function() {
                 setCookie(`${fieldName}_error`, 'required', { maxAge: 60 });
                 highlightError(element, rules.messages.required);
             }
-            else if (fieldName === 'field-email' && value) {
-                if (!rules.pattern.test(value)) {
-                    isValid = false;
-                    setCookie(`${fieldName}_error`, 'pattern', { maxAge: 60 });
-                    highlightError(element, rules.messages.pattern);
-                    return;
-                }
-                const cookieError = getCookie(`${fieldName}_error`);
-            if (cookieError === '2') {
+            else if (value && rules.new) {
                 isValid = false;
-                highlightError(element, rules.messages['2']);
-                return;
-            }
+                setCookie(`${fieldName}_error`, 'new', { maxAge: 60 });
+                highlightError(element, rules.messages.new);
             }
             else if (value && rules.maxLength && value.length > rules.maxLength) {
                 isValid = false;
