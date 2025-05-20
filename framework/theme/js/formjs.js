@@ -962,10 +962,10 @@ window.addEventListener("DOMContentLoaded", function() {
             error: function(xhr) {
                 if (xhr.status === 422) {
                     // Обработка ошибки валидации (существующий email)
-                    // const emailField = document.getElementsByName('field-email')[0];
-                    // if (emailField) {
-                    //     highlightError(emailField, validationRules['field-email'].messages['new']);
-                    //     setCookie('field-email_error', 'new', { maxAge: 60 });                    }
+                    const emailField = document.getElementsByName('field-email')[0];
+                    if (emailField) {
+                        highlightError(emailField, validationRules['field-email'].messages['new']);
+                        setCookie('field-email_error', 'new', { maxAge: 60 });                    }
                     
                     // Дополнительная обработка других ошибок валидации
                     if (xhr.responseJSON?.errors) {
@@ -975,11 +975,6 @@ window.addEventListener("DOMContentLoaded", function() {
                                 const rules = validationRules[field];
                                 const message = rules?.messages?.[errorCode] || errorCode;
                                 highlightError(element, message);
-                            }
-                            const emailField = document.getElementsByName('field-email')[0];
-                            if (emailField) {
-                                highlightError(emailField, validationRules['field-email'].messages['new']);
-                                setCookie('field-email_error', 'new', { maxAge: 60 });
                             }
                         });
                     }
