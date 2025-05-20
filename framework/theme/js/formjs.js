@@ -831,7 +831,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 setCookie(`${fieldName}_error`, 'new', { maxAge: 60 });
                 highlightError(element, rules.messages.new);
             }
-            if else(rules.required && !value) {
+            else if(rules.required && !value) {
                 isValid = false;
                 setCookie(`${fieldName}_error`, 'required', { maxAge: 60 });
                 highlightError(element, rules.messages.required);
