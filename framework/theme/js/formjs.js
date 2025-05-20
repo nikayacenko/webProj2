@@ -971,7 +971,7 @@ window.addEventListener("DOMContentLoaded", function() {
                     if (xhr.responseJSON?.errors) {
                         Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
                             const element = document.querySelector(`[name="${field}"]`);
-                            if (element && field !== 'field-email') { // email уже обработали
+                            if (element) { // email уже обработали
                                 const rules = validationRules[field];
                                 const message = rules?.messages?.[errorCode] || errorCode;
                                 highlightError(element, message);
