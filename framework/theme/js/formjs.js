@@ -971,10 +971,15 @@ window.addEventListener("DOMContentLoaded", function() {
                     if (xhr.responseJSON?.errors) {
                         Object.entries(xhr.responseJSON.errors).forEach(([field, errorCode]) => {
                             const element = document.querySelector(`[name="${field}"]`);
-                            if (element) { // email уже обработали
+                            if (element && field !== 'field-email') { // email уже обработали
                                 const rules = validationRules[field];
                                 const message = rules?.messages?.[errorCode] || errorCode;
                                 highlightError(element, message);
+                            }
+                            const emailField = document.getElementsByName('field-email')[0];
+                            if (emailField) {
+                                highlightError(emailField, validationRules['field-email'].messages['new']);
+                                setCookie('field-email_error', 'new', { maxAge: 60 });
                             }
                         });
                     }
