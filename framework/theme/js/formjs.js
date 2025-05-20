@@ -856,27 +856,11 @@ window.addEventListener("DOMContentLoaded", function() {
 
     // Восстанавливаем значения при загрузке
     restoreFormCookies();
-    function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
+
     // Обработка отправки формы
     form.addEventListener("submit", function(e) {
         e.preventDefault();
         
-        const emailField = document.getElementsByName('field-email')[0];
-    const email = emailField.value.trim();
-    
-    if (!email) {
-        highlightError(emailField, validationRules['field-email'].messages.required);
-        emailField.focus();
-        return;
-    }
-    
-    if (!validateEmail(email)) {
-        highlightError(emailField, validationRules['field-email'].messages.pattern);
-        emailField.focus();
-        return;
-    }
         // Сначала сохраняем все значения полей
         Object.keys(validationRules).forEach(fieldName => {
             const elements = document.getElementsByName(fieldName);
