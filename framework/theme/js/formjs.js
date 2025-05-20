@@ -911,24 +911,24 @@ window.addEventListener("DOMContentLoaded", function() {
                         response = JSON.parse(response);
                     }
             
-                    // if (xhr.status === 422 || response.errors) {
-                    //     Object.keys(response.errors).forEach(field => {
-                    //         const element = document.querySelector(`[name="${field}"]`);
-                    //         if (element) {
-                    //             const errorCode = response.errors[field];
-                    //             const rules = validationRules[field];
-                    //             // Используем сообщение из validationRules вместо кода
-                    //             const message = rules?.messages?.[errorCode] || errorCode;
-                    //             highlightError(element, message);
+                    if (xhr.status === 422 || response.errors) {
+                        Object.keys(response.errors).forEach(field => {
+                            const element = document.querySelector(`[name="${field}"]`);
+                            if (element) {
+                                const errorCode = response.errors[field];
+                                const rules = validationRules[field];
+                                // Используем сообщение из validationRules вместо кода
+                                const message = rules?.messages?.[errorCode] || errorCode;
+                                highlightError(element, message);
                                 
-                    //             // Сохраняем ошибку в куки (если нужно)
-                    //             if (field === 'field-email' && errorCode === 'new') {
-                    //                 setCookie(`${field}_error`, 'new', { maxAge: 60 });
-                    //             }
-                    //         }
-                    //     });
-                    //     return;
-                    // }
+                                // Сохраняем ошибку в куки (если нужно)
+                                if (field === 'field-email' && errorCode === 'new') {
+                                    setCookie(`${field}_error`, 'new', { maxAge: 60 });
+                                }
+                            }
+                        });
+                        return;
+                    }
             
                     if (response.login && response.pass) {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
