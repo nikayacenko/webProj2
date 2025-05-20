@@ -856,7 +856,9 @@ window.addEventListener("DOMContentLoaded", function() {
 
     // Восстанавливаем значения при загрузке
     restoreFormCookies();
-
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
     // Обработка отправки формы
     form.addEventListener("submit", function(e) {
         e.preventDefault();
