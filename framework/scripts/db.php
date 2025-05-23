@@ -86,7 +86,7 @@ function password_check($login, $password, $db) {
         }
         // 4. Получение результата запроса.
         $count = $stmt->fetchColumn(); // Получаем сразу значение COUNT(*)
-        // 5. Закрытие курсора (необязательно, но рекомендуется)
+
         $stmt->closeCursor();
 
         // 6. Возврат true, если email найден в базе, иначе false.
@@ -296,29 +296,6 @@ function generateCsrfToken() {
   return $token;
 }
 
-// function validateCsrfToken() {
-//   if (empty($_POST['csrf_token'])) {
-//     return false; 
-//   }
-
-//   if (empty($_SESSION['csrf_token'])) {
-//     return false; 
-//   }
-
-//   if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-//     return false; 
-//   }
-
-//   $token_age = time() - $_SESSION['csrf_token_time'];
-//   if ($token_age > 3600) {
-//     return false; 
-//   }
-
-//   unset($_SESSION['csrf_token']); 
-//   unset($_SESSION['csrf_token_time']);
-
-//   return true;
-// }
 
 function validateCsrfToken() {
   if (empty($_POST['csrf_token']) || $_POST['csrf_token'] !== ($_SESSION['csrf_token'] ?? '')) {
