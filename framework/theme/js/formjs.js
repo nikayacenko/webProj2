@@ -1,3 +1,5 @@
+
+
 function getCookie(name) {
     const matches = document.cookie.match(new RegExp(
         `(?:^|; )${name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`
@@ -10,7 +12,7 @@ function setCookie(name, value, options = {}) {
         path: '/',
         secure: true,
         sameSite: 'Lax',
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), 
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 день по умолчанию
         ...options
     };
 
@@ -31,7 +33,7 @@ function deleteCookie(name) {
 }
 
 function highlightError(element, message) {
-
+    // Для select multiple с именем languages[]
     const isLanguagesSelect = element.name === 'languages[]';
     const errorContainer = isLanguagesSelect 
         ? element.closest('.form-group') || element.parentElement
@@ -42,7 +44,7 @@ function highlightError(element, message) {
     if (!errorElement) {
         errorElement = document.createElement('div');
         errorElement.className = 'error-message';
-
+        // Вставляем после select
         element.parentNode.insertBefore(errorElement, element.nextSibling);
         if(element.type==='radio')
         {
@@ -57,7 +59,7 @@ function highlightError(element, message) {
     errorElement.textContent = message;
     element.classList.add('error-field');
     
- 
+    // Для select multiple добавляем класс к родительскому контейнеру
     if (isLanguagesSelect) {
         errorContainer.classList.add('error-container');
     }
@@ -87,10 +89,9 @@ window.addEventListener("DOMContentLoaded", function() {
         alertDiv.textContent = message;
         form.prepend(alertDiv);
 
-        // Прокручиваем к сообщению
         alertDiv.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start'       
+            behavior: 'smooth',  // Плавная прокрутка
+            block: 'start'       // Верх сообщения будет у верхнего края окна
         });
     }
 
@@ -156,9 +157,10 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     };
     function clearFormButKeepCookies() {
-    
+        // Полностью очищаем форму
         const form = document.getElementById("myform");
         if (form) {
+            // обработка для разных типов полей
             Object.keys(validationRules).forEach(fieldName => {
                 const elements = document.getElementsByName(fieldName);
                 if (!elements.length) return;
@@ -176,12 +178,14 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             });
         } 
+        // Удаляем только куки с ошибками
         Object.keys(validationRules).forEach(name => {
             deleteCookie(`${name}_error`);
         });
-
+        // Очищаем визуальные ошибки
         resetFormErrors();
     }
+    // Настройка автосохранения полей
     function setupFieldAutoSave(fieldName) {
         const elements = document.querySelectorAll(`[name="${fieldName}"]`);
         if (!elements.length) return;
@@ -215,6 +219,7 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Восстановление значений из кук
     function restoreFormCookies() {
         Object.keys(validationRules).forEach(fieldName => {
             const value = getCookie(fieldName);
@@ -239,6 +244,7 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             }
             
+            // Настраиваем автосохранение для каждого поля
             setupFieldAutoSave(fieldName);
         });
     }
@@ -256,6 +262,7 @@ window.addEventListener("DOMContentLoaded", function() {
             const element = elements[0];
             let value, isFieldValid = true;
             
+            // Получаем значение в зависимости от типа элемента
         if (element.type === 'checkbox') {
             value = element.checked;
         } else if (element.type === 'radio') {
@@ -302,13 +309,14 @@ window.addEventListener("DOMContentLoaded", function() {
         return isValid;
     }
 
-   
+    // Восстанавливаем значения при загрузке
     restoreFormCookies();
 
-   
+    // Обработка отправки формы
     form.addEventListener("submit", function(e) {
         e.preventDefault();
         
+        // Сначала сохраняем все значения полей
         Object.keys(validationRules).forEach(fieldName => {
             const elements = document.getElementsByName(fieldName);
             if (!elements.length) return;
@@ -330,14 +338,18 @@ window.addEventListener("DOMContentLoaded", function() {
             if (value) setCookie(fieldName, value, { expires: 1 });
         });
 
+        // Затем валидируем
         if (!validateForm()) {
+            // showError("Заполните все обязательные поля корректно");
             return;
         }
 
+        // Подготовка данных для отправки
         const formData = new FormData(form);
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
         if (csrfToken) formData.append('csrf_token', csrfToken);
 
+        // AJAX отправка
         $.ajax({
             url: form.action,
             type: 'POST',
@@ -374,7 +386,8 @@ window.addEventListener("DOMContentLoaded", function() {
             
                     if (response.login && response.pass) {
                         showSuccessMessageEntry(`Учетная запись создана! Логин: ${response.login}, Пароль: ${response.pass}`);
-
+                        
+                        // Полностью очищаем форму и ошибки
                         clearFormButKeepCookies();
                         
                         return;
